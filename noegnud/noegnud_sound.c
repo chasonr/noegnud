@@ -1,10 +1,10 @@
 #include <SDL_mixer.h>
 
-#include "noegnud_collection.h"
-#include "noegnud_common.h"
 #include "noegnud_config.h"
 #include "noegnud_mem.h"
+#include "noegnud_collection.h"
 #include "noegnud_options.h"
+#include "noegnud_common.h"
 #include "noegnud_sound.h"
 
 typedef struct {

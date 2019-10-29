@@ -1,8 +1,8 @@
 #include <math.h>
 
-#include "noegnud_extern.h"
 #include "noegnud_render.h"
 #include "noegnud_render_tile.h"
+#include "noegnud_extern.h"
 
 void
 noegnud_render_map_single_tile(int glyph_tile, int normalface)

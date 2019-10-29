@@ -1,9 +1,9 @@
 #ifndef _NOEGNUD_RIP_H_
 #define _NOEGNUD_RIP_H_
 
-#include "noegnud_fonts.h"
-#include "noegnud_glfuncs.h"
 #include "noegnud_options.h"
+#include "noegnud_glfuncs.h"
+#include "noegnud_fonts.h"
 
 #include "hack.h"
 

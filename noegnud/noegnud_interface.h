@@ -1,13 +1,13 @@
 #ifndef _NOEGNUD_INTERFACE_H_
 #define _NOEGNUD_INTERFACE_H_
 
-#include <GL/gl.h>
-#include <GL/glu.h>
 #include <SDL.h>
 #include <SDL_image.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 
-#include "dlb.h"
 #include "hack.h"
+#include "dlb.h"
 
 #include "noegnud_options.h"
 

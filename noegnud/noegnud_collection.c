@@ -1,11 +1,11 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "math.h"
 #include "string.h"
 
-#include "noegnud_collection.h"
 #include "noegnud_mem.h"
+#include "noegnud_collection.h"
 noegnud_tcollection *
 noegnud_collection_create(const char *name, void *data)
 {

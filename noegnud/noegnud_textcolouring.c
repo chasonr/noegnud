@@ -1,16 +1,16 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 #include <ctype.h>
 #include <regex.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "noegnud_collection.h"
-#include "noegnud_common.h"
-#include "noegnud_config.h"
+#include "noegnud_typeloader.h"
 #include "noegnud_extern.h"
 #include "noegnud_mem.h"
+#include "noegnud_common.h"
+#include "noegnud_config.h"
 #include "noegnud_textcolour.h"
-#include "noegnud_typeloader.h"
 
 #include "noegnud_textcolouring.h"
 

@@ -4,15 +4,15 @@
 
 #include <sys/stat.h>
 
-#include "noegnud_collection.h"
-#include "noegnud_common.h"
 #include "noegnud_config.h"
-#include "noegnud_extern.h"
-#include "noegnud_interface.h"
-#include "noegnud_mem.h"
 #include "noegnud_options.h"
-#include "noegnud_render.h"
 #include "noegnud_typeloader.h"
+#include "noegnud_collection.h"
+#include "noegnud_interface.h"
+#include "noegnud_render.h"
+#include "noegnud_extern.h"
+#include "noegnud_mem.h"
+#include "noegnud_common.h"
 
 noegnud_optiontype_int *noegnud_options_screenwidth = NULL;
 noegnud_optiontype_int *noegnud_options_screenheight = NULL;

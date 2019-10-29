@@ -1,6 +1,6 @@
-#include "../noegnud_gff_tga.h"
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include "../noegnud_gff_tga.h"
 
 int
 main(int argc, char **argv)

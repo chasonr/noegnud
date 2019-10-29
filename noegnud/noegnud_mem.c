@@ -1,9 +1,9 @@
-#include <SDL_image.h>
 #include <stdlib.h>
+#include <SDL_image.h>
 
 #include "noegnud_debug.h"
-#include "noegnud_extern.h"
 #include "noegnud_mem.h"
+#include "noegnud_extern.h"
 
 int noegnud_mem_lock = 0;
 

@@ -1,13 +1,13 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
 #include <SDL.h>
 #include <SDL_image.h>
-#include <math.h>
 #include <png.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
-#include "../noegnud_collection.h"
 #include "../noegnud_gff_tga.h"
+#include "../noegnud_collection.h"
 #include "../noegnud_typeloader.h"
 
 int desttilesetsize = 0;

@@ -1,9 +1,9 @@
-#include "noegnud_glfuncs.h"
-#include "noegnud_common.h"
-#include "noegnud_config.h"
-#include "noegnud_extern.h"
 #include "noegnud_interface.h"
+#include "noegnud_glfuncs.h"
+#include "noegnud_extern.h"
+#include "noegnud_common.h"
 #include "noegnud_mem.h"
+#include "noegnud_config.h"
 
 #define VIEW_MIN 0.1
 #define VIEW_MAX 20.0

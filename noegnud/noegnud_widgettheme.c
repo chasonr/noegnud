@@ -1,11 +1,11 @@
-#include "noegnud_widgettheme.h"
-#include "noegnud_collection.h"
-#include "noegnud_common.h"
 #include "noegnud_config.h"
-#include "noegnud_gui.h"
 #include "noegnud_mem.h"
+#include "noegnud_collection.h"
 #include "noegnud_options.h"
 #include "noegnud_typeloader.h"
+#include "noegnud_common.h"
+#include "noegnud_widgettheme.h"
+#include "noegnud_gui.h"
 
 static noegnud_tcollection *noegnud_widgetthemes = NULL;
 

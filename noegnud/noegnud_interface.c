@@ -1,37 +1,37 @@
+#include <dirent.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <SDL.h>
 #include <SDL_mixer.h>
 #include <SDL_thread.h>
-#include <ctype.h> //toupper
-#include <dirent.h>
+#include <ctype.h>              //toupper
 #include <math.h>
 
 #ifdef __WIN32__
-#include <windows.h>
+# include <windows.h>
 #endif
 
-#include "noegnud_collection.h"
-#include "noegnud_common.h"
-#include "noegnud_config.h"
 #include "noegnud_debug.h"
-#include "noegnud_extern.h"
-#include "noegnud_fonts.h"
-#include "noegnud_gff_tga.h"
-#include "noegnud_glfuncs.h"
-#include "noegnud_gui.h"
-#include "noegnud_interface.h"
-#include "noegnud_lang.h"
-#include "noegnud_mem.h"
+#include "noegnud_config.h"
+#include "noegnud_common.h"
 #include "noegnud_options.h"
-#include "noegnud_reference.h"
-#include "noegnud_render.h"
-#include "noegnud_rip.h"
-#include "noegnud_sound.h"
-#include "noegnud_textcolour.h"
-#include "noegnud_textcolouring.h"
+#include "noegnud_interface.h"
 #include "noegnud_tilesets.h"
+#include "noegnud_glfuncs.h"
+#include "noegnud_collection.h"
+#include "noegnud_gui.h"
+#include "noegnud_fonts.h"
 #include "noegnud_typeloader.h"
+#include "noegnud_render.h"
+#include "noegnud_gff_tga.h"
+#include "noegnud_extern.h"
+#include "noegnud_rip.h"
+#include "noegnud_lang.h"
+#include "noegnud_textcolouring.h"
+#include "noegnud_reference.h"
+#include "noegnud_mem.h"
+#include "noegnud_textcolour.h"
+#include "noegnud_sound.h"
 #include "noegnud_widgettheme.h"
 
 #include "func_tab.h" // nethack's "extcmdlist" structure

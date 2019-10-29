@@ -1,13 +1,13 @@
 #ifndef _NOEGNUD_EXTERN_H_
 #define _NOEGNUD_EXTERN_H_
 
-#include "noegnud_collection.h"
-#include "noegnud_fonts.h"
 #include "noegnud_gui.h"
-#include "noegnud_interface.h"
 #include "noegnud_options.h"
-#include "noegnud_rip.h"
+#include "noegnud_interface.h"
+#include "noegnud_fonts.h"
 #include "noegnud_tilesets.h"
+#include "noegnud_collection.h"
+#include "noegnud_rip.h"
 
 /* nethack &| slashem */
 extern short glyph2tile[];

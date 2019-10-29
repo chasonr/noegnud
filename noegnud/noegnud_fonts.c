@@ -1,10 +1,10 @@
-#include "noegnud_fonts.h"
-#include "noegnud_collection.h"
-#include "noegnud_common.h"
-#include "noegnud_config.h"
-#include "noegnud_extern.h"
 #include "noegnud_interface.h"
+#include "noegnud_fonts.h"
+#include "noegnud_common.h"
 #include "noegnud_mem.h"
+#include "noegnud_extern.h"
+#include "noegnud_collection.h"
+#include "noegnud_config.h"
 #include "noegnud_textcolour.h"
 
 noegnud_tcollection *noegnud_fonts_fontsloaded = NULL;

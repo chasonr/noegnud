@@ -1,7 +1,7 @@
-#include <regex.h>
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
+#include <regex.h>
 
 #include "noegnud_mem.h"
 #include "noegnud_textcolour.h"

@@ -1,13 +1,13 @@
 #include <stdlib.h>
 
-#include "noegnud_common.h"
-#include "noegnud_extern.h"
-#include "noegnud_fonts.h"
-#include "noegnud_gui.h"
 #include "noegnud_interface.h"
+#include "noegnud_common.h"
+#include "noegnud_gui.h"
+#include "noegnud_fonts.h"
+#include "noegnud_tilesets.h"
+#include "noegnud_extern.h"
 #include "noegnud_mem.h"
 #include "noegnud_textcolour.h"
-#include "noegnud_tilesets.h"
 #include "noegnud_widgettheme.h"
 
 #include "hack.h"

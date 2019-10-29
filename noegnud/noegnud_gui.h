@@ -15,9 +15,9 @@
 
 #define NOEGNUD_GUI_BORDER_SIZE 8
 
-#include "noegnud_collection.h"
-#include "noegnud_fonts.h"
 #include "noegnud_glfuncs.h"
+#include "noegnud_fonts.h"
+#include "noegnud_collection.h"
 
 #include "hack.h"
 
