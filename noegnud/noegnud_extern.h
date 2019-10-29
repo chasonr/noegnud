@@ -1,13 +1,13 @@
 #ifndef _NOEGNUD_EXTERN_H_
 #define _NOEGNUD_EXTERN_H_
 
-#include "noegnud_gui.h"
-#include "noegnud_options.h"
-#include "noegnud_interface.h"
-#include "noegnud_fonts.h"
-#include "noegnud_tilesets.h"
 #include "noegnud_collection.h"
+#include "noegnud_fonts.h"
+#include "noegnud_gui.h"
+#include "noegnud_interface.h"
+#include "noegnud_options.h"
 #include "noegnud_rip.h"
+#include "noegnud_tilesets.h"
 
 /* nethack &| slashem */
 extern short glyph2tile[];
@@ -80,17 +80,18 @@ extern noegnud_optiontype_int *noegnud_options_console_gap;
 extern noegnud_optiontype_float *noegnud_options_console_speed;
 
 extern noegnud_optiontype_int *noegnud_options_gui_window_console_timestamp;
-extern noegnud_optiontype_rgb *noegnud_options_gui_window_console_text_colour_system;
-extern noegnud_optiontype_rgb *noegnud_options_gui_window_console_text_colour_timestamp;
-extern noegnud_optiontype_rgb *noegnud_options_gui_window_console_text_colour_default;
+extern noegnud_optiontype_rgb
+    *noegnud_options_gui_window_console_text_colour_system;
+extern noegnud_optiontype_rgb
+    *noegnud_options_gui_window_console_text_colour_timestamp;
+extern noegnud_optiontype_rgb
+    *noegnud_options_gui_window_console_text_colour_default;
 
 extern noegnud_optiontype_string *noegnud_options_gui_text_colouring;
-
 
 extern noegnud_optiontype_int *noegnud_options_mode_drawmode;
 
 extern noegnud_optiontype_int *noegnud_options_mode_all_rotationabsolute;
-
 
 extern noegnud_optiontype_string *noegnud_options_mode_tileset_tile;
 extern noegnud_optiontype_int *noegnud_options_mode_tileset_forcealpha;
@@ -98,7 +99,8 @@ extern noegnud_optiontype_float *noegnud_options_mode_tileset_iso_opacity;
 extern noegnud_optiontype_int *noegnud_options_mode_tileset_halfwidth;
 
 extern noegnud_optiontype_int *noegnud_options_mode_tileset_caverns;
-extern noegnud_optiontype_int *noegnud_options_mode_tileset_caverns_unexplored;
+extern noegnud_optiontype_int
+    *noegnud_options_mode_tileset_caverns_unexplored;
 extern noegnud_optiontype_int *noegnud_options_mode_tileset_caverns_cutout;
 
 extern noegnud_optiontype_string *noegnud_options_mode_char_font;
@@ -126,21 +128,32 @@ extern noegnud_optiontype_float *noegnud_options_render_opengl_view_min;
 extern noegnud_optiontype_float *noegnud_options_render_opengl_view_max;
 extern noegnud_optiontype_float *noegnud_options_render_opengl_view_fov;
 
-extern noegnud_optiontype_float *noegnud_options_render_opengl_view_zoom_default;
-extern noegnud_optiontype_float *noegnud_options_render_opengl_view_zoom_current;
-extern noegnud_optiontype_float *noegnud_options_render_opengl_view_zoom_delta;
+extern noegnud_optiontype_float
+    *noegnud_options_render_opengl_view_zoom_default;
+extern noegnud_optiontype_float
+    *noegnud_options_render_opengl_view_zoom_current;
+extern noegnud_optiontype_float
+    *noegnud_options_render_opengl_view_zoom_delta;
 extern noegnud_optiontype_float *noegnud_options_render_opengl_view_zoom_min;
 extern noegnud_optiontype_float *noegnud_options_render_opengl_view_zoom_max;
 
-extern noegnud_optiontype_float *noegnud_options_render_opengl_view_angle_y_default;
-extern noegnud_optiontype_float *noegnud_options_render_opengl_view_angle_y_current;
-extern noegnud_optiontype_float *noegnud_options_render_opengl_view_angle_y_min;
-extern noegnud_optiontype_float *noegnud_options_render_opengl_view_angle_y_max;
+extern noegnud_optiontype_float
+    *noegnud_options_render_opengl_view_angle_y_default;
+extern noegnud_optiontype_float
+    *noegnud_options_render_opengl_view_angle_y_current;
+extern noegnud_optiontype_float
+    *noegnud_options_render_opengl_view_angle_y_min;
+extern noegnud_optiontype_float
+    *noegnud_options_render_opengl_view_angle_y_max;
 
-extern noegnud_optiontype_float *noegnud_options_render_opengl_view_angle_x_default;
-extern noegnud_optiontype_float *noegnud_options_render_opengl_view_angle_x_current;
-extern noegnud_optiontype_float *noegnud_options_render_opengl_view_angle_x_min;
-extern noegnud_optiontype_float *noegnud_options_render_opengl_view_angle_x_max;
+extern noegnud_optiontype_float
+    *noegnud_options_render_opengl_view_angle_x_default;
+extern noegnud_optiontype_float
+    *noegnud_options_render_opengl_view_angle_x_current;
+extern noegnud_optiontype_float
+    *noegnud_options_render_opengl_view_angle_x_min;
+extern noegnud_optiontype_float
+    *noegnud_options_render_opengl_view_angle_x_max;
 
 extern noegnud_optiontype_int *noegnud_options_render_opengl_lighting_method;
 
@@ -149,29 +162,42 @@ extern noegnud_optiontype_int *noegnud_options_render_opengl_mipmapping;
 extern noegnud_optiontype_int *noegnud_options_opengl_texture_max;
 
 extern noegnud_optiontype_int *noegnud_options_render_features_autocentre;
-extern noegnud_optiontype_int *noegnud_options_render_features_autocentre_xonly;
-extern noegnud_optiontype_int *noegnud_options_render_features_autocentre_mouse;
+extern noegnud_optiontype_int
+    *noegnud_options_render_features_autocentre_xonly;
+extern noegnud_optiontype_int
+    *noegnud_options_render_features_autocentre_mouse;
 
 extern noegnud_optiontype_int *noegnud_options_render_features_autoface;
 
-extern noegnud_optiontype_int *noegnud_options_render_features_cardboardcutout;
+extern noegnud_optiontype_int
+    *noegnud_options_render_features_cardboardcutout;
 
-extern noegnud_optiontype_int *noegnud_options_render_features_cardboardcutout_raise_monsters;
-extern noegnud_optiontype_int *noegnud_options_render_features_cardboardcutout_raise_objects;
-extern noegnud_optiontype_int *noegnud_options_render_features_cardboardcutout_raise_walls;
+extern noegnud_optiontype_int
+    *noegnud_options_render_features_cardboardcutout_raise_monsters;
+extern noegnud_optiontype_int
+    *noegnud_options_render_features_cardboardcutout_raise_objects;
+extern noegnud_optiontype_int
+    *noegnud_options_render_features_cardboardcutout_raise_walls;
 
-extern noegnud_optiontype_float *noegnud_options_render_features_cardboardcutout_wall_translucency_default;
-extern noegnud_optiontype_float *noegnud_options_render_features_cardboardcutout_wall_translucency_current;
+extern noegnud_optiontype_float *
+    noegnud_options_render_features_cardboardcutout_wall_translucency_default;
+extern noegnud_optiontype_float *
+    noegnud_options_render_features_cardboardcutout_wall_translucency_current;
 
-extern noegnud_optiontype_float *noegnud_options_render_features_cardboardcutout_wall_height;
-extern noegnud_optiontype_float *noegnud_options_render_features_cardboardcutout_hole_depth;
-extern noegnud_optiontype_float *noegnud_options_render_features_cardboardcutout_liquid_depth;
+extern noegnud_optiontype_float
+    *noegnud_options_render_features_cardboardcutout_wall_height;
+extern noegnud_optiontype_float
+    *noegnud_options_render_features_cardboardcutout_hole_depth;
+extern noegnud_optiontype_float
+    *noegnud_options_render_features_cardboardcutout_liquid_depth;
 
 extern noegnud_optiontype_int *noegnud_options_render_bullettime_trigger;
 extern noegnud_optiontype_int *noegnud_options_fun_recording_ask;
 
-extern noegnud_optiontype_float *noegnud_options_render_highlight_strobe_speed;
-extern noegnud_optiontype_float *noegnud_options_render_highlight_block_opacity;
+extern noegnud_optiontype_float
+    *noegnud_options_render_highlight_strobe_speed;
+extern noegnud_optiontype_float
+    *noegnud_options_render_highlight_block_opacity;
 
 extern noegnud_optiontype_string *noegnud_options_language;
 
@@ -195,7 +221,7 @@ extern noegnud_glfuncs_timage *noegnud_image_tilenotfound;
 
 /* noegnud_render */
 
-//extern int noegnud_render_drawmode;
+// extern int noegnud_render_drawmode;
 extern float noegnud_render_highlight_strobe;
 
 extern int noegnud_render_bullettime_busy;

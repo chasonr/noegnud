@@ -1,11 +1,10 @@
 #ifndef _NOEGNUD_WIDGETTHEME_H_
 #define _NOEGNUD_WIDGETTHEME_H
 
-
 #include "noegnud_collection.h"
 
 typedef struct {
-    float x,y;
+    float x, y;
 } noegnud_widgettheme_tsegmentlocation;
 
 typedef struct {
@@ -30,7 +29,7 @@ void noegnud_widgettheme_done();
 
 noegnud_tcollection *noegnud_widgettheme_load(const char *filename);
 
-void noegnud_widgettheme_draw(noegnud_gui_twidget *widget, noegnud_tcollection *theme);
+void noegnud_widgettheme_draw(noegnud_gui_twidget *widget,
+                              noegnud_tcollection *theme);
 
 #endif
-
