@@ -690,7 +690,7 @@ noegnud_gui_event_window(noegnud_gui_twindow *window, SDL_Event *event)
                 event->motion.y);
         if (window->widget.mouseover) {
             if (!noegnud_gui_mouseoverwidget)
-                noegnud_gui_mouseoverwidget = window;
+                noegnud_gui_mouseoverwidget = (noegnud_gui_twidget *) window;
         }
     }
 
@@ -924,7 +924,7 @@ noegnud_gui_event_button(noegnud_gui_tbutton *button, SDL_Event *event)
             button->window.widget.theme =
                 noegnud_gui_default_buttonover_widgettheme;
             if (!noegnud_gui_mouseoverwidget)
-                noegnud_gui_mouseoverwidget = button;
+                noegnud_gui_mouseoverwidget = (noegnud_gui_twidget *) button;
         } else {
             button->window.widget.theme =
                 noegnud_gui_default_button_widgettheme;
@@ -1140,7 +1140,7 @@ noegnud_gui_event_glyph(noegnud_gui_tglyph *glyph, SDL_Event *event)
                 event->motion.y);
         if (glyph->widget.mouseover) {
             if (!noegnud_gui_mouseoverwidget)
-                noegnud_gui_mouseoverwidget = glyph;
+                noegnud_gui_mouseoverwidget = (noegnud_gui_twidget *) glyph;
         }
     }
 
@@ -1173,7 +1173,7 @@ noegnud_gui_event_glyph(noegnud_gui_tglyph *glyph, SDL_Event *event)
         }
 
     } else {
-        if (noegnud_gui_mouseoverwidget == glyph
+        if (noegnud_gui_mouseoverwidget == (noegnud_gui_twidget *) glyph
             && glyph->widget.parent->parent->mouseover) {
             noegnud_gui_create_glyph(
                 (noegnud_gui_twidget *) noegnud_gui_create_window(
@@ -1366,7 +1366,7 @@ noegnud_gui_event_vscroll(noegnud_gui_tvscroll *vscroll, SDL_Event *event)
                 event->motion.y);
         if (vscroll->widget.mouseover) {
             if (!noegnud_gui_mouseoverwidget)
-                noegnud_gui_mouseoverwidget = vscroll;
+                noegnud_gui_mouseoverwidget = (noegnud_gui_twidget *) vscroll;
         }
     }
 
@@ -1596,7 +1596,7 @@ noegnud_gui_event_menuitem(noegnud_gui_tmenuitem *menuitem, SDL_Event *event)
                 event->motion.y);
         if (menuitem->window.widget.mouseover) {
             if (!noegnud_gui_mouseoverwidget)
-                noegnud_gui_mouseoverwidget = menuitem;
+                noegnud_gui_mouseoverwidget = (noegnud_gui_twidget *) menuitem;
         }
     }
 
@@ -2254,7 +2254,7 @@ noegnud_gui_winid_to_window(winid window)
         return window_ptrs[window];
     } else {
         panic("Tried to retrieve invalid window id %d", window);
-        return WIN_ERR;
+        return NULL;
     }
 }
 
