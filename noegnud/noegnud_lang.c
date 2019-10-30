@@ -81,7 +81,6 @@ noegnud_lang_translate(const char *string)
     char *result;
     char *translation;
     char *replaced;
-    int translated;
 
     noegnud_tcollection *walk_through;
 
@@ -89,10 +88,12 @@ noegnud_lang_translate(const char *string)
         noegnud_common_str_replace(string, plname, NOEGNUD_LANG_PLNAME);
 
     if (!(result = noegnud_collection_data(noegnud_lang, replaced))) {
+#ifdef NOEGNUDDEBUG
+        int translated = 0;
+#endif
         result = replaced;
 
         walk_through = noegnud_lang;
-        translated = 0;
         while (walk_through) {
             replaced = noegnud_common_str_replace(
                 result, walk_through->name, (char *) walk_through->data);
@@ -100,7 +101,9 @@ noegnud_lang_translate(const char *string)
                 if (result != string)
                     noegnud_mem_free(result);
                 result = replaced;
+#ifdef NOEGNUDDEBUG
                 translated = 1;
+#endif
             }
             walk_through = walk_through->next;
         }

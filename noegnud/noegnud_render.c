@@ -127,10 +127,7 @@ noegnud_render_loop(void)
 void
 noegnud_render_map()
 {
-    unsigned char ch2[2];
     int viewport_coords[4] = { 0 };
-
-    ch2[1] = 0;
 
     glEnable(GL_TEXTURE_2D);
     glMatrixMode(GL_PROJECTION);

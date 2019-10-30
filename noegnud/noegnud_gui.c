@@ -668,7 +668,6 @@ noegnud_gui_draw_window(noegnud_gui_twindow *window, int drawchildren)
 void
 noegnud_gui_event_window(noegnud_gui_twindow *window, SDL_Event *event)
 {
-    int px, py;
     noegnud_gui_twidget *tmp_widget;
 
     noegnud_gui_event_widget_relatives((noegnud_gui_twidget *) window, event);
@@ -696,9 +695,6 @@ noegnud_gui_event_window(noegnud_gui_twindow *window, SDL_Event *event)
 
     if ((!noegnud_gui_grabbed)
         || (noegnud_gui_grabbed == (noegnud_gui_twidget *) window)) {
-        px = noegnud_gui_widget_getabsolute_x((noegnud_gui_twidget *) window);
-        py = noegnud_gui_widget_getabsolute_y((noegnud_gui_twidget *) window);
-
         if (noegnud_gui_grabbed == (noegnud_gui_twidget *) window) {
             if (event->type == SDL_MOUSEBUTTONUP) {
                 noegnud_gui_grabbed = NULL;
@@ -996,7 +992,7 @@ void
 noegnud_gui_draw_progressbar(noegnud_gui_tprogressbar *progressbar,
                              int drawchildren)
 {
-    int w, v, t;
+    int w, t;
 
     noegnud_gui_draw_window((noegnud_gui_twindow *) progressbar, 0);
 
@@ -1005,7 +1001,6 @@ noegnud_gui_draw_progressbar(noegnud_gui_tprogressbar *progressbar,
     if (progressbar->value > progressbar->maximum)
         progressbar->value = progressbar->maximum;
 
-    v = progressbar->value - progressbar->minimum;
     t = progressbar->maximum - progressbar->minimum;
     w = (progressbar->value * (progressbar->window.widget.width - 1)) / (t);
 
@@ -1349,8 +1344,6 @@ noegnud_gui_widget_contained(noegnud_gui_twidget *widget, int x, int y)
 void
 noegnud_gui_event_vscroll(noegnud_gui_tvscroll *vscroll, SDL_Event *event)
 {
-    int px, py;
-
     noegnud_gui_event_widget_relatives((noegnud_gui_twidget *) vscroll,
                                        event);
 
@@ -1371,11 +1364,6 @@ noegnud_gui_event_vscroll(noegnud_gui_tvscroll *vscroll, SDL_Event *event)
 
     if ((!noegnud_gui_grabbed)
         || (noegnud_gui_grabbed == (noegnud_gui_twidget *) vscroll)) {
-        px =
-            noegnud_gui_widget_getabsolute_x((noegnud_gui_twidget *) vscroll);
-        py =
-            noegnud_gui_widget_getabsolute_y((noegnud_gui_twidget *) vscroll);
-
         if (noegnud_gui_grabbed == (noegnud_gui_twidget *) vscroll) {
             if (event->type == SDL_MOUSEBUTTONUP)
                 noegnud_gui_grabbed = NULL;
@@ -1781,10 +1769,6 @@ noegnud_gui_nh_addmenu(noegnud_gui_twindow *window, anything identifier,
 
     int y2;
     int x;
-
-    char smallstring[2];
-
-    smallstring[1] = 0;
 
     if (window->widget.height < NOEGNUD_GUI_BORDER_SIZE * 2)
         window->widget.height = NOEGNUD_GUI_BORDER_SIZE * 2;
