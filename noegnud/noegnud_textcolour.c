@@ -13,7 +13,7 @@ noegnud_textcolour_rgb_pbuffer(const char *haystack,
                                float ab)
 {
     int rx_pos, rx_len;
-    char *szReturn;
+    char *szReturn = NULL;
     char *szRetch;
     unsigned char ubr, ubg, ubb, uar, uag, uab;
 
@@ -143,7 +143,7 @@ noegnud_textcolour_rgba_pbuffer(const char *haystack,
                                 float ag, float ab, float aa)
 {
     int rx_pos, rx_len;
-    char *szReturn;
+    char *szReturn = NULL;
     char *szRetch;
     unsigned char ubr, ubg, ubb, uba, uar, uag, uab, uaa;
 

@@ -281,7 +281,7 @@ noegnud_render_map_tile()
     int x, y;
     int xs, xe, xd;
     int ys, ye, yd;
-    GLfloat current_alpha;
+    GLfloat current_alpha = 1.0F;
     float nx, ny;
     float realangle;
     GLfloat light_position[4];

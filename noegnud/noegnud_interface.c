@@ -2047,7 +2047,7 @@ int
 noegnud_select_menu(winid window, int how, menu_item **menu_list)
 {
     noegnud_gui_twindow *winptr = noegnud_gui_winid_to_window(window);
-    char ch;
+    char ch = '\0';
     int busy;
     menu_item *mi;
 
@@ -4674,7 +4674,7 @@ noegnud_yn_function(const char *ques, const char *choices, CHAR_P def)
     char *ch2;
     char retch;
     char stringbuffer[2048];
-    noegnud_gui_twidget *noegnud_gui_active_old;
+    noegnud_gui_twidget *noegnud_gui_active_old = noegnud_gui_active;
 
     noegnud_yn_function_busy = 1;
 
@@ -4731,7 +4731,7 @@ noegnud_yn_function(const char *ques, const char *choices, CHAR_P def)
 void
 noegnud_getlin(const char *ques, char *input)
 {
-    char ch;
+    char ch = '\0';
     noegnud_gui_twidget *noegnud_gui_active_old;
 
 #ifdef __WIN32__
@@ -4774,7 +4774,7 @@ noegnud_get_ext_cmd(void)
     iflags.extmenu=TRUE;
     return extcmd_via_menu();
     */
-    char ch;
+    char ch = '\0';
     noegnud_gui_twidget *noegnud_gui_active_old;
     char *input;
     char *input_check;

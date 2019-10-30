@@ -134,7 +134,7 @@ noegnud_textcolouring_colourise(const char *string)
 {
     char *result;
     char *colourisation;
-    char *replaced;
+    char *replaced = NULL;
 
     noegnud_tcollection *walk_through;
 
