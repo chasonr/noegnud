@@ -251,12 +251,12 @@ noegnud_fonts_printchar(noegnud_fonts_tfont *font, unsigned char ch)
 void
 noegnud_fonts_print(noegnud_fonts_tfont *font, int x, int y, char *string)
 {
-    unsigned char *ch;
+    unsigned char const *ch;
     float r, g, b, a;
 
     glTranslated(x, y, 0);
 
-    ch = string;
+    ch = (unsigned char const *) string;
     while (*ch) {
         while (*ch == NOEGNUD_TEXTCOLOUR_CONTROL) {
             ch++;
@@ -341,12 +341,12 @@ void
 noegnud_fonts_print_dynamic(noegnud_fonts_tfont *font, int x, int y,
                             char *string)
 {
-    unsigned char *ch;
+    unsigned char const *ch;
     float r, g, b, a;
 
     glTranslated(x, y, 0);
 
-    ch = string;
+    ch = (unsigned char const *) string;
     while (*ch) {
         while (*ch == NOEGNUD_TEXTCOLOUR_CONTROL) {
             ch++;

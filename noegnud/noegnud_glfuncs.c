@@ -49,7 +49,7 @@ noegnud_glfuncs_cheaplight_init()
 static void
 noegnud_glfuncs_maximum_texturesize_init()
 {
-    GLint texture;
+    GLuint texture;
 
     for (noegnud_glfuncs_maximum_texturesize =
              noegnud_options_opengl_texture_max->value;
