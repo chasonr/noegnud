@@ -70,8 +70,8 @@ noegnud_render_loop(void)
     noegnud_gui_mouseoverwidget = 0;
     noegnud_gui_mouseoverminimap = 0;
 
-    if (noegnud_guiwidget_console && noegnud_guiwidget_console->y > 0)
-        noegnud_guiwidget_console->y = 0;
+    if (noegnud_guiwidget_console && noegnud_guiwidget_console->widget.y > 0)
+        noegnud_guiwidget_console->widget.y = 0;
 
     glEnable(GL_SCISSOR_TEST);
     if (noegnud_guiwidget_desktop && noegnud_render_rendergui)

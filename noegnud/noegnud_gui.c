@@ -14,13 +14,13 @@
 
 noegnud_gui_twidget *noegnud_gui_active = NULL;
 noegnud_gui_twidget *noegnud_guiwidget_desktop = NULL;
-noegnud_gui_twidget *noegnud_guiwidget_console = NULL;
-noegnud_gui_twidget *noegnud_guiwidget_minimap = NULL;
-noegnud_gui_twidget *noegnud_guiwidget_status = NULL;
+noegnud_gui_twindow *noegnud_guiwidget_console = NULL;
+noegnud_gui_twindow *noegnud_guiwidget_minimap = NULL;
+noegnud_gui_twindow *noegnud_guiwidget_status = NULL;
 noegnud_gui_twidget *noegnud_guiwidget_status_container = NULL;
 noegnud_gui_twidget *noegnud_guiwidget_options = NULL;
 #ifdef POSITIONBAR
-noegnud_gui_twidget *noegnud_guiwidget_positionbar = NULL;
+noegnud_gui_twindow *noegnud_guiwidget_positionbar = NULL;
 noegnud_gui_twidget *noegnud_guiwidget_positionbar_container = NULL;
 #endif
 noegnud_gui_twidget *noegnud_guiwidget_desktop_overlay_hallucinating = NULL;
@@ -723,8 +723,7 @@ noegnud_gui_event_window(noegnud_gui_twindow *window, SDL_Event *event)
                        (noegnud_gui_twidget *) window)) {
                 if (window->widget.type == NOEGNUD_GUI_TITLEBAR
                     || (window->widget.parent == noegnud_guiwidget_desktop
-                        && (noegnud_gui_twidget *) window
-                               != noegnud_guiwidget_console)) {
+                        && window != noegnud_guiwidget_console)) {
                     if (window->widget.type == NOEGNUD_GUI_TITLEBAR) {
                         tmp_widget = window->widget.parent;
                     } else {
@@ -2029,21 +2028,21 @@ noegnud_gui_inconsole_progressbar(const char *text, int minimum, int maximum,
     textwidth = strlen(text) * noegnud_gui_font->width;
 
     mainwidget = noegnud_gui_create_widget(
-        noegnud_guiwidget_console->child, 10, 0,
-        noegnud_guiwidget_console->child->width - 20,
+        noegnud_guiwidget_console->widget.child, 10, 0,
+        noegnud_guiwidget_console->widget.child->width - 20,
         noegnud_gui_font->height, 0);
 
     noegnud_gui_create_text(mainwidget, 0, 0, textwidth,
                             noegnud_gui_font->height, 0.75, 0.75, 0.75, text);
-    mainwidget->child->clipto = noegnud_guiwidget_console->child;
+    mainwidget->child->clipto = noegnud_guiwidget_console->widget.child;
 
     required = noegnud_gui_create_progressbar(
         mainwidget, 10 + textwidth + 10, 1,
         mainwidget->width - (30 + textwidth),
         noegnud_gui_get_fontheight() - 2, 0.0, 0.0, 0.0, 0.0, minimum,
         maximum, r, g, b, a);
-    required->window.widget.clipto = noegnud_guiwidget_console->child;
-    noegnud_gui_reshuffle_console_children(noegnud_guiwidget_console->child);
+    required->window.widget.clipto = noegnud_guiwidget_console->widget.child;
+    noegnud_gui_reshuffle_console_children(noegnud_guiwidget_console->widget.child);
 
     return required;
 }

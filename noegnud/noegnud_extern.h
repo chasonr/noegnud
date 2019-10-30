@@ -17,13 +17,13 @@ extern short glyph2tile[];
 extern noegnud_gui_twidget *noegnud_gui_active;
 extern noegnud_fonts_tfont *noegnud_gui_font;
 extern noegnud_gui_twidget *noegnud_guiwidget_desktop;
-extern noegnud_gui_twidget *noegnud_guiwidget_console;
-extern noegnud_gui_twidget *noegnud_guiwidget_minimap;
-extern noegnud_gui_twidget *noegnud_guiwidget_status;
+extern noegnud_gui_twindow *noegnud_guiwidget_console;
+extern noegnud_gui_twindow *noegnud_guiwidget_minimap;
+extern noegnud_gui_twindow *noegnud_guiwidget_status;
 extern noegnud_gui_twidget *noegnud_guiwidget_status_container;
 extern noegnud_gui_twidget *noegnud_guiwidget_options;
 #ifdef POSITIONBAR
-extern noegnud_gui_twidget *noegnud_guiwidget_positionbar;
+extern noegnud_gui_twindow *noegnud_guiwidget_positionbar;
 extern noegnud_gui_twidget *noegnud_guiwidget_positionbar_container;
 #endif
 extern noegnud_gui_twidget *noegnud_guiwidget_desktop_overlay_hallucinating;

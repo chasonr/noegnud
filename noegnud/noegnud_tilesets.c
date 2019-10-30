@@ -12,7 +12,6 @@
 ts_tileset *noegnud_activetileset;
 
 extern noegnud_gui_twidget *noegnud_guiwidget_desktop;
-extern noegnud_gui_twidget *noegnud_guiwidget_console;
 extern void noegnud_render_loop();
 
 static void
