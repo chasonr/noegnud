@@ -3,7 +3,10 @@
 
 #define NOEGNUD_CHAR_MODIFIER 4.0
 
-void
+static void noegnud_render_map_single_char(int x, int y, int glyph_char,
+                                           int colour);
+
+static void
 noegnud_render_map_single_char(int x, int y, int glyph_char, int colour)
 {
     float highlight_multiplier;
@@ -50,7 +53,7 @@ noegnud_render_map_single_char(int x, int y, int glyph_char, int colour)
     glEnd();
 }
 
-void
+static void
 noegnud_render_map_single_selection_char(int x, int y)
 {
     glLoadName(y * 256 + x);
@@ -66,7 +69,7 @@ noegnud_render_map_single_selection_char(int x, int y)
     glEnd();
 }
 
-void
+static void
 noegnud_render_map_char_highlight_block()
 {
     float w, h;

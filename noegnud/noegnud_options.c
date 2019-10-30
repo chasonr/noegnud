@@ -40,7 +40,7 @@ noegnud_optiontype_int *noegnud_options_interface_texttombstone = NULL;
 noegnud_optiontype_int *noegnud_options_gui_window_credits_display = NULL;
 
 noegnud_optiontype_int *noegnud_options_console_gap = NULL;
-noegnud_optiontype_float *noegnud_options_console_speed = NULL;
+static noegnud_optiontype_float *noegnud_options_console_speed = NULL;
 
 noegnud_optiontype_int *noegnud_options_gui_window_console_timestamp = NULL;
 noegnud_optiontype_rgb
@@ -54,7 +54,7 @@ noegnud_optiontype_int *noegnud_options_mode_drawmode = NULL;
 noegnud_optiontype_int *noegnud_options_mode_all_rotationabsolute = NULL;
 
 noegnud_optiontype_string *noegnud_options_mode_tileset_tile = NULL;
-noegnud_optiontype_int *noegnud_options_mode_tileset_forcealpha = NULL;
+static noegnud_optiontype_int *noegnud_options_mode_tileset_forcealpha = NULL;
 noegnud_optiontype_float *noegnud_options_mode_tileset_iso_opacity = NULL;
 noegnud_optiontype_int *noegnud_options_mode_tileset_halfwidth = NULL;
 
@@ -162,6 +162,14 @@ noegnud_optiontype_string *noegnud_options_language = NULL;
 noegnud_tcollection *noegnud_options = NULL;
 
 static void noegnud_options_defaults();
+static void noegnud_options_done(void);
+static void noegnud_options_load(void);
+static void noegnud_options_save(void);
+static noegnud_optiontype_int *noegnud_options_create_int(int perm, int value);
+static noegnud_optiontype_float *noegnud_options_create_float(
+        int perm, float value);
+static noegnud_optiontype_rgb *noegnud_options_create_rgb(
+        int perm, float r, float g, float b);
 
 void
 noegnud_options_init()
@@ -171,7 +179,7 @@ noegnud_options_init()
 
     atexit(noegnud_options_done);
 }
-void
+static void
 noegnud_options_done()
 {
     noegnud_tcollection *stepcoll;
@@ -185,7 +193,7 @@ noegnud_options_done()
     noegnud_collection_destroy(&noegnud_options);
 }
 
-int noegnud_options_build_incompatibility = 0;
+static int noegnud_options_build_incompatibility = 0;
 static void
 noegnud_options_loadfrom_parser(char *setting, int nparams, char *params,
                                 void *data)
@@ -313,7 +321,7 @@ noegnud_options_get_home()
     return directory;
 };
 
-void
+static void
 noegnud_options_load()
 {
     char *homedir;
@@ -348,7 +356,7 @@ noegnud_options_load()
     noegnud_mem_free(homedir);
 }
 
-void
+static void
 noegnud_options_save()
 {
     noegnud_tcollection *save_options;
@@ -813,7 +821,7 @@ noegnud_options_defaults()
                                   noegnud_options_language);
 }
 
-noegnud_optiontype_int *
+static noegnud_optiontype_int *
 noegnud_options_create_int(int perm, int value)
 {
     noegnud_optiontype_int *type_int;
@@ -826,7 +834,7 @@ noegnud_options_create_int(int perm, int value)
     return type_int;
 }
 
-noegnud_optiontype_float *
+static noegnud_optiontype_float *
 noegnud_options_create_float(int perm, float value)
 {
     noegnud_optiontype_float *type_float;
@@ -852,7 +860,7 @@ noegnud_options_create_string(int perm, char *value)
     return type_string;
 }
 
-noegnud_optiontype_rgb *
+static noegnud_optiontype_rgb *
 noegnud_options_create_rgb(int perm, float r, float g, float b)
 {
     noegnud_optiontype_rgb *type_rgb;
@@ -865,20 +873,4 @@ noegnud_options_create_rgb(int perm, float r, float g, float b)
     type_rgb->b = b;
 
     return type_rgb;
-}
-
-noegnud_optiontype_rgba *
-noegnud_options_create_rgba(int perm, float r, float g, float b, float a)
-{
-    noegnud_optiontype_rgba *type_rgba;
-
-    type_rgba = noegnud_mem_malloc(sizeof(noegnud_optiontype_rgba));
-    type_rgba->meta.type = NOEGNUD_OPTIONTYPE_RGBA;
-    type_rgba->meta.perm = perm;
-    type_rgba->r = r;
-    type_rgba->g = g;
-    type_rgba->b = b;
-    type_rgba->a = a;
-
-    return type_rgba;
 }

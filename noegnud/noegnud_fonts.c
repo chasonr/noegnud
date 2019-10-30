@@ -7,7 +7,10 @@
 #include "noegnud_config.h"
 #include "noegnud_textcolour.h"
 
-noegnud_tcollection *noegnud_fonts_fontsloaded = NULL;
+static noegnud_tcollection *noegnud_fonts_fontsloaded = NULL;
+
+static void noegnud_fonts_printchar_dynamic(noegnud_fonts_tfont *font,
+                                            unsigned char ch);
 
 static int
 noegnud_fonts_loadimage(noegnud_fonts_tfont *font)
@@ -225,30 +228,6 @@ noegnud_fonts_printchar_scaled(noegnud_fonts_tfont *font, unsigned char ch,
 }
 
 void
-noegnud_fonts_printchar(noegnud_fonts_tfont *font, unsigned char ch)
-{
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, font->ch[(int) ch]);
-    glEnable(GL_BLEND);
-
-    glBegin(GL_QUADS);
-
-    glTexCoord2f(font->fx1, font->fy2);
-    glVertex2i(0, 0);
-
-    glTexCoord2f(font->fx2, font->fy2);
-    glVertex2i(font->width, 0);
-
-    glTexCoord2f(font->fx2, font->fy1);
-    glVertex2i(font->width, font->height);
-
-    glTexCoord2f(font->fx1, font->fy1);
-    glVertex2i(0, font->height);
-
-    glEnd();
-}
-
-void
 noegnud_fonts_print(noegnud_fonts_tfont *font, int x, int y, char *string)
 {
     unsigned char const *ch;
@@ -312,7 +291,7 @@ noegnud_width_dynamic(noegnud_fonts_tfont *font, char *string)
     return width_count;
 }
 
-void
+static void
 noegnud_fonts_printchar_dynamic(noegnud_fonts_tfont *font, unsigned char ch)
 {
     glEnable(GL_TEXTURE_2D);

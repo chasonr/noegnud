@@ -14,14 +14,17 @@
 
 #include "noegnud_textcolouring.h"
 
-noegnud_tcollection *noegnud_textcolouring = NULL;
+static noegnud_tcollection *noegnud_textcolouring = NULL;
 
 typedef struct {
     struct re_pattern_buffer *pattern_buffer;
     float r, g, b;
 } noegnud_textcolouring_item;
 
-void noegnud_textcolouring_done();
+
+static void noegnud_textcolouring_done();
+static void noegnud_textcolouring_load(char *filename);
+
 void
 noegnud_textcolouring_init()
 {
@@ -29,7 +32,7 @@ noegnud_textcolouring_init()
     atexit(noegnud_textcolouring_done);
 }
 
-void
+static void
 noegnud_textcolouring_done()
 {
     noegnud_tcollection *stepcoll;
@@ -108,7 +111,7 @@ noegnud_textcolouring_load_parser(char *setting, int nparams, char *params,
     }
 }
 
-void
+static void
 noegnud_textcolouring_load(char *textcolouringname)
 {
     char filename[2048];

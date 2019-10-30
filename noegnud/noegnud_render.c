@@ -21,16 +21,18 @@ float noegnud_render_offset_y = 0.0;
 int noegnud_render_mouse_map_x = -1;
 int noegnud_render_mouse_map_y = -1;
 
-int noegnud_render_frame_count = 0;
+static int noegnud_render_frame_count = 0;
 
 static int noegnud_render_lastframe_time = 0;
 
 int noegnud_render_selection_busy = 0;
-int noegnud_render_selection_x = 0;
-int noegnud_render_selection_y = 0;
-unsigned int noegnud_render_selection_buffer[32] = { 0 };
+static int noegnud_render_selection_x = 0;
+static int noegnud_render_selection_y = 0;
+static unsigned int noegnud_render_selection_buffer[32] = { 0 };
 
 int noegnud_render_rendergui = 1;
+
+static void noegnud_render_map(void);
 
 void
 noegnud_render_loop(void)
@@ -124,7 +126,7 @@ noegnud_render_loop(void)
     noegnud_render_lastframe_time = sdltimer;
 }
 
-void
+static void
 noegnud_render_map()
 {
     int viewport_coords[4] = { 0 };

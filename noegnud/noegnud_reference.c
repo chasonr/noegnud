@@ -13,7 +13,9 @@
 noegnud_tcollection *noegnud_reference = NULL;
 int noegnud_reference_tile_amount = 0;
 
-void noegnud_reference_done();
+static void noegnud_reference_load(char *filename);
+static void noegnud_reference_done(void);
+
 void
 noegnud_reference_init()
 {
@@ -21,7 +23,7 @@ noegnud_reference_init()
     atexit(noegnud_reference_done);
 }
 
-void
+static void
 noegnud_reference_done()
 {
     noegnud_tcollection *stepcoll;
@@ -51,7 +53,7 @@ noegnud_reference_load_parser(char *setting, int nparams, char *params,
     noegnud_reference_tile_amount++;
 }
 
-void
+static void
 noegnud_reference_load(char *refname)
 {
     char filename[2048];

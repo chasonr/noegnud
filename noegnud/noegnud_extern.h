@@ -26,22 +26,12 @@ extern noegnud_gui_twidget *noegnud_guiwidget_options;
 extern noegnud_gui_twindow *noegnud_guiwidget_positionbar;
 extern noegnud_gui_twidget *noegnud_guiwidget_positionbar_container;
 #endif
-extern noegnud_gui_twidget *noegnud_guiwidget_desktop_overlay_hallucinating;
-extern noegnud_gui_twidget *noegnud_guiwidget_desktop_overlay_confused;
-extern noegnud_gui_twidget *noegnud_guiwidget_desktop_overlay_stunned;
-extern noegnud_gui_twidget *noegnud_guiwidget_desktop_overlay_poisoned;
-extern noegnud_gui_twidget *noegnud_guiwidget_desktop_overlay_blind;
-extern noegnud_gui_twidget *noegnud_guiwidget_desktop_overlay_slimed;
 extern noegnud_gui_twidget *noegnud_gui_grabbed;
 extern noegnud_gui_twidget *noegnud_gui_mouseoverwidget;
 extern int noegnud_gui_mouseoverminimap;
 extern noegnud_tcollection *noegnud_gui_default_widgettheme;
-extern noegnud_tcollection *noegnud_gui_default_title_widgettheme;
 extern noegnud_tcollection *noegnud_gui_default_title_active_widgettheme;
-extern noegnud_tcollection *noegnud_gui_default_button_widgettheme;
 extern noegnud_tcollection *noegnud_gui_default_minimap_widgettheme;
-extern noegnud_tcollection *noegnud_gui_default_scrollbararea_widgettheme;
-extern noegnud_tcollection *noegnud_gui_default_scrollbar_widgettheme;
 
 extern int noegnud_gui_menuitem_throwreturn;
 
@@ -77,7 +67,6 @@ extern noegnud_optiontype_int *noegnud_options_interface_texttombstone;
 extern noegnud_optiontype_int *noegnud_options_gui_window_credits_display;
 
 extern noegnud_optiontype_int *noegnud_options_console_gap;
-extern noegnud_optiontype_float *noegnud_options_console_speed;
 
 extern noegnud_optiontype_int *noegnud_options_gui_window_console_timestamp;
 extern noegnud_optiontype_rgb
@@ -94,7 +83,6 @@ extern noegnud_optiontype_int *noegnud_options_mode_drawmode;
 extern noegnud_optiontype_int *noegnud_options_mode_all_rotationabsolute;
 
 extern noegnud_optiontype_string *noegnud_options_mode_tileset_tile;
-extern noegnud_optiontype_int *noegnud_options_mode_tileset_forcealpha;
 extern noegnud_optiontype_float *noegnud_options_mode_tileset_iso_opacity;
 extern noegnud_optiontype_int *noegnud_options_mode_tileset_halfwidth;
 
@@ -209,8 +197,6 @@ extern GLfloat noegnud_nethackcolours[16][4];
 extern int noegnud_clip_x;
 extern int noegnud_clip_y;
 
-extern int noegnud_inventory_open;
-
 extern noegnud_tmap_cell noegnud_map[MAX_MAP_X][MAX_MAP_Y];
 
 extern noegnud_fonts_tfont *noegnud_font_minimap;
@@ -247,10 +233,6 @@ extern int noegnud_glfuncs_maximum_texturesize;
 /* noegnud_tilesets */
 
 extern ts_tileset *noegnud_activetileset;
-
-/* noegnud_lang */
-
-extern noegnud_tcollection *noegnud_lang;
 
 /* noegnud_typeloader */
 

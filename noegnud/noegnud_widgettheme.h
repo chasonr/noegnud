@@ -24,9 +24,6 @@ typedef struct {
 
 void noegnud_widgettheme_init();
 
-int noegnud_widgettheme_startup();
-void noegnud_widgettheme_done();
-
 noegnud_tcollection *noegnud_widgettheme_load(const char *filename);
 
 void noegnud_widgettheme_draw(noegnud_gui_twidget *widget,

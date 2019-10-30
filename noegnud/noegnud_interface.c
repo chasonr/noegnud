@@ -40,49 +40,48 @@ extern void play_sound_for_message(const char *str);
 
 #ifdef NOEGNUD_GRAPHICS
 
-int noegnud_screenmode = SDL_OPENGL;
+static int noegnud_screenmode = SDL_OPENGL;
 
 int noegnud_graphics_system_ready = 0;
 
-int noegnud_startup_flag = 0;
+static int noegnud_startup_flag = 0;
 
 #define RECORD_GAME_OFF 0
 #define RECORD_GAME_TXT_PLAIN 1
 #define RECORD_GAME_TXT_HTML_BW 2
 #define RECORD_GAME_TXT_HTML_COLOUR 3
 
-int record_game = RECORD_GAME_OFF;
+static int record_game = RECORD_GAME_OFF;
 
-int noegnud_lastmove = -1;
-int noegnud_moves = 0;
+static int noegnud_lastmove = -1;
+static int noegnud_moves = 0;
 
-int noegnud_console_speed = 24; /* speed "limit" */
-int noegnud_console_delta = 0;  /* current speed */
+static int noegnud_console_speed = 24; /* speed "limit" */
+static int noegnud_console_delta = 0;  /* current speed */
 
-int noegnud_toptenwindow_pending = 0;
+static int noegnud_toptenwindow_pending = 0;
 
 #ifdef __WIN32__
 int win32_noegnud_tounicode_supported = 0;
 #endif
 
-float noegnud_scrolling_delta_x = 0.0;
-float noegnud_scrolling_delta_y = 0.0;
-float noegnud_delta_scrolling_speed = 0.2;
+static float noegnud_scrolling_delta_x = 0.0;
+static float noegnud_scrolling_delta_y = 0.0;
 
-int noegnud_yn_function_busy = 0;
-int noegnud_inventory_open = 0;
+static int noegnud_yn_function_busy = 0;
+static int noegnud_inventory_open = 0;
 
 noegnud_glfuncs_timage *noegnud_image_dungeon;
 noegnud_glfuncs_timage *noegnud_image_tilenotfound;
 
-SDL_Surface *noegnud_primary_surface;
+static SDL_Surface *noegnud_primary_surface;
 
 /* this must NOT __EVER__ be less than 5 !!! (screenshot) ... TODO add an
  * element of dynamism here methinks */
 #define NOEGNUD_CONSOLEMESSAGES_MAX 5
-char *noegnud_consolemessages[NOEGNUD_CONSOLEMESSAGES_MAX];
+static char *noegnud_consolemessages[NOEGNUD_CONSOLEMESSAGES_MAX];
 
-noegnud_glfuncs_timage *noegnud_console_image_splash;
+static noegnud_glfuncs_timage *noegnud_console_image_splash;
 // noegnud_glfuncs_timage *noegnud_console_image_console;
 
 noegnud_fonts_tfont *noegnud_font_map;
@@ -99,18 +98,60 @@ GLfloat noegnud_nethackcolours[16][4] = {
     { 0.0, 1.0, 1.0, 1.0 }, { 1.0, 1.0, 1.0, 1.0 }
 };
 
-int noegnud_nethackcolours_int[16] = {
-    0xFF000000, 0xFF000080, 0xFF00FF00, 0xFF4080A0, 0xFF800000, 0xFF800080,
-    0xFF808000, 0xFF808080, 0xFF404040, 0xFF00A0FF, 0xFF00FF00, 0xFF00FFFF,
-    0xFFFF0000, 0xFFFF00FF, 0xFFFFFF00, 0xFFFFFFFF
-};
-
 noegnud_tmap_cell noegnud_map[MAX_MAP_X][MAX_MAP_Y];
 
 int noegnud_clip_x;
 int noegnud_clip_y;
 
-char szWindowCaption[] = NOEGNUD_FULLNAMEVERSION;
+static char szWindowCaption[] = NOEGNUD_FULLNAMEVERSION;
+
+static void noegnud_init_nhwindows(int *argcp, char **argv);
+static void noegnud_player_selection(void);
+static void noegnud_askname(void);
+static void noegnud_get_nh_event(void);
+static void noegnud_exit_nhwindows(const char *str);
+static void noegnud_suspend_nhwindows(const char *str);
+static void noegnud_resume_nhwindows(void);
+static winid noegnud_create_nhwindow(int type);
+static void noegnud_clear_nhwindow(winid window);
+static void noegnud_display_nhwindow(winid window, boolean blocking);
+static void noegnud_destroy_nhwindow(winid window);
+static void noegnud_curs(winid window, int x, int y);
+static void noegnud_putstr(winid window, int attr, const char *str);
+static void noegnud_display_file(const char *fname, boolean complain);
+static void noegnud_start_menu(winid window);
+static void noegnud_add_menu(winid window, int glyph,
+                             const anything *identifier,
+                             CHAR_P ch, CHAR_P gch, int attr, const char *str,
+                             boolean preselected);
+static int noegnud_select_menu(winid window, int how, menu_item **menu_list);
+static char noegnud_message_menu(CHAR_P let, int how, const char *mesg);
+static void noegnud_update_inventory(void);
+static void noegnud_mark_synch(void);
+static void noegnud_wait_synch(void);
+#ifdef CLIPPING
+static void noegnud_cliparound(int x, int y);
+#endif
+#ifdef POSITIONBAR
+static void noegnud_update_positionbar(char *features);
+#endif
+static void noegnud_print_glyph(winid window, int x, int y, int glyph);
+static void noegnud_raw_print(const char *str);
+static void noegnud_raw_print_bold(const char *str);
+static int noegnud_nhgetch(void);
+static int noegnud_nh_poskey(int *x, int *y, int *mod);
+static void noegnud_nhbell(void);
+static int noegnud_doprev_message(void);
+static char noegnud_yn_function(const char *ques, const char *choices,
+                                CHAR_P def);
+static void noegnud_getlin(const char *ques, char *input);
+static int noegnud_get_ext_cmd(void);
+static void noegnud_number_pad(int a);
+static void noegnud_delay_output(void);
+static void noegnud_start_screen(void);
+static void noegnud_end_screen(void);
+static void noegnud_outrip(winid window, int how);
+static void noegnud_preference_update(const char *pref);
 
 /* Interface definition, for windows.c */
 struct window_procs noegnud_procs = { "noegnud",
@@ -169,7 +210,7 @@ struct window_procs noegnud_procs = { "noegnud",
                                       noegnud_outrip,
                                       noegnud_preference_update };
 
-void
+static void
 abend(const char *message)
 {
     clearlocks();
@@ -177,7 +218,7 @@ abend(const char *message)
     terminate(EXIT_SUCCESS);
 }
 
-void
+static void
 console_process()
 {
     if (noegnud_console_delta == 0) {
@@ -203,7 +244,7 @@ console_process()
     }
 }
 
-void
+static void
 console_startmovement()
 {
     if (noegnud_console_delta != 0) {
@@ -218,7 +259,7 @@ console_startmovement()
     };
 }
 
-char *
+static char *
 noegnud_create_rolename()
 {
     char *role;
@@ -256,7 +297,7 @@ noegnud_create_rolename()
     return role;
 }
 
-void
+static void
 noegnud_create_screenshot_filename(char *dest, char *suffix, int num)
 {
     char *role;
@@ -273,7 +314,7 @@ noegnud_create_screenshot_filename(char *dest, char *suffix, int num)
     noegnud_mem_free(homedir);
 }
 
-void
+static void
 noegnud_screenshot_txt()
 {
     int x, y;
@@ -315,7 +356,7 @@ noegnud_screenshot_txt()
                                       0.75);
 };
 
-void
+static void
 noegnud_screenshot_html()
 {
     int x, y;
@@ -447,7 +488,7 @@ noegnud_screenshot_html()
                                       0.75);
 };
 
-void
+static void
 noegnud_screenshot_bmp()
 {
     char filename[2048];
@@ -499,7 +540,7 @@ noegnud_screenshot_bmp()
                                       0.75);
 }
 
-void
+static void
 noegnud_screenshot_tga()
 {
     char filename[2048];
@@ -522,7 +563,7 @@ noegnud_screenshot_tga()
                                       0.75);
 }
 
-void
+static void
 noegnud_screenshot()
 {
     winid window;
@@ -578,26 +619,7 @@ noegnud_screenshot()
     }
 }
 
-void
-window_message_render()
-{
-    glDisable(GL_TEXTURE_2D);
-    //  glBindTexture (GL_TEXTURE_2D, gltexture_widget_window);
-    glLoadIdentity();
-    glTranslated(0, (noegnud_options_screenheight->value - 512) / 2, 0);
-    glBegin(GL_QUADS);
-    glTexCoord2f(0, 1.0);
-    glVertex2i(0, 0);
-    glTexCoord2f(1.0, 1.0);
-    glVertex2i(noegnud_options_screenwidth->value, 0);
-    glTexCoord2f(1.0, 0);
-    glVertex2i(noegnud_options_screenwidth->value, 512);
-    glTexCoord2f(0, 0);
-    glVertex2i(0, 512);
-    glEnd();
-}
-
-void
+static void
 process_checkrecord()
 {
     if ((record_game) && (noegnud_lastmove != moves)) {
@@ -609,7 +631,7 @@ process_checkrecord()
     }
 }
 
-void
+static void
 process()
 {
     process_checkrecord();
@@ -620,7 +642,7 @@ process()
     process_checkrecord();
 }
 
-void
+static void
 clearmap()
 {
     int x, y;
@@ -638,35 +660,8 @@ clearmap()
     noegnud_render_mouse_map_x = -1;
 }
 
-GLuint
-noegnud_internal_textures_load_single(const char *fname)
-{
-    SDL_Surface *tmp;
-    GLuint texture;
-
-    tmp = noegnud_mem_img_load(fname);
-
-    if (!tmp) {
-        return 0;
-    }
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    SDL_LockSurface(tmp);
-    if (tmp->format->BytesPerPixel == 3) {
-        gluBuild2DMipmaps(GL_TEXTURE_2D, tmp->format->BytesPerPixel, tmp->w,
-                          tmp->h, GL_RGB, GL_UNSIGNED_BYTE, tmp->pixels);
-    } else {
-        gluBuild2DMipmaps(GL_TEXTURE_2D, tmp->format->BytesPerPixel, tmp->w,
-                          tmp->h, GL_RGBA, GL_UNSIGNED_BYTE, tmp->pixels);
-    }
-    SDL_UnlockSurface(tmp);
-    return texture;
-}
-
-void noegnud_noegnud_options_displaymethod_tile();
-void
+static void noegnud_noegnud_options_displaymethod_tile();
+static void
 noegnud_internal_init_graphics_system()
 {
 #ifdef POSITIONBAR
@@ -1040,7 +1035,7 @@ noegnud_internal_init_graphics_system()
             0.0, " Options ", noegnud_options_keys_options->value);
 }
 
-void
+static void
 noegnud_init_nhwidows_done()
 {
     puts("=========================  noeGNUd Actual Exit  "
@@ -1048,7 +1043,7 @@ noegnud_init_nhwidows_done()
     noegnud_fonts_cleanup();
 }
 
-void
+static void
 noegnud_init_nhwindows(int *argcp, char **argv)
 {
     int c;
@@ -1088,7 +1083,7 @@ noegnud_init_nhwindows(int *argcp, char **argv)
     noegnud_common_flush_events();
 }
 
-int
+static int
 noegnud_player_selection_alignment_check(int anychange)
 {
     int amount, which, sel;
@@ -1107,7 +1102,7 @@ noegnud_player_selection_alignment_check(int anychange)
     return (anychange && amount == 1);
 }
 
-int
+static int
 noegnud_player_selection_alignment()
 {
     winid window;
@@ -1154,7 +1149,7 @@ noegnud_player_selection_alignment()
     return 0;
 }
 
-int
+static int
 noegnud_player_selection_gender_check(int anychange)
 {
     int amount, which, sel;
@@ -1173,7 +1168,7 @@ noegnud_player_selection_gender_check(int anychange)
     return (anychange && amount == 1);
 }
 
-int
+static int
 noegnud_player_selection_gender()
 {
     winid window;
@@ -1218,7 +1213,7 @@ noegnud_player_selection_gender()
     return 0;
 }
 
-int
+static int
 noegnud_player_selection_race_check(int anychange)
 {
     int amount, which, sel;
@@ -1236,7 +1231,7 @@ noegnud_player_selection_race_check(int anychange)
     return (anychange && amount == 1);
 }
 
-int
+static int
 noegnud_player_selection_race()
 {
     winid window;
@@ -1280,7 +1275,7 @@ noegnud_player_selection_race()
     return 0;
 }
 
-int
+static int
 noegnud_player_selection_role_check(int anychange)
 {
     int amount, which, sel;
@@ -1298,7 +1293,7 @@ noegnud_player_selection_role_check(int anychange)
     return (anychange && amount == 1);
 }
 
-int
+static int
 noegnud_player_selection_role()
 {
     winid window;
@@ -1350,7 +1345,7 @@ noegnud_player_selection_role()
     return 0;
 }
 
-int
+static int
 noegnud_player_selection_checks()
 {
     int changes;
@@ -1363,7 +1358,7 @@ noegnud_player_selection_checks()
     return changes;
 }
 
-void
+static void
 noegnud_player_selection(void)
 {
     int selected;
@@ -1515,7 +1510,7 @@ noegnud_player_selection(void)
 int noegnud_getlin_askname = 0;
 #endif
 
-void
+static void
 noegnud_askname(void)
 {
 #ifdef __WIN32__
@@ -1525,10 +1520,10 @@ noegnud_askname(void)
     noegnud_getlin("What is your name?", plname);
 };
 
-void noegnud_get_nh_event(void){};
+static void noegnud_get_nh_event(void){};
 
-void noegnud_creditscreen();
-void
+static void noegnud_creditscreen();
+static void
 noegnud_exit_nhwindows(const char *str)
 {
     int c;
@@ -1559,10 +1554,10 @@ noegnud_exit_nhwindows(const char *str)
          "==========================");
 }
 
-void noegnud_suspend_nhwindows(const char *str){};
-void noegnud_resume_nhwindows(void){};
+static void noegnud_suspend_nhwindows(const char *str){};
+static void noegnud_resume_nhwindows(void){};
 
-winid
+static winid
 noegnud_create_nhwindow(int type)
 {
     noegnud_gui_twindow *window;
@@ -1608,7 +1603,7 @@ noegnud_create_nhwindow(int type)
     return noegnud_gui_window_to_winid(window);
 };
 
-void
+static void
 noegnud_clear_nhwindow(winid window)
 {
     int saveperm;
@@ -1631,7 +1626,7 @@ noegnud_clear_nhwindow(winid window)
     }
 };
 
-void
+static void
 noegnud_display_nhwindow(winid window, boolean blocking)
 {
     noegnud_gui_twindow *winptr = noegnud_gui_winid_to_window(window);
@@ -1684,7 +1679,7 @@ noegnud_display_nhwindow(winid window, boolean blocking)
     }
 };
 
-void
+static void
 noegnud_destroy_nhwindow(winid window)
 {
     noegnud_gui_twindow *winptr = noegnud_gui_winid_to_window(window);
@@ -1697,9 +1692,9 @@ noegnud_destroy_nhwindow(winid window)
     }
 };
 
-void noegnud_curs(winid window, int x, int y){};
+static void noegnud_curs(winid window, int x, int y){};
 
-void
+static void
 noegnud_putstr(winid window, int attr, const char *str)
 {
     noegnud_gui_twindow *winptr = noegnud_gui_winid_to_window(window);
@@ -1754,7 +1749,7 @@ noegnud_putstr(winid window, int attr, const char *str)
     }
 };
 
-void
+static void
 noegnud_display_file(const char *fname, boolean complain)
 {
     dlb *f;
@@ -1785,7 +1780,7 @@ noegnud_display_file(const char *fname, boolean complain)
     }
 };
 
-void
+static void
 noegnud_start_menu(winid window)
 {
     noegnud_gui_twindow *winptr = noegnud_gui_winid_to_window(window);
@@ -1802,7 +1797,7 @@ noegnud_start_menu(winid window)
         (noegnud_gui_event_widget_proc *) noegnud_gui_event_null;
 };
 
-void
+static void
 noegnud_add_menu(winid window, int glyph, const anything *identifier,
                  CHAR_P ch, CHAR_P gch, int attr, const char *str,
                  boolean preselected)
@@ -1829,7 +1824,7 @@ noegnud_add_menu(winid window, int glyph, const anything *identifier,
     noegnud_mem_free(str_colour);
 };
 
-int
+static int
 noegnud_gui_menu_useschar(noegnud_gui_twindow *window, char ch)
 {
     noegnud_gui_tmenuitem *menuitem;
@@ -1850,9 +1845,9 @@ noegnud_gui_menu_useschar(noegnud_gui_twindow *window, char ch)
     if (strstr(&menuitem->text[mti], skiptext) == &menuitem->text[mti]) \
         mti += (sizeof(skiptext) - 1);
 
-char noegnud_gui_menucharsavailable[] =
+static char noegnud_gui_menucharsavailable[] =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-void
+static void
 noegnud_gui_menu_assignchars(noegnud_gui_twindow *window)
 {
     int c;
@@ -2043,7 +2038,7 @@ noegnud_end_menu(winid window, const char *prompt)
 };
 
 extern int noegnud_gui_currentmenuselectionmethod;
-int
+static int
 noegnud_select_menu(winid window, int how, menu_item **menu_list)
 {
     noegnud_gui_twindow *winptr = noegnud_gui_winid_to_window(window);
@@ -2384,7 +2379,7 @@ noegnud_select_menu(winid window, int how, menu_item **menu_list)
     return toreturn;
 };
 
-char
+static char
 noegnud_message_menu(CHAR_P let, int how, const char *mesg)
 {
     winid window;
@@ -2411,18 +2406,18 @@ noegnud_message_menu(CHAR_P let, int how, const char *mesg)
     return retch;
 };
 
-void
+static void
 noegnud_update_inventory(void)
 {
     if (flags.perm_invent)
         display_inventory(NULL, FALSE);
 };
 
-void noegnud_mark_synch(void){
+static void noegnud_mark_synch(void){
     //    printf("[*] mark_synch\n");
 };
 
-void noegnud_wait_synch(void){
+static void noegnud_wait_synch(void){
     //    printf("[*] wait_synch\n");
 };
 
@@ -2430,8 +2425,8 @@ void noegnud_wait_synch(void){
 ABORT !!!!!--noegnud _NEEDS_ clipping sorry
 #endif
 
-    int noegnud_cliparound_firstcall = 1;
-void
+static int noegnud_cliparound_firstcall = 1;
+static void
 noegnud_cliparound(int x, int y)
 {
     noegnud_clip_x = x - 1;
@@ -2477,7 +2472,7 @@ noegnud_cliparound(int x, int y)
 
 #ifdef POSITIONBAR
 
-void
+static void
 noegnud_update_positionbar(char *features)
 {
     char thing[MAX_MAP_X + 1];
@@ -2501,7 +2496,7 @@ noegnud_update_positionbar(char *features)
 };
 #endif
 
-void
+static void
 noegnud_print_glyph(winid window, int nhx, int nhy, int glyph)
 {
     int x, y;
@@ -2655,7 +2650,7 @@ noegnud_print_glyph(winid window, int nhx, int nhy, int glyph)
     }
 };
 
-void
+static void
 noegnud_raw_print(const char *instr)
 {
     int c;
@@ -2732,7 +2727,7 @@ noegnud_raw_print(const char *instr)
     noegnud_mem_free(str);
 }
 
-void
+static void
 noegnud_raw_print_bold(const char *str)
 {
     noegnud_raw_print(str);
@@ -2740,7 +2735,7 @@ noegnud_raw_print_bold(const char *str)
 
 static int noegnud_internal_convert_sdlkey_nhkey_fastwalk = 0;
 
-int
+static int
 noegnud_internal_convert_sdlkey_nhkey(int sym, int unicode, int mod,
                                       int manualfix)
 {
@@ -2898,7 +2893,7 @@ noegnud_internal_convert_sdlkey_nhkey(int sym, int unicode, int mod,
     return 0;
 }
 
-void
+static void
 noegnud_noegnud_options_displaymethod()
 {
     winid window;
@@ -2935,7 +2930,7 @@ noegnud_noegnud_options_displaymethod()
 }
 
 #define NOEGNUD_FONTS_PER_PAGE 30
-void
+static void
 noegnud_noegnud_options_displaymethod_text(int offset)
 {
     static char cookie;
@@ -3070,7 +3065,7 @@ noegnud_noegnud_options_displaymethod_text(int offset)
     noegnud_collection_destroy(&filelist);
 }
 
-void
+static void
 noegnud_noegnud_options_displaymethod_tile()
 {
     winid window;
@@ -3259,12 +3254,12 @@ noegnud_noegnud_options_displaymethod_tile()
     noegnud_collection_destroy(&filelist);
 }
 
-void
+static void
 noegnud_noegnud_options_displaymethod_3d()
 {
 }
 
-int
+static int
 noegnud_noegnud_options_keys()
 {
     winid window;
@@ -3331,7 +3326,7 @@ noegnud_noegnud_options_keys()
     return 0;
 }
 
-void
+static void
 noegnud_creditscreen()
 {
     noegnud_gui_twindow *window;
@@ -3470,8 +3465,8 @@ noegnud_creditscreen()
     NOEGNUD_OPTIONS_MENU_VARIANT + 0x01
 #define NOEGNUD_OPTIONS_MENU_VARIANT_HELP NOEGNUD_OPTIONS_MENU_VARIANT + 0x02
 
-int noegnud_noegnud_options_busy = 0;
-void
+static int noegnud_noegnud_options_busy = 0;
+static void
 noegnud_noegnud_options()
 {
     winid window;
@@ -4097,19 +4092,19 @@ noegnud_noegnud_options()
     noegnud_noegnud_options_busy = 0;
 }
 
-int noegnud_nh_poskey_active = 0;
-int noegnud_nh_poskey_button;
+static int noegnud_nh_poskey_active = 0;
+static int noegnud_nh_poskey_button;
 
-int noegnud_nhgetch_relative_active = 0;
-int noegnud_nhgetch_relative_x;
-int noegnud_nhgetch_relative_y;
-float noegnud_nhgetch_relative_rotation_was_x;
-float noegnud_nhgetch_relative_rotation_was_y;
-float noegnud_nhgetch_relative_zoom_was;
-float noegnud_nhgetch_relative_translation_was_x;
-float noegnud_nhgetch_relative_translation_was_y;
+static int noegnud_nhgetch_relative_active = 0;
+static int noegnud_nhgetch_relative_x;
+static int noegnud_nhgetch_relative_y;
+static float noegnud_nhgetch_relative_rotation_was_x;
+static float noegnud_nhgetch_relative_rotation_was_y;
+static float noegnud_nhgetch_relative_zoom_was;
+static float noegnud_nhgetch_relative_translation_was_x;
+static float noegnud_nhgetch_relative_translation_was_y;
 
-int
+static int
 noegnud_nhgetch(void)
 {
     SDL_Event event;
@@ -4634,7 +4629,7 @@ noegnud_nhgetch(void)
     }
 };
 
-int
+static int
 noegnud_nh_poskey(int *x, int *y, int *mod)
 {
     int cha;
@@ -4654,20 +4649,20 @@ noegnud_nh_poskey(int *x, int *y, int *mod)
     return cha;
 };
 
-void
+static void
 noegnud_nhbell(void)
 {
     printf("# noegnud_nhbell\n");
 };
 
-int
+static int
 noegnud_doprev_message(void)
 {
     printf("# noegnud_doprev_message\n");
     return 0;
 };
 
-char
+static char
 noegnud_yn_function(const char *ques, const char *choices, CHAR_P def)
 {
     char ch;
@@ -4728,7 +4723,7 @@ noegnud_yn_function(const char *ques, const char *choices, CHAR_P def)
     return retch;
 };
 
-void
+static void
 noegnud_getlin(const char *ques, char *input)
 {
     char ch = '\0';
@@ -4767,7 +4762,7 @@ noegnud_getlin(const char *ques, char *input)
     }
 };
 
-int
+static int
 noegnud_get_ext_cmd(void)
 {
     /*
@@ -4855,9 +4850,9 @@ noegnud_get_ext_cmd(void)
     return returnval;
 };
 
-void noegnud_number_pad(int a){};
+static void noegnud_number_pad(int a){};
 
-void
+static void
 noegnud_delay_output(void)
 {
     int timer_start;
@@ -4880,19 +4875,19 @@ void set_noegnud_font_name(void){};
 void noegnud_get_color_string(void){};
 #endif
 
-void
+static void
 noegnud_start_screen(void)
 {
     return;
 };
 
-void
+static void
 noegnud_end_screen(void)
 {
     return;
 };
 
-void
+static void
 noegnud_outrip(winid window, int how)
 {
     if (noegnud_options_interface_texttombstone->value) {
@@ -4902,7 +4897,7 @@ noegnud_outrip(winid window, int how)
     }
 }
 
-void
+static void
 noegnud_preference_update(const char *pref)
 {
     genl_preference_update(pref);

@@ -3,7 +3,7 @@
 
 #include "noegnud_mem.h"
 
-SDL_Event noegnud_common_pushedevent;
+static SDL_Event noegnud_common_pushedevent;
 
 void
 noegnud_common_pushevent_keypress(SDLKey key)

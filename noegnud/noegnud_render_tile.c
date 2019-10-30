@@ -4,7 +4,9 @@
 #include "noegnud_render_tile.h"
 #include "noegnud_extern.h"
 
-void
+static void noegnud_render_map_single_tile(int glyph_tile, int normalface);
+
+static void
 noegnud_render_map_single_tile(int glyph_tile, int normalface)
 {
     glBindTexture(GL_TEXTURE_2D, noegnud_activetileset->tiles[glyph_tile]);
@@ -27,7 +29,7 @@ noegnud_render_map_single_tile(int glyph_tile, int normalface)
     glEnd();
 }
 
-void
+static void
 noegnud_render_map_single_selection_tile(int glyph_tile, int normalface)
 {
     glBegin(GL_QUADS);
@@ -41,7 +43,7 @@ noegnud_render_map_single_selection_tile(int glyph_tile, int normalface)
     glEnd();
 }
 
-void
+static void
 noegnud_render_map_single_tile_raised_walls_texture(GLint texture,
                                                     float height,
                                                     GLfloat alpha, int a,
@@ -132,7 +134,7 @@ noegnud_render_map_single_tile_raised_walls_texture(GLint texture,
     glEnd();
 }
 
-void
+static void
 noegnud_render_map_single_tile_raised_walls(int glyph_tile, float height,
                                             GLfloat alpha, int a, int b,
                                             int l, int r)
@@ -141,7 +143,7 @@ noegnud_render_map_single_tile_raised_walls(int glyph_tile, float height,
         noegnud_activetileset->tiles[glyph_tile], height, alpha, a, b, l, r);
 }
 
-void
+static void
 noegnud_render_map_single_tile_sunken_walls(int glyph_tile, float height,
                                             GLfloat alpha, int a, int b,
                                             int l, int r)
@@ -231,7 +233,7 @@ noegnud_render_map_single_tile_sunken_walls(int glyph_tile, float height,
     glEnd();
 }
 
-void
+static void
 noegnud_render_map_tile_highlight_block()
 {
     glDisable(GL_TEXTURE_2D);

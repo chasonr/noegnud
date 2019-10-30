@@ -12,8 +12,10 @@
 
 #include "noegnud_lang.h"
 
-noegnud_tcollection *noegnud_lang = NULL;
-void noegnud_lang_done();
+static noegnud_tcollection *noegnud_lang = NULL;
+static void noegnud_lang_done(void);
+static void noegnud_lang_load(char *filename);
+
 void
 noegnud_lang_init()
 {
@@ -59,7 +61,7 @@ noegnud_lang_load_parser(char *setting, int nparams, char *params, void *data)
     }
 }
 
-void
+static void
 noegnud_lang_load(char *langname)
 {
     char filename[2048];

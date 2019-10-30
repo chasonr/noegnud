@@ -13,9 +13,13 @@ typedef struct {
 } noegnud_sound_tsound;
 
 static noegnud_tcollection *noegnud_sounds = NULL;
-int noegnud_sound_initialised = FALSE;
+static int noegnud_sound_initialised = FALSE;
 
-void
+static int noegnud_sound_startup();
+static void noegnud_sound_done();
+static noegnud_tcollection *noegnud_sound_load(const char *filename);
+
+static void
 noegnud_sound_done()
 {
     noegnud_tcollection *sound;
@@ -36,7 +40,7 @@ noegnud_sound_done()
     noegnud_sounds = NULL;
 }
 
-int
+static int
 noegnud_sound_startup()
 {
     noegnud_sounds = NULL;
@@ -61,7 +65,7 @@ noegnud_sound_init()
         atexit(noegnud_sound_done);
 }
 
-noegnud_tcollection *
+static noegnud_tcollection *
 noegnud_sound_load(const char *filename)
 {
     noegnud_sound_tsound *sound;

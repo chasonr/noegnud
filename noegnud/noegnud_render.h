@@ -10,7 +10,6 @@
 #define NOEGNUD_RENDER_LIGHTING_METHOD_CHEAP 1
 
 void noegnud_render_loop(void);
-void noegnud_render_map(void);
 void noegnud_render_selection(int x, int y);
 
 #endif // _NOEGNUD_RENDER_H_

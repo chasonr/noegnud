@@ -9,7 +9,10 @@
 
 static noegnud_tcollection *noegnud_widgetthemes = NULL;
 
-void
+static int noegnud_widgettheme_startup(void);
+static void noegnud_widgettheme_done(void);
+
+static void
 noegnud_widgettheme_done()
 {
     noegnud_tcollection *widgetthemes_run;
@@ -37,7 +40,7 @@ noegnud_widgettheme_done()
     noegnud_widgetthemes = NULL;
 }
 
-int
+static int
 noegnud_widgettheme_startup()
 {
     noegnud_widgetthemes = NULL;

@@ -48,20 +48,8 @@ typedef struct {
 } noegnud_optiontype_rgba;
 
 void noegnud_options_init();
-void noegnud_options_done();
-
-void noegnud_options_load();
-void noegnud_options_save();
-
-noegnud_optiontype_int *noegnud_options_create_int(int perm, int value);
-noegnud_optiontype_float *noegnud_options_create_float(int perm, float value);
 noegnud_optiontype_string *noegnud_options_create_string(int perm,
                                                          char *value);
-noegnud_optiontype_rgb *noegnud_options_create_rgb(int perm, float r, float g,
-                                                   float b);
-noegnud_optiontype_rgba *noegnud_options_create_rgba(int perm, float r,
-                                                     float g, float b,
-                                                     float a);
 
 char *noegnud_options_get_home();
 
