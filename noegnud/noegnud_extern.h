@@ -33,7 +33,7 @@ extern noegnud_gui_twidget *noegnud_guiwidget_desktop_overlay_poisoned;
 extern noegnud_gui_twidget *noegnud_guiwidget_desktop_overlay_blind;
 extern noegnud_gui_twidget *noegnud_guiwidget_desktop_overlay_slimed;
 extern noegnud_gui_twidget *noegnud_gui_grabbed;
-extern int noegnud_gui_mouseoverwidget;
+extern noegnud_gui_twidget *noegnud_gui_mouseoverwidget;
 extern int noegnud_gui_mouseoverminimap;
 extern noegnud_tcollection *noegnud_gui_default_widgettheme;
 extern noegnud_tcollection *noegnud_gui_default_title_widgettheme;

@@ -669,6 +669,14 @@ void noegnud_noegnud_options_displaymethod_tile();
 void
 noegnud_internal_init_graphics_system()
 {
+#ifdef POSITIONBAR
+    noegnud_gui_twindow *posbar_win;
+    winid posbar_id;
+#endif
+    noegnud_gui_twindow *status_win;
+    winid status_id;
+    noegnud_gui_twindow *minimap_win;
+    winid minimap_id;
     char buffer[512];
     int viewport_coords[4] = { 0 };
 
@@ -965,18 +973,19 @@ noegnud_internal_init_graphics_system()
         noegnud_options_gui_window_console_text_colour_system->b);
     noegnud_render_loop();
 
-    noegnud_guiwidget_status =
-        (noegnud_gui_twidget *) noegnud_gui_create_window(
+    status_win = noegnud_gui_create_window(
             noegnud_guiwidget_desktop, 0,
             noegnud_options_screenheight->value
                 - (noegnud_gui_get_fontheight() * 2 + 4 * 3),
             noegnud_gui_get_fontwidth() * 80,
             noegnud_gui_get_fontheight() * 2 + 4 * 3, 1.0, 1.0, 1.0, 1.0, 0);
+    noegnud_guiwidget_status = (noegnud_gui_twidget *) status_win;
+    status_id = noegnud_gui_window_to_winid(status_win);
 
     noegnud_guiwidget_status_container = noegnud_gui_create_widget(
         noegnud_guiwidget_status, 0, 0, noegnud_gui_get_fontwidth() * 80,
         noegnud_gui_get_fontheight() * 2 + 4 * 3, 0);
-    noegnud_end_menu((winid) noegnud_guiwidget_status, "Status Bar");
+    noegnud_end_menu(status_id, "Status Bar");
     noegnud_guiwidget_status->draw =
         (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_null;
     noegnud_guiwidget_status->theme = noegnud_gui_default_widgettheme;
@@ -985,8 +994,7 @@ noegnud_internal_init_graphics_system()
     //    ((noegnud_gui_twindow *)noegnud_guiwidget_status)->movable=0;
 
 #ifdef POSITIONBAR
-    noegnud_guiwidget_positionbar =
-        (noegnud_gui_twidget *) noegnud_gui_create_window(
+    posbar_win = noegnud_gui_create_window(
             noegnud_guiwidget_desktop,
             noegnud_options_screenwidth->value
                 - (10 + noegnud_gui_get_fontwidth() * MAX_MAP_X + 10) + 8,
@@ -995,12 +1003,14 @@ noegnud_internal_init_graphics_system()
                 + noegnud_guiwidget_status->height + 16)),
             10 + noegnud_gui_get_fontwidth() * MAX_MAP_X + 10,
             noegnud_gui_get_fontheight() * 1 + 4 * 2, 1.0, 1.0, 1.0, 1.0, 0);
+    posbar_id = noegnud_gui_window_to_winid(posbar_win);
+    noegnud_guiwidget_positionbar = (noegnud_gui_twidget *) posbar_win;
     noegnud_guiwidget_positionbar_container =
         (noegnud_gui_twidget *) noegnud_gui_create_widget(
             noegnud_guiwidget_positionbar, 0, 0,
             10 + noegnud_gui_get_fontwidth() * MAX_MAP_X + 10,
             noegnud_gui_get_fontheight() * 1 + 4 * 2, 0);
-    noegnud_end_menu((winid) noegnud_guiwidget_positionbar, "Position Bar");
+    noegnud_end_menu(posbar_id, "Position Bar");
     noegnud_guiwidget_positionbar->draw =
         (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_null;
     noegnud_guiwidget_positionbar->event =
@@ -1010,14 +1020,15 @@ noegnud_internal_init_graphics_system()
         FALSE;
 #endif
 
-    noegnud_guiwidget_minimap =
-        (noegnud_gui_twidget *) noegnud_gui_create_window(
+    minimap_win = noegnud_gui_create_window(
             noegnud_guiwidget_desktop,
             noegnud_options_screenwidth->value - (MAX_MAP_X * 8 + 10 + 8),
             (noegnud_options_screenheight->value - (MAX_MAP_Y * 8 + 10 + 16))
                 - noegnud_guiwidget_status->height,
             MAX_MAP_X * 8 + 10, MAX_MAP_Y * 8 + 10, 1.0, 1.0, 1.0, 1.0, 0);
-    noegnud_end_menu((winid) noegnud_guiwidget_minimap, "Mini Map");
+    noegnud_guiwidget_minimap = (noegnud_gui_twidget *) minimap_win;
+    minimap_id = noegnud_gui_window_to_winid(minimap_win);
+    noegnud_end_menu(minimap_id, "Mini Map");
     noegnud_guiwidget_minimap->draw =
         (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_null;
     noegnud_guiwidget_minimap->event =
@@ -1571,13 +1582,13 @@ noegnud_create_nhwindow(int type)
 
     switch (type) {
     case NHW_MESSAGE:
-        return (winid)(noegnud_guiwidget_console);
+        window = (noegnud_gui_twindow *) noegnud_guiwidget_console;
         break;
     case NHW_STATUS:
-        return (winid) noegnud_guiwidget_status;
+        window = (noegnud_gui_twindow *) noegnud_guiwidget_status;
         break;
     case NHW_MAP:
-        return (winid) noegnud_guiwidget_minimap;
+        window = (noegnud_gui_twindow *) noegnud_guiwidget_minimap;
         break;
     case NHW_MENU:
         window = noegnud_gui_create_window(
@@ -1588,7 +1599,6 @@ noegnud_create_nhwindow(int type)
         window->widget.theme = noegnud_gui_default_widgettheme;
         ((noegnud_gui_twidget *) window)->draw =
             (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_widget;
-        return (winid) window;
         break;
     case NHW_TEXT:
         window = noegnud_gui_create_window(
@@ -1604,10 +1614,11 @@ noegnud_create_nhwindow(int type)
           window->image=noegnud_glfuncs_loadimage("gui/highscore.png");
           }
         */
-        return (winid) window;
+    default:
+        window = NULL;
     }
 
-    return 0;
+    return noegnud_gui_window_to_winid(window);
 };
 
 void
@@ -1636,14 +1647,15 @@ noegnud_clear_nhwindow(winid window)
 void
 noegnud_display_nhwindow(winid window, boolean blocking)
 {
+    noegnud_gui_twindow *winptr = noegnud_gui_winid_to_window(window);
     int busy;
     unsigned char ch;
 
     process_checkrecord();
 
-    if (((noegnud_gui_twidget *) window)->type == NOEGNUD_GUI_WINDOW
+    if (((noegnud_gui_twidget *) winptr)->type == NOEGNUD_GUI_WINDOW
         && window != WIN_MAP && window != WIN_STATUS) {
-        ((noegnud_gui_twidget *) window)->draw =
+        ((noegnud_gui_twidget *) winptr)->draw =
             (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_window;
     }
 
@@ -1655,35 +1667,29 @@ noegnud_display_nhwindow(winid window, boolean blocking)
         }
     } else if (window == WIN_INVEN) {
     } else {
-        if (((noegnud_gui_twindow *) window)->rip) {
+        if (winptr->rip) {
             noegnud_rip_outrip_finalize(window);
             noegnud_toptenwindow_pending = TRUE;
         } else if (noegnud_toptenwindow_pending) {
         } else {
-            noegnud_gui_add_actionbutton((noegnud_gui_twindow *) window, "Ok",
-                                         '\n');
+            noegnud_gui_add_actionbutton(winptr, "Ok", '\n');
         }
-        noegnud_gui_active = (noegnud_gui_twidget *) window;
+        noegnud_gui_active = (noegnud_gui_twidget *) winptr;
         busy = TRUE;
         while (busy) {
             ch = noegnud_nhgetch();
             if (ch == MENU_FIRST_PAGE) {
-                ((noegnud_gui_twindow *) window)->widget.offset_y = 0;
+                winptr->widget.offset_y = 0;
             } else if (ch == MENU_LAST_PAGE) {
-                ((noegnud_gui_twindow *) window)->widget.offset_y =
-                    ((noegnud_gui_twindow *) window)->widget.vscroll;
+                winptr->widget.offset_y = winptr->widget.vscroll;
             } else if (ch == MENU_NEXT_PAGE) {
-                ((noegnud_gui_twindow *) window)->widget.offset_y +=
-                    ((noegnud_gui_twindow *) window)->widget.height - 20;
-                if (((noegnud_gui_twindow *) window)->widget.offset_y
-                    > ((noegnud_gui_twindow *) window)->widget.vscroll)
-                    ((noegnud_gui_twindow *) window)->widget.offset_y =
-                        ((noegnud_gui_twindow *) window)->widget.vscroll;
+                winptr->widget.offset_y += winptr->widget.height - 20;
+                if (winptr->widget.offset_y > winptr->widget.vscroll)
+                    winptr->widget.offset_y = winptr->widget.vscroll;
             } else if (ch == MENU_PREVIOUS_PAGE) {
-                ((noegnud_gui_twindow *) window)->widget.offset_y -=
-                    ((noegnud_gui_twindow *) window)->widget.height - 20;
-                if (((noegnud_gui_twindow *) window)->widget.offset_y < 0)
-                    ((noegnud_gui_twindow *) window)->widget.offset_y = 0;
+                winptr->widget.offset_y -= winptr->widget.height - 20;
+                if (winptr->widget.offset_y < 0)
+                    winptr->widget.offset_y = 0;
             } else
                 busy = FALSE;
         }
@@ -1694,11 +1700,13 @@ noegnud_display_nhwindow(winid window, boolean blocking)
 void
 noegnud_destroy_nhwindow(winid window)
 {
-    if (window != (winid) noegnud_guiwidget_console) {
-        if ((winid) noegnud_gui_active == window)
+    noegnud_gui_twindow *winptr = noegnud_gui_winid_to_window(window);
+    if ((noegnud_gui_twidget *) winptr != noegnud_guiwidget_console) {
+        if (noegnud_gui_active == (noegnud_gui_twidget *) winptr)
             noegnud_gui_active = NULL;
-        ((noegnud_gui_twidget *) window)
-            ->kill((noegnud_gui_twidget *) window);
+        ((noegnud_gui_twidget *) winptr)
+            ->kill((noegnud_gui_twidget *) winptr);
+        noegnud_gui_free_winid(window);
     }
 };
 
@@ -1707,6 +1715,7 @@ void noegnud_curs(winid window, int x, int y){};
 void
 noegnud_putstr(winid window, int attr, const char *str)
 {
+    noegnud_gui_twindow *winptr = noegnud_gui_winid_to_window(window);
     noegnud_gui_twidget *wdgt_clipping;
     char *str_colour;
     noegnud_optiontype_rgb *rip_text_colour;
@@ -1738,23 +1747,22 @@ noegnud_putstr(winid window, int attr, const char *str)
     } else if (window == WIN_MAP) {
     } else if (window == WIN_INVEN) {
     } else {
-        if (((noegnud_gui_twindow *) window)->rip) {
+        if (winptr->rip) {
             rip_text_colour = noegnud_collection_data(
                 noegnud_options, "gui.window.tombstone.text.colour");
             noegnud_gui_inconsole_noegnudtext(
-                ((noegnud_gui_twidget *) window)->child->nextsibling, str,
+                ((noegnud_gui_twidget *) winptr)->child->nextsibling, str,
                 TRUE, rip_text_colour->r, rip_text_colour->g,
-                rip_text_colour->b),
-                wdgt_clipping =
-                    ((noegnud_gui_twidget *) window)
-                        ->child->nextsibling->child; // WOW *YUCK* ;)
+                rip_text_colour->b);
+            wdgt_clipping = ((noegnud_gui_twidget *) winptr)
+                    ->child->nextsibling->child; // WOW *YUCK* ;)
             while (wdgt_clipping) {
-                wdgt_clipping->clipto = ((noegnud_gui_twidget *) window);
+                wdgt_clipping->clipto = (noegnud_gui_twidget *) winptr;
                 wdgt_clipping = wdgt_clipping->nextsibling;
             }
         } else
             noegnud_gui_nh_putstr(
-                (noegnud_gui_twindow *) window, str,
+                winptr, str,
                 noegnud_options_gui_window_console_text_colour_default->r,
                 noegnud_options_gui_window_console_text_colour_default->g,
                 noegnud_options_gui_window_console_text_colour_default->b);
@@ -1766,11 +1774,13 @@ noegnud_display_file(const char *fname, boolean complain)
 {
     dlb *f;
     winid window;
+    noegnud_gui_twindow *winptr;
     char buffer[BUFSZ];
     char *ch;
 
     if ((f = dlb_fopen(fname, "r"))) {
         window = noegnud_create_nhwindow(NHW_TEXT);
+        winptr = noegnud_gui_winid_to_window(window);
         while (dlb_fgets(buffer, BUFSZ, f)) {
             if ((ch = index(buffer, '\n')))
                 *ch = 0;
@@ -1780,8 +1790,7 @@ noegnud_display_file(const char *fname, boolean complain)
             noegnud_putstr(window, 0, buffer);
         }
 
-        ((noegnud_gui_twindow *) window)->widget.height +=
-            noegnud_gui_get_fontheight() + 4;
+        winptr->widget.height += noegnud_gui_get_fontheight() + 4;
         noegnud_display_nhwindow(window, 0);
         noegnud_destroy_nhwindow(window);
 
@@ -1794,16 +1803,17 @@ noegnud_display_file(const char *fname, boolean complain)
 void
 noegnud_start_menu(winid window)
 {
-    noegnud_gui_kill_widget_relatives((noegnud_gui_twidget *) window);
-    ((noegnud_gui_twidget *) window)->width = 0;
-    ((noegnud_gui_twidget *) window)->height = 0;
-    ((noegnud_gui_twidget *) window)->vscrollwidget = NULL;
-    ((noegnud_gui_twidget *) window)->hscrollwidget = NULL;
-    if (((noegnud_gui_twidget *) window)->type == NOEGNUD_GUI_WINDOW)
-        ((noegnud_gui_twindow *) window)->autoresize = TRUE;
-    ((noegnud_gui_twidget *) window)->draw =
+    noegnud_gui_twindow *winptr = noegnud_gui_winid_to_window(window);
+    noegnud_gui_kill_widget_relatives((noegnud_gui_twidget *) winptr);
+    ((noegnud_gui_twidget *) winptr)->width = 0;
+    ((noegnud_gui_twidget *) winptr)->height = 0;
+    ((noegnud_gui_twidget *) winptr)->vscrollwidget = NULL;
+    ((noegnud_gui_twidget *) winptr)->hscrollwidget = NULL;
+    if (((noegnud_gui_twidget *) winptr)->type == NOEGNUD_GUI_WINDOW)
+        winptr->autoresize = TRUE;
+    ((noegnud_gui_twidget *) winptr)->draw =
         (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_null;
-    ((noegnud_gui_twidget *) window)->event =
+    ((noegnud_gui_twidget *) winptr)->event =
         (noegnud_gui_event_widget_proc *) noegnud_gui_event_null;
 };
 
@@ -1812,6 +1822,7 @@ noegnud_add_menu(winid window, int glyph, const anything *identifier,
                  CHAR_P ch, CHAR_P gch, int attr, const char *str,
                  boolean preselected)
 {
+    noegnud_gui_twindow *winptr = noegnud_gui_winid_to_window(window);
     char *str_colour;
 
     str_colour = noegnud_textcolouring_colourise(str);
@@ -1820,12 +1831,11 @@ noegnud_add_menu(winid window, int glyph, const anything *identifier,
         if (glyph != NO_GLYPH)
             noegnud_tilesetload_image_from(noegnud_activetileset,
                                            glyph2tile[glyph]);
-        noegnud_gui_nh_addmenu((noegnud_gui_twindow *) window, *identifier,
-                               glyph, (char) ch, (char) gch, str_colour,
-                               (int) preselected);
+        noegnud_gui_nh_addmenu(winptr, *identifier, glyph, (char) ch, (char) gch,
+                               str_colour, (int) preselected);
     } else {
         noegnud_gui_nh_putstr(
-            (noegnud_gui_twindow *) window, str_colour,
+            winptr, str_colour,
             noegnud_options_gui_window_console_text_colour_default->r,
             noegnud_options_gui_window_console_text_colour_default->g,
             noegnud_options_gui_window_console_text_colour_default->b);
@@ -1946,6 +1956,7 @@ noegnud_gui_menu_assignchars(noegnud_gui_twindow *window)
 void
 noegnud_end_menu(winid window, const char *prompt)
 {
+    noegnud_gui_twindow *winptr = noegnud_gui_winid_to_window(window);
     noegnud_gui_twindow *new_win;
     noegnud_gui_ttext *new_text;
     char *title;
@@ -1958,7 +1969,7 @@ noegnud_end_menu(winid window, const char *prompt)
 
     noegnud_optiontype_string *window_rgba;
 
-    noegnud_gui_menu_assignchars((noegnud_gui_twindow *) window);
+    noegnud_gui_menu_assignchars(winptr);
 
     if (prompt) {
         title = (char *) prompt;
@@ -1973,12 +1984,12 @@ noegnud_end_menu(winid window, const char *prompt)
 
     new_text = noegnud_gui_create_text(
         (noegnud_gui_twidget *) (new_win = noegnud_gui_create_window(
-                                     (noegnud_gui_twidget *) window, 0, -25,
-                                     ((noegnud_gui_twidget *) window)->width
+                                     (noegnud_gui_twidget *) winptr, 0, -25,
+                                     ((noegnud_gui_twidget *) winptr)->width
                                          - 20,
                                      20, 1.0, 1.0, 1.0, 1.0, 0)),
         NOEGNUD_GUI_BORDER_SIZE, NOEGNUD_GUI_BORDER_SIZE / 2,
-        ((noegnud_gui_twidget *) window)->width - 20, 20, 1.0, 1.0, 1.0,
+        ((noegnud_gui_twidget *) winptr)->width - 20, 20, 1.0, 1.0, 1.0,
         title);
 
     text_width = noegnud_width_dynamic(new_text->font, title);
@@ -1991,9 +2002,9 @@ noegnud_end_menu(winid window, const char *prompt)
     new_win->widget.width = text_width + 2 * NOEGNUD_GUI_BORDER_SIZE;
     new_win->widget.height = text_height + NOEGNUD_GUI_BORDER_SIZE;
     new_win->widget.y = -new_win->widget.height;
-    if (((noegnud_gui_twidget *) window)->width
+    if (((noegnud_gui_twidget *) winptr)->width
         < new_win->widget.width + NOEGNUD_GUI_BORDER_SIZE)
-        ((noegnud_gui_twidget *) window)->width =
+        ((noegnud_gui_twidget *) winptr)->width =
             new_win->widget.width + NOEGNUD_GUI_BORDER_SIZE;
     new_text->dynamiccharwidth = text_width;
 
@@ -2001,11 +2012,10 @@ noegnud_end_menu(winid window, const char *prompt)
 
     new_win->widget.clipto = new_win->widget.parent->clipto;
     new_win->movable = 1;
-    new_win->tomove = (noegnud_gui_twidget *) window;
+    new_win->tomove = (noegnud_gui_twidget *) winptr;
     new_win->widget.theme = noegnud_gui_default_title_active_widgettheme;
-    ((noegnud_gui_twindow *) window)->movable = 0;
-    ((noegnud_gui_twindow *) window)->titlebar =
-        (noegnud_gui_twidget *) new_win;
+    winptr->movable = 0;
+    winptr->titlebar = (noegnud_gui_twidget *) new_win;
 
     sprintf(tmpstring, "gui.window.implicit.%s.position.%d.%d.x", title,
             noegnud_options_screenwidth->value,
@@ -2016,9 +2026,9 @@ noegnud_end_menu(winid window, const char *prompt)
             noegnud_options_screenheight->value);
     if (window_x
         && (window_y = noegnud_collection_data(noegnud_options, tmpstring))) {
-        ((noegnud_gui_twidget *) window)->x = atoi(window_x->value);
-        ((noegnud_gui_twidget *) window)->y = atoi(window_y->value);
-        ((noegnud_gui_twidget *) window)->autocentre = FALSE;
+        ((noegnud_gui_twidget *) winptr)->x = atoi(window_x->value);
+        ((noegnud_gui_twidget *) winptr)->y = atoi(window_y->value);
+        ((noegnud_gui_twidget *) winptr)->autocentre = FALSE;
     }
 
     sprintf(tmpstring, "gui.window.implicit.%s.colour", title);
@@ -2027,16 +2037,16 @@ noegnud_end_menu(winid window, const char *prompt)
         strcpy(tmpstring, window_rgba->value);
         stringtoken = strtok(tmpstring, ",");
         if (stringtoken) {
-            ((noegnud_gui_twidget *) window)->r = atof(stringtoken);
+            ((noegnud_gui_twidget *) winptr)->r = atof(stringtoken);
             stringtoken = strtok(NULL, ",");
             if (stringtoken) {
-                ((noegnud_gui_twidget *) window)->g = atof(stringtoken);
+                ((noegnud_gui_twidget *) winptr)->g = atof(stringtoken);
                 stringtoken = strtok(NULL, ",");
                 if (stringtoken) {
-                    ((noegnud_gui_twidget *) window)->b = atof(stringtoken);
+                    ((noegnud_gui_twidget *) winptr)->b = atof(stringtoken);
                     stringtoken = strtok(NULL, ",");
                     if (stringtoken) {
-                        ((noegnud_gui_twidget *) window)->a =
+                        ((noegnud_gui_twidget *) winptr)->a =
                             atof(stringtoken);
                     }
                 }
@@ -2045,20 +2055,13 @@ noegnud_end_menu(winid window, const char *prompt)
     }
     if (!prompt)
         noegnud_mem_free(title);
-    /*
-    if (window==WIN_INVEN) {
-        noegnud_inventory_open=1;
-        ((noegnud_gui_twidget *)window)->draw=(noegnud_gui_draw_widget_proc
-    *)noegnud_gui_draw_window;
-
-    }
-    */
 };
 
 extern int noegnud_gui_currentmenuselectionmethod;
 int
 noegnud_select_menu(winid window, int how, menu_item **menu_list)
 {
+    noegnud_gui_twindow *winptr = noegnud_gui_winid_to_window(window);
     char ch;
     int busy;
     menu_item *mi;
@@ -2076,26 +2079,24 @@ noegnud_select_menu(winid window, int how, menu_item **menu_list)
 
     noegnud_gui_menuitem_throwreturn = FALSE;
 
-    ((noegnud_gui_twidget *) window)->draw =
+    ((noegnud_gui_twidget *) winptr)->draw =
         (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_window;
-    ((noegnud_gui_twidget *) window)->event =
+    ((noegnud_gui_twidget *) winptr)->event =
         (noegnud_gui_event_widget_proc *) noegnud_gui_event_window;
 
     if (!(how == PICK_NONE && flags.perm_invent && window == WIN_INVEN))
-        noegnud_gui_add_actionbutton((noegnud_gui_twindow *) window, "Ok",
-                                     '\n');
+        noegnud_gui_add_actionbutton(winptr, "Ok", '\n');
 
     if (how == PICK_ANY || how == PICK_ONE) {
-        noegnud_gui_add_actionbutton((noegnud_gui_twindow *) window, "Cancel",
-                                     '\033');
+        noegnud_gui_add_actionbutton(winptr, "Cancel", '\033');
     }
 
-    if (((noegnud_gui_twindow *) window)->rip) {
+    if (winptr->rip) {
         noegnud_rip_outrip_finalize(window);
     }
 
     old_noegnud_gui_active = noegnud_gui_active;
-    noegnud_gui_active = (noegnud_gui_twidget *) window;
+    noegnud_gui_active = (noegnud_gui_twidget *) winptr;
     noegnud_gui_currentmenuselectionmethod = how;
 
     if (how == PICK_NONE) {
@@ -2104,22 +2105,17 @@ noegnud_select_menu(winid window, int how, menu_item **menu_list)
                 ch = noegnud_nhgetch();
             }
             if (ch == MENU_FIRST_PAGE) {
-                ((noegnud_gui_twindow *) window)->widget.offset_y = 0;
+                winptr->widget.offset_y = 0;
             } else if (ch == MENU_LAST_PAGE) {
-                ((noegnud_gui_twindow *) window)->widget.offset_y =
-                    ((noegnud_gui_twindow *) window)->widget.vscroll;
+                winptr->widget.offset_y = winptr->widget.vscroll;
             } else if (ch == MENU_NEXT_PAGE) {
-                ((noegnud_gui_twindow *) window)->widget.offset_y +=
-                    ((noegnud_gui_twindow *) window)->widget.height - 20;
-                if (((noegnud_gui_twindow *) window)->widget.offset_y
-                    > ((noegnud_gui_twindow *) window)->widget.vscroll)
-                    ((noegnud_gui_twindow *) window)->widget.offset_y =
-                        ((noegnud_gui_twindow *) window)->widget.vscroll;
+                winptr->widget.offset_y += winptr->widget.height - 20;
+                if (winptr->widget.offset_y > winptr->widget.vscroll)
+                    winptr->widget.offset_y = winptr->widget.vscroll;
             } else if (ch == MENU_PREVIOUS_PAGE) {
-                ((noegnud_gui_twindow *) window)->widget.offset_y -=
-                    ((noegnud_gui_twindow *) window)->widget.height - 20;
-                if (((noegnud_gui_twindow *) window)->widget.offset_y < 0)
-                    ((noegnud_gui_twindow *) window)->widget.offset_y = 0;
+                winptr->widget.offset_y -= winptr->widget.height - 20;
+                if (winptr->widget.offset_y < 0)
+                    winptr->widget.offset_y = 0;
             } else
                 busy = FALSE;
         }
@@ -2131,25 +2127,20 @@ noegnud_select_menu(winid window, int how, menu_item **menu_list)
                 break;
             }
             if (ch == MENU_FIRST_PAGE) {
-                ((noegnud_gui_twindow *) window)->widget.offset_y = 0;
+                winptr->widget.offset_y = 0;
             } else if (ch == MENU_LAST_PAGE) {
-                ((noegnud_gui_twindow *) window)->widget.offset_y =
-                    ((noegnud_gui_twindow *) window)->widget.vscroll;
+                winptr->widget.offset_y = winptr->widget.vscroll;
             } else if (ch == MENU_NEXT_PAGE) {
-                ((noegnud_gui_twindow *) window)->widget.offset_y +=
-                    ((noegnud_gui_twindow *) window)->widget.height - 20;
-                if (((noegnud_gui_twindow *) window)->widget.offset_y
-                    > ((noegnud_gui_twindow *) window)->widget.vscroll)
-                    ((noegnud_gui_twindow *) window)->widget.offset_y =
-                        ((noegnud_gui_twindow *) window)->widget.vscroll;
+                winptr->widget.offset_y += winptr->widget.height - 20;
+                if (winptr->widget.offset_y > winptr->widget.vscroll)
+                    winptr->widget.offset_y = winptr->widget.vscroll;
             } else if (ch == MENU_PREVIOUS_PAGE) {
-                ((noegnud_gui_twindow *) window)->widget.offset_y -=
-                    ((noegnud_gui_twindow *) window)->widget.height - 20;
-                if (((noegnud_gui_twindow *) window)->widget.offset_y < 0)
-                    ((noegnud_gui_twindow *) window)->widget.offset_y = 0;
+                winptr->widget.offset_y -= winptr->widget.height - 20;
+                if (winptr->widget.offset_y < 0)
+                    winptr->widget.offset_y = 0;
             } else if (ch == '\n' || ch == ' ') {
                 menuitem =
-                    (noegnud_gui_tmenuitem *) ((noegnud_gui_twidget *) window)
+                    (noegnud_gui_tmenuitem *) ((noegnud_gui_twidget *) winptr)
                         ->child;
                 while (menuitem) {
                     if ((menuitem->window.widget.type == NOEGNUD_GUI_MENUITEM)
@@ -2164,7 +2155,7 @@ noegnud_select_menu(winid window, int how, menu_item **menu_list)
                     mi = *menu_list;
                     menuitem =
                         (noegnud_gui_tmenuitem *) ((noegnud_gui_twidget *)
-                                                       window)
+                                                       winptr)
                             ->child;
                     while (menuitem) {
                         if ((menuitem->window.widget.type
@@ -2181,7 +2172,7 @@ noegnud_select_menu(winid window, int how, menu_item **menu_list)
                 break;
             }
             menuitem =
-                (noegnud_gui_tmenuitem *) ((noegnud_gui_twidget *) window)
+                (noegnud_gui_tmenuitem *) ((noegnud_gui_twidget *) winptr)
                     ->child;
             while (menuitem) {
                 if (menuitem->window.widget.type == NOEGNUD_GUI_MENUITEM) {
@@ -2211,46 +2202,38 @@ noegnud_select_menu(winid window, int how, menu_item **menu_list)
 
             if (ch == '\033')
                 break;
-            if ((((noegnud_gui_twindow *) window)->widget.vscroll)
+            if ((winptr->widget.vscroll)
                 && ((ch == MENU_FIRST_PAGE) || (ch == MENU_LAST_PAGE)
                     || (ch == MENU_NEXT_PAGE) || (ch == MENU_PREVIOUS_PAGE)
                     || (ch == MENU_SELECT_PAGE) || (ch == MENU_UNSELECT_PAGE)
                     || (ch == MENU_INVERT_PAGE))) {
                 if (ch == MENU_FIRST_PAGE) {
-                    ((noegnud_gui_twindow *) window)->widget.offset_y = 0;
+                    winptr->widget.offset_y = 0;
                 } else if (ch == MENU_LAST_PAGE) {
-                    ((noegnud_gui_twindow *) window)->widget.offset_y =
-                        ((noegnud_gui_twindow *) window)->widget.vscroll;
+                    winptr->widget.offset_y = winptr->widget.vscroll;
                 } else if (ch == MENU_NEXT_PAGE) {
-                    ((noegnud_gui_twindow *) window)->widget.offset_y +=
-                        ((noegnud_gui_twindow *) window)->widget.height - 20;
-                    if (((noegnud_gui_twindow *) window)->widget.offset_y
-                        > ((noegnud_gui_twindow *) window)->widget.vscroll)
-                        ((noegnud_gui_twindow *) window)->widget.offset_y =
-                            ((noegnud_gui_twindow *) window)->widget.vscroll;
+                    winptr->widget.offset_y += winptr->widget.height - 20;
+                    if (winptr->widget.offset_y > winptr->widget.vscroll)
+                        winptr->widget.offset_y = winptr->widget.vscroll;
                 } else if (ch == MENU_PREVIOUS_PAGE) {
-                    ((noegnud_gui_twindow *) window)->widget.offset_y -=
-                        ((noegnud_gui_twindow *) window)->widget.height - 20;
-                    if (((noegnud_gui_twindow *) window)->widget.offset_y < 0)
-                        ((noegnud_gui_twindow *) window)->widget.offset_y = 0;
+                    winptr->widget.offset_y -= winptr->widget.height - 20;
+                    if (winptr->widget.offset_y < 0)
+                        winptr->widget.offset_y = 0;
                 } else if (ch == MENU_SELECT_PAGE) {
                     menuitem =
                         (noegnud_gui_tmenuitem *) ((noegnud_gui_twidget *)
-                                                       window)
+                                                       winptr)
                             ->child;
                     while (menuitem) {
                         if (menuitem->window.widget.type
                                 == NOEGNUD_GUI_MENUITEM
                             && menuitem->window.widget.y
-                                       - ((noegnud_gui_twindow *) window)
-                                             ->widget.offset_y
+                                       - winptr->widget.offset_y
                                    > 0
                             && (menuitem->window.widget.y
                                 + menuitem->window.widget.height)
-                                       - ((noegnud_gui_twindow *) window)
-                                             ->widget.offset_y
-                                   < ((noegnud_gui_twindow *) window)
-                                         ->widget.height)
+                                       - winptr->widget.offset_y
+                                   < winptr->widget.height)
                             menuitem->selected = TRUE;
                         menuitem = (noegnud_gui_tmenuitem *)
                                        menuitem->window.widget.nextsibling;
@@ -2258,21 +2241,18 @@ noegnud_select_menu(winid window, int how, menu_item **menu_list)
                 } else if (ch == MENU_UNSELECT_PAGE) {
                     menuitem =
                         (noegnud_gui_tmenuitem *) ((noegnud_gui_twidget *)
-                                                       window)
+                                                       winptr)
                             ->child;
                     while (menuitem) {
                         if (menuitem->window.widget.type
                                 == NOEGNUD_GUI_MENUITEM
                             && menuitem->window.widget.y
-                                       - ((noegnud_gui_twindow *) window)
-                                             ->widget.offset_y
+                                       - winptr->widget.offset_y
                                    > 0
                             && (menuitem->window.widget.y
                                 + menuitem->window.widget.height)
-                                       - ((noegnud_gui_twindow *) window)
-                                             ->widget.offset_y
-                                   < ((noegnud_gui_twindow *) window)
-                                         ->widget.height)
+                                       - winptr->widget.offset_y
+                                   < winptr->widget.height)
                             menuitem->selected = FALSE;
                         menuitem = (noegnud_gui_tmenuitem *)
                                        menuitem->window.widget.nextsibling;
@@ -2280,21 +2260,18 @@ noegnud_select_menu(winid window, int how, menu_item **menu_list)
                 } else if (ch == MENU_INVERT_PAGE) {
                     menuitem =
                         (noegnud_gui_tmenuitem *) ((noegnud_gui_twidget *)
-                                                       window)
+                                                       winptr)
                             ->child;
                     while (menuitem) {
                         if (menuitem->window.widget.type
                                 == NOEGNUD_GUI_MENUITEM
                             && menuitem->window.widget.y
-                                       - ((noegnud_gui_twindow *) window)
-                                             ->widget.offset_y
+                                       - winptr->widget.offset_y
                                    > 0
                             && (menuitem->window.widget.y
                                 + menuitem->window.widget.height)
-                                       - ((noegnud_gui_twindow *) window)
-                                             ->widget.offset_y
-                                   < ((noegnud_gui_twindow *) window)
-                                         ->widget.height)
+                                       - winptr->widget.offset_y
+                                   < winptr->widget.height)
                             menuitem->selected = !menuitem->selected;
                         menuitem = (noegnud_gui_tmenuitem *)
                                        menuitem->window.widget.nextsibling;
@@ -2302,7 +2279,7 @@ noegnud_select_menu(winid window, int how, menu_item **menu_list)
                 }
             } else if (ch == MENU_SELECT_ALL || ch == MENU_SELECT_PAGE) {
                 menuitem =
-                    (noegnud_gui_tmenuitem *) ((noegnud_gui_twidget *) window)
+                    (noegnud_gui_tmenuitem *) ((noegnud_gui_twidget *) winptr)
                         ->child;
                 while (menuitem) {
                     if (menuitem->window.widget.type == NOEGNUD_GUI_MENUITEM)
@@ -2312,7 +2289,7 @@ noegnud_select_menu(winid window, int how, menu_item **menu_list)
                 }
             } else if (ch == MENU_UNSELECT_ALL || ch == MENU_UNSELECT_PAGE) {
                 menuitem =
-                    (noegnud_gui_tmenuitem *) ((noegnud_gui_twidget *) window)
+                    (noegnud_gui_tmenuitem *) ((noegnud_gui_twidget *) winptr)
                         ->child;
                 while (menuitem) {
                     if (menuitem->window.widget.type == NOEGNUD_GUI_MENUITEM)
@@ -2322,7 +2299,7 @@ noegnud_select_menu(winid window, int how, menu_item **menu_list)
                 }
             } else if (ch == MENU_INVERT_ALL || ch == MENU_INVERT_PAGE) {
                 menuitem =
-                    (noegnud_gui_tmenuitem *) ((noegnud_gui_twidget *) window)
+                    (noegnud_gui_tmenuitem *) ((noegnud_gui_twidget *) winptr)
                         ->child;
                 while (menuitem) {
                     if (menuitem->window.widget.type == NOEGNUD_GUI_MENUITEM)
@@ -2335,7 +2312,7 @@ noegnud_select_menu(winid window, int how, menu_item **menu_list)
                 if (*stringbuffer) {
                     menuitem =
                         (noegnud_gui_tmenuitem *) ((noegnud_gui_twidget *)
-                                                       window)
+                                                       winptr)
                             ->child;
                     while (menuitem) {
                         if (menuitem->window.widget.type
@@ -2348,7 +2325,7 @@ noegnud_select_menu(winid window, int how, menu_item **menu_list)
                 }
             } else if (ch == '\n' || ch == ' ') {
                 menuitem =
-                    (noegnud_gui_tmenuitem *) ((noegnud_gui_twidget *) window)
+                    (noegnud_gui_tmenuitem *) ((noegnud_gui_twidget *) winptr)
                         ->child;
                 while (menuitem) {
                     if ((menuitem->window.widget.type == NOEGNUD_GUI_MENUITEM)
@@ -2364,7 +2341,7 @@ noegnud_select_menu(winid window, int how, menu_item **menu_list)
                     mi = *menu_list;
                     menuitem =
                         (noegnud_gui_tmenuitem *) ((noegnud_gui_twidget *)
-                                                       window)
+                                                       winptr)
                             ->child;
                     while (menuitem) {
                         if ((menuitem->window.widget.type
@@ -2385,7 +2362,7 @@ noegnud_select_menu(winid window, int how, menu_item **menu_list)
                 break;
 
             menuitem =
-                (noegnud_gui_tmenuitem *) ((noegnud_gui_twidget *) window)
+                (noegnud_gui_tmenuitem *) ((noegnud_gui_twidget *) winptr)
                     ->child;
             while (menuitem) {
                 if (menuitem->window.widget.type == NOEGNUD_GUI_MENUITEM) {
@@ -2404,34 +2381,18 @@ noegnud_select_menu(winid window, int how, menu_item **menu_list)
         }
     }
 
-    /*
-    if (window==WIN_INVEN) {
-        //	((noegnud_gui_twidget *)window)->kill((noegnud_gui_twidget
-    *)window);
-        //	WIN_INVEN=noegnud_create_nhwindow(NHW_MENU);
-        noegnud_gui_kill_widget_relatives((noegnud_gui_twidget *)window);
-        ((noegnud_gui_twidget *)window)->vscrollwidget=NULL;
-        ((noegnud_gui_twidget *)window)->hscrollwidget=NULL;
-        ((noegnud_gui_twindow *)window)->autoresize=TRUE;
-        ((noegnud_gui_twidget *)window)->draw=(noegnud_gui_draw_widget_proc
-    *)noegnud_gui_draw_null; noegnud_inventory_open=0;
-    }
-
-    */
-
-    //    if ((!flags.perm_invent)||(winid)window!=WIN_INVEN) {
     if ((flags.perm_invent) && (winid) window == WIN_INVEN) {
         if (how != PICK_NONE)
             display_inventory(NULL, FALSE);
     } else {
-        ((noegnud_gui_twidget *) window)->draw =
+        ((noegnud_gui_twidget *) winptr)->draw =
             (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_null;
-        ((noegnud_gui_twidget *) window)->event =
+        ((noegnud_gui_twidget *) winptr)->event =
             (noegnud_gui_event_widget_proc *) noegnud_gui_event_null;
-        ((noegnud_gui_twidget *) window)->offset_y = 0;
-        ((noegnud_gui_twidget *) window)->offset_x = 0;
-        ((noegnud_gui_twidget *) window)->vscroll = 0;
-        ((noegnud_gui_twidget *) window)->hscroll = 0;
+        ((noegnud_gui_twidget *) winptr)->offset_y = 0;
+        ((noegnud_gui_twidget *) winptr)->offset_x = 0;
+        ((noegnud_gui_twidget *) winptr)->vscroll = 0;
+        ((noegnud_gui_twidget *) winptr)->hscroll = 0;
     }
 
     noegnud_gui_active = old_noegnud_gui_active;
@@ -2991,10 +2952,11 @@ noegnud_noegnud_options_displaymethod()
 void
 noegnud_noegnud_options_displaymethod_text(int offset)
 {
+    static char cookie;
     winid window;
     anything identifier;
     menu_item *menu_list;
-    int chosen;
+    void *chosen;
 
     DIR *direcH;
     DIR *direcG;
@@ -3074,7 +3036,7 @@ noegnud_noegnud_options_displaymethod_text(int offset)
     skipoffset = 0;
     while (filelist_run && skipoffset - offset < NOEGNUD_FONTS_PER_PAGE) {
         if (skipoffset >= offset) {
-            identifier.a_int = (int) filelist_run;
+            identifier.a_void = (void *) filelist_run;
             noegnud_add_menu(window, NO_GLYPH, &identifier, 0, 0, 0,
                              (char *) filelist_run->data, 0);
         }
@@ -3082,22 +3044,22 @@ noegnud_noegnud_options_displaymethod_text(int offset)
         skipoffset++;
     }
     if (filelist_run) {
-        identifier.a_int = 0;
+        identifier.a_void = 0;
         noegnud_add_menu(window, NO_GLYPH, &identifier, 0, 0, 0, "", 0);
-        identifier.a_int = -1;
+        identifier.a_void = &cookie;
         noegnud_add_menu(window, NO_GLYPH, &identifier, 0, 0, 0, "more ..",
                          0);
     }
 
     noegnud_end_menu(window, "Select Font");
-    chosen = 0;
+    chosen = NULL;
     if (noegnud_select_menu(window, PICK_ONE, &menu_list) == 1) {
-        chosen = menu_list->item.a_int;
+        chosen = menu_list->item.a_void;
         free(menu_list);
     }
     noegnud_destroy_nhwindow(window);
 
-    if (chosen == -1) {
+    if (chosen == &cookie) {
         noegnud_collection_destroy(&filelist);
         noegnud_noegnud_options_displaymethod_text(skipoffset);
         return;
@@ -3128,7 +3090,7 @@ noegnud_noegnud_options_displaymethod_tile()
     winid window;
     anything identifier;
     menu_item *menu_list;
-    int chosen;
+    void *chosen;
 
     DIR *direcH;
     DIR *direcG;
@@ -3270,7 +3232,7 @@ noegnud_noegnud_options_displaymethod_tile()
 
     filelist_run = filelist;
     while (filelist_run) {
-        identifier.a_int = (int) filelist_run;
+        identifier.a_void = filelist_run;
         noegnud_add_menu(window, NO_GLYPH, &identifier, 0, 0, 0,
                          filelist_run->data, 0);
         filelist_run = filelist_run->next;
@@ -3279,7 +3241,7 @@ noegnud_noegnud_options_displaymethod_tile()
     noegnud_end_menu(window, "Select Tileset");
     chosen = 0;
     if (noegnud_select_menu(window, PICK_ONE, &menu_list) == 1) {
-        chosen = menu_list->item.a_int;
+        chosen = menu_list->item.a_void;
         free(menu_list);
     }
 
@@ -3334,29 +3296,29 @@ noegnud_noegnud_options_keys()
 
     sprintf((char *) &buffer, "Options - [ %s ]",
             SDL_GetKeyName(noegnud_options_keys_options->value));
-    identifier.a_int = (int) noegnud_options_keys_options;
+    identifier.a_void = noegnud_options_keys_options;
     noegnud_add_menu(window, NO_GLYPH, &identifier, 0, 0, 0, (char *) &buffer,
                      0);
     sprintf((char *) &buffer, "Console - [ %s ]",
             SDL_GetKeyName(noegnud_options_keys_console->value));
-    identifier.a_int = (int) noegnud_options_keys_console;
+    identifier.a_void = noegnud_options_keys_console;
     noegnud_add_menu(window, NO_GLYPH, &identifier, 0, 0, 0, (char *) &buffer,
                      0);
     sprintf((char *) &buffer, "MiniMap - [ %s ]",
             SDL_GetKeyName(noegnud_options_keys_minimap->value));
-    identifier.a_int = (int) noegnud_options_keys_minimap;
+    identifier.a_void = noegnud_options_keys_minimap;
     noegnud_add_menu(window, NO_GLYPH, &identifier, 0, 0, 0, (char *) &buffer,
                      0);
     sprintf((char *) &buffer, "HideGUI - [ %s ]",
             SDL_GetKeyName(noegnud_options_keys_hidegui->value));
-    identifier.a_int = (int) noegnud_options_keys_hidegui;
+    identifier.a_void = noegnud_options_keys_hidegui;
     noegnud_add_menu(window, NO_GLYPH, &identifier, 0, 0, 0, (char *) &buffer,
                      0);
 
     noegnud_end_menu(window, "View/Change noeGNUd keys");
     chosen = 0;
     if (noegnud_select_menu(window, PICK_ONE, &menu_list) == 1) {
-        chosen = (noegnud_optiontype_int *) menu_list->item.a_int;
+        chosen = (noegnud_optiontype_int *) menu_list->item.a_void;
         free(menu_list);
     }
     noegnud_destroy_nhwindow(window);
@@ -3364,7 +3326,8 @@ noegnud_noegnud_options_keys()
         window = noegnud_create_nhwindow(NHW_TEXT);
         noegnud_putstr(window, 0, "Press new key..");
 
-        noegnud_gui_active = (noegnud_gui_twidget *) window;
+        noegnud_gui_active = (noegnud_gui_twidget *)
+            noegnud_gui_winid_to_window(window);
 
         while (1) {
             while (SDL_PollEvent(&event)) {
@@ -3386,6 +3349,7 @@ void
 noegnud_creditscreen()
 {
     noegnud_gui_twindow *window;
+    winid win_id;
     noegnud_gui_twindow *container;
     noegnud_gui_twidget *button;
     char buffer[BUFSZ];
@@ -3395,6 +3359,7 @@ noegnud_creditscreen()
     window = noegnud_gui_create_window(
         noegnud_guiwidget_desktop, 0, 0, noegnud_options_screenwidth->value,
         noegnud_options_screenheight->value, 1.0, 1.0, 1.0, 1.0, 0);
+    win_id = noegnud_gui_window_to_winid(window);
 
     window->image_tiled = 0;
     window->image =
@@ -3448,7 +3413,7 @@ noegnud_creditscreen()
 
     glDeleteTextures(1, &window->image->block[0][0]->image);
 
-    noegnud_destroy_nhwindow((winid) window);
+    noegnud_destroy_nhwindow(win_id);
 }
 
 #define NOEGNUD_OPTIONS_MENU_DISPLAY 0x00
@@ -4244,27 +4209,27 @@ noegnud_nhgetch(void)
 
     while (1) {
         if (WIN_INVEN) {
+            noegnud_gui_twidget *inv_ptr = (noegnud_gui_twidget *)
+                    noegnud_gui_winid_to_window(WIN_INVEN);
             if (!flags.perm_invent
-                && (winid) noegnud_gui_active != WIN_INVEN) {
-                ((noegnud_gui_twidget *) WIN_INVEN)->draw =
+                && noegnud_gui_active != inv_ptr) {
+                inv_ptr->draw =
                     (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_null;
-                ((noegnud_gui_twidget *) WIN_INVEN)->event =
+                inv_ptr->event =
                     (noegnud_gui_event_widget_proc *) noegnud_gui_event_null;
-                ((noegnud_gui_twidget *) WIN_INVEN)->offset_y = 0;
-                ((noegnud_gui_twidget *) WIN_INVEN)->hscroll = 0;
-                ((noegnud_gui_twidget *) WIN_INVEN)->vscroll = 0;
+                inv_ptr->offset_y = 0;
+                inv_ptr->hscroll = 0;
+                inv_ptr->vscroll = 0;
             } else {
-                if (((noegnud_gui_twidget *) WIN_INVEN)->draw
-                    == (noegnud_gui_draw_widget_proc *)
+                if (inv_ptr->draw == (noegnud_gui_draw_widget_proc *)
                            noegnud_gui_draw_null) {
                     printf("*****************************\n");
                     // clive
                     noegnud_clear_nhwindow(WIN_INVEN);
                 }
-                ((noegnud_gui_twidget *) WIN_INVEN)->draw =
-                    (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_window;
-                ((noegnud_gui_twidget *) WIN_INVEN)->event =
-                    (noegnud_gui_event_widget_proc *)
+                inv_ptr->draw = (noegnud_gui_draw_widget_proc *)
+                        noegnud_gui_draw_window;
+                inv_ptr->event = (noegnud_gui_event_widget_proc *)
                         noegnud_gui_event_window;
             }
         }
@@ -4757,6 +4722,8 @@ noegnud_yn_function(const char *ques, const char *choices, CHAR_P def)
     ch = noegnud_nhgetch();
     if (noegnud_options_interface_yn_function_windowed->value) {
         noegnud_gui_active->kill(noegnud_gui_active);
+        noegnud_gui_free_winid(noegnud_gui_window_to_winid(
+                (noegnud_gui_twindow *) noegnud_gui_active));
         noegnud_gui_active = noegnud_gui_active_old;
     }
 

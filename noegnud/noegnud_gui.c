@@ -52,7 +52,7 @@ noegnud_tcollection *noegnud_gui_default_item_selected_widgettheme;
 static int noegnud_gui_grabbed_x;
 static int noegnud_gui_grabbed_y;
 
-int noegnud_gui_mouseoverwidget = 0;
+noegnud_gui_twidget *noegnud_gui_mouseoverwidget = NULL;
 int noegnud_gui_mouseoverminimap = 0;
 
 int noegnud_gui_currentmenuselectionmethod;
@@ -60,9 +60,14 @@ int noegnud_gui_menuitem_throwreturn = 0;
 
 anything noegnud_gui_menuselect_identifier;
 
+#define MAX_WINDOWS 20
+static noegnud_gui_twindow *window_ptrs[MAX_WINDOWS];
+
 void
 noegnud_gui_init()
 {
+    winid i;
+
     atexit(noegnud_gui_done);
 
     noegnud_gui_font =
@@ -94,6 +99,10 @@ noegnud_gui_init()
         noegnud_widgettheme_load("default_item_highlight");
     noegnud_gui_default_item_selected_widgettheme =
         noegnud_widgettheme_load("default_item_selected");
+
+    for (i = 0; i < MAX_WINDOWS; ++i) {
+        window_ptrs[i] = NULL;
+    }
 }
 
 void
@@ -215,7 +224,7 @@ noegnud_gui_overselforchildrenandsibs(noegnud_gui_twidget *widget)
                 || (widget->nextsibling
                     && noegnud_gui_overselforchildrenandsibs(
                            widget->nextsibling))))
-           || (noegnud_gui_mouseoverwidget == (int) widget);
+           || (noegnud_gui_mouseoverwidget == widget);
 }
 
 int
@@ -224,7 +233,7 @@ noegnud_gui_overselforchildren(noegnud_gui_twidget *widget)
     return (widget
             && ((widget->child
                  && noegnud_gui_overselforchildrenandsibs(widget->child))))
-           || (noegnud_gui_mouseoverwidget == (int) widget);
+           || (noegnud_gui_mouseoverwidget == widget);
 }
 
 void
@@ -244,7 +253,7 @@ noegnud_gui_event_widget(noegnud_gui_twidget *widget, SDL_Event *event)
                 widget, event->motion.x, event->motion.y);
         if (widget->mouseover) {
             if (!noegnud_gui_mouseoverwidget)
-                noegnud_gui_mouseoverwidget = (int) widget;
+                noegnud_gui_mouseoverwidget = widget;
         }
     }
 }
@@ -681,7 +690,7 @@ noegnud_gui_event_window(noegnud_gui_twindow *window, SDL_Event *event)
                 event->motion.y);
         if (window->widget.mouseover) {
             if (!noegnud_gui_mouseoverwidget)
-                noegnud_gui_mouseoverwidget = (int) window;
+                noegnud_gui_mouseoverwidget = window;
         }
     }
 
@@ -915,7 +924,7 @@ noegnud_gui_event_button(noegnud_gui_tbutton *button, SDL_Event *event)
             button->window.widget.theme =
                 noegnud_gui_default_buttonover_widgettheme;
             if (!noegnud_gui_mouseoverwidget)
-                noegnud_gui_mouseoverwidget = (int) button;
+                noegnud_gui_mouseoverwidget = button;
         } else {
             button->window.widget.theme =
                 noegnud_gui_default_button_widgettheme;
@@ -1131,7 +1140,7 @@ noegnud_gui_event_glyph(noegnud_gui_tglyph *glyph, SDL_Event *event)
                 event->motion.y);
         if (glyph->widget.mouseover) {
             if (!noegnud_gui_mouseoverwidget)
-                noegnud_gui_mouseoverwidget = (int) glyph;
+                noegnud_gui_mouseoverwidget = glyph;
         }
     }
 
@@ -1139,15 +1148,14 @@ noegnud_gui_event_glyph(noegnud_gui_tglyph *glyph, SDL_Event *event)
         if (event->type == SDL_MOUSEMOTION) {
             if ((glyph->widget.mouseover)
                 && (glyph->widget.parent->parent->mouseover)
-                && (((noegnud_gui_mouseoverwidget == (int) glyph->activepopup)
+                && (((noegnud_gui_mouseoverwidget == glyph->activepopup)
                      || (glyph->activepopup->child
                          && noegnud_gui_mouseoverwidget
-                                == (int) glyph->activepopup->child)
+                                == glyph->activepopup->child)
                      || (glyph->activepopup->child
                          && glyph->activepopup->child->child
                          && noegnud_gui_mouseoverwidget
-                                == (int)
-                                       glyph->activepopup->child->child)))) {
+                                == glyph->activepopup->child->child)))) {
                 glyph->activepopup->x =
                     (event->motion.x
                      - (glyph->widget.parent->parent->x
@@ -1165,7 +1173,7 @@ noegnud_gui_event_glyph(noegnud_gui_tglyph *glyph, SDL_Event *event)
         }
 
     } else {
-        if (noegnud_gui_mouseoverwidget == (int) glyph
+        if (noegnud_gui_mouseoverwidget == glyph
             && glyph->widget.parent->parent->mouseover) {
             noegnud_gui_create_glyph(
                 (noegnud_gui_twidget *) noegnud_gui_create_window(
@@ -1358,7 +1366,7 @@ noegnud_gui_event_vscroll(noegnud_gui_tvscroll *vscroll, SDL_Event *event)
                 event->motion.y);
         if (vscroll->widget.mouseover) {
             if (!noegnud_gui_mouseoverwidget)
-                noegnud_gui_mouseoverwidget = (int) vscroll;
+                noegnud_gui_mouseoverwidget = vscroll;
         }
     }
 
@@ -1588,7 +1596,7 @@ noegnud_gui_event_menuitem(noegnud_gui_tmenuitem *menuitem, SDL_Event *event)
                 event->motion.y);
         if (menuitem->window.widget.mouseover) {
             if (!noegnud_gui_mouseoverwidget)
-                noegnud_gui_mouseoverwidget = (int) menuitem;
+                noegnud_gui_mouseoverwidget = menuitem;
         }
     }
 
@@ -1864,6 +1872,7 @@ noegnud_gui_twidget *
 noegnud_gui_nh_yn_function(const char *question, const char *choices,
                            char def)
 {
+    noegnud_gui_twindow *window;
     noegnud_gui_twidget *widget;
     noegnud_gui_twidget *button;
 
@@ -1885,13 +1894,14 @@ noegnud_gui_nh_yn_function(const char *question, const char *choices,
     if (choices)
         height += NOEGNUD_GUI_BORDER_SIZE + noegnud_gui_font->height
                   + NOEGNUD_GUI_BORDER_SIZE + NOEGNUD_GUI_BORDER_SIZE;
-    widget = (noegnud_gui_twidget *) noegnud_gui_create_window(
+    window = noegnud_gui_create_window(
         noegnud_guiwidget_desktop,
         (noegnud_options_screenwidth->value - width) / 2,
         (noegnud_options_screenheight->value / 2 - height) / 2, width, height,
         1.0, 1.0, 1.0, 1.0, 0);
+    widget = (noegnud_gui_twidget *) window;
     widget->theme = noegnud_gui_default_widgettheme;
-    noegnud_end_menu((winid) widget, question);
+    noegnud_end_menu(noegnud_gui_window_to_winid(window), question);
     width = widget->width;
 
     /*
@@ -2214,10 +2224,10 @@ noegnud_gui_event_minimap(noegnud_gui_twidget *widget, SDL_Event *event)
             (noegnud_gui_twidget *) widget, event->motion.x, event->motion.y);
     if (widget->mouseover) {
         if (!noegnud_gui_mouseoverwidget)
-            noegnud_gui_mouseoverwidget = (int) widget;
+            noegnud_gui_mouseoverwidget = widget;
     }
 
-    if ((int) widget == noegnud_gui_mouseoverwidget) {
+    if (widget == noegnud_gui_mouseoverwidget) {
         x = event->motion.x - (noegnud_gui_widget_getabsolute_x(widget) + 5);
         y = event->motion.y - (noegnud_gui_widget_getabsolute_y(widget) + 5);
         if ((x >= 0) && (y >= 0) && (x < MAX_MAP_X * 8) && (MAX_MAP_Y * 8)) {
@@ -2228,4 +2238,52 @@ noegnud_gui_event_minimap(noegnud_gui_twidget *widget, SDL_Event *event)
             return;
         }
     }
+}
+
+/* When a noegnud_gui_twindow is destroyed, remove its pointer */
+void
+noegnud_gui_free_winid(winid window)
+{
+    if (0 <= window && window < MAX_WINDOWS && window_ptrs[window] != NULL) {
+        window_ptrs[window] = NULL;
+    }
+}
+
+/* Given the integer window ID, return the widget pointer */
+noegnud_gui_twindow *
+noegnud_gui_winid_to_window(winid window)
+{
+    if (0 <= window && window < MAX_WINDOWS && window_ptrs[window] != NULL) {
+        return window_ptrs[window];
+    } else {
+        panic("Tried to retrieve invalid window id %d", window);
+        return WIN_ERR;
+    }
+}
+
+/* Given the widget pointer, return the integer window ID */
+winid
+noegnud_gui_window_to_winid(noegnud_gui_twindow *window)
+{
+    winid id;
+
+    if (window == NULL) {
+        return WIN_ERR;
+    }
+
+    /* If the pointer is already recorded, return its index */
+    for (id = 0; id < MAX_WINDOWS; ++id) {
+        if (window_ptrs[id] == window) {
+            return id;
+        }
+    }
+    /* No pointer recorded; look for an empty slot */
+    for (id = 0; id < MAX_WINDOWS; ++id) {
+        if (window_ptrs[id] == NULL) {
+            window_ptrs[id] = window;
+            return id;
+        }
+    }
+    panic("Too many windows are open");
+    return WIN_ERR;
 }

@@ -265,4 +265,9 @@ void noegnud_gui_event_minimap(noegnud_gui_twidget *map, SDL_Event *event);
 int noegnud_gui_widget_getabsolute_x(noegnud_gui_twidget *widget);
 int noegnud_gui_widget_getabsolute_y(noegnud_gui_twidget *widget);
 
+/* lookup between window ID and window pointer */
+void noegnud_gui_free_winid(winid window);
+noegnud_gui_twindow *noegnud_gui_winid_to_window(winid window);
+winid noegnud_gui_window_to_winid(noegnud_gui_twindow *window);
+
 #endif // _NOEGNUD_GUI_H_

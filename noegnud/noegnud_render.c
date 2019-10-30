@@ -78,8 +78,9 @@ noegnud_render_loop(void)
         noegnud_guiwidget_desktop->draw(noegnud_guiwidget_desktop, 1);
     glDisable(GL_SCISSOR_TEST);
 
-    noegnud_gui_mouseoverwidget =
-        noegnud_gui_mouseoverwidget || noegnud_gui_grabbed;
+    if (noegnud_gui_mouseoverwidget == NULL) {
+        noegnud_gui_mouseoverwidget = noegnud_gui_grabbed;
+    }
     if (noegnud_gui_mouseoverwidget && (!noegnud_gui_mouseoverminimap))
         noegnud_render_mouse_map_x = -1;
 

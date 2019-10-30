@@ -18,6 +18,7 @@ extern const char *const killed_by_prefix[]; /* from topten.c */
 void
 noegnud_rip_outrip_finalize(winid tmpwin)
 {
+    noegnud_gui_twindow *winptr = noegnud_gui_winid_to_window(tmpwin);
     char buf[BUFSZ];
     char *bufs;
     char *bufc;
@@ -68,36 +69,30 @@ noegnud_rip_outrip_finalize(winid tmpwin)
     rip_tomb_colour = noegnud_collection_data(
         noegnud_options, "gui.window.tombstone.tomb.colour");
 
-    ((noegnud_gui_twindow *) tmpwin)->image =
+    winptr->image =
         noegnud_glfuncs_loadimage(rip_image->value, TRUE, FALSE, FALSE);
-    ((noegnud_gui_twindow *) tmpwin)->localimage = 1;
-    if (((noegnud_gui_twindow *) tmpwin)->image) {
-        ((noegnud_gui_twindow *) tmpwin)->widget.width =
-            ((noegnud_gui_twindow *) tmpwin)->image->width;
-        ((noegnud_gui_twindow *) tmpwin)->widget.height =
-            ((noegnud_gui_twindow *) tmpwin)->image->height;
-        ((noegnud_gui_twindow *) tmpwin)->widget.r =
-            ((noegnud_gui_twindow *) tmpwin)->widget.g =
-                ((noegnud_gui_twindow *) tmpwin)->widget.b =
-                    ((noegnud_gui_twindow *) tmpwin)->widget.a = 1.0;
-        ((noegnud_gui_twindow *) tmpwin)->image_tiled = 0;
-        ((noegnud_gui_twindow *) tmpwin)->autoresize = 0;
+    winptr->localimage = 1;
+    if (winptr->image) {
+        winptr->widget.width = winptr->image->width;
+        winptr->widget.height = winptr->image->height;
+        winptr->widget.r =
+        winptr->widget.g =
+        winptr->widget.b =
+        winptr->widget.a = 1.0;
+        winptr->image_tiled = 0;
+        winptr->autoresize = 0;
     }
-    ((noegnud_gui_twindow *) tmpwin)->widget.x =
-        (noegnud_options_screenwidth->value
-         - ((noegnud_gui_twindow *) tmpwin)->widget.width)
-        / 2;
-    ((noegnud_gui_twindow *) tmpwin)->widget.y =
-        (noegnud_options_screenheight->value
-         - ((noegnud_gui_twindow *) tmpwin)->widget.height)
-        / 2;
+    winptr->widget.x =
+        (noegnud_options_screenwidth->value - winptr->widget.width) / 2;
+    winptr->widget.y =
+        (noegnud_options_screenheight->value - winptr->widget.height) / 2;
 
     rip_font_font = noegnud_fonts_loadfont(rip_font->value);
 
     // name
     stringwidth = noegnud_width_dynamic(rip_font_font, plname);
     widget_text = noegnud_gui_create_text(
-        ((noegnud_gui_twidget *) tmpwin)->child,
+        ((noegnud_gui_twidget *) winptr)->child,
         rip_name_x->value - (((float) stringwidth) / 2), rip_name_y->value,
         //		strlen(plname)*rip_font_font->width,
         stringwidth, rip_font_font->height, rip_tomb_colour->r,
@@ -109,7 +104,7 @@ noegnud_rip_outrip_finalize(winid tmpwin)
     Sprintf(buf, "%4d", getyear());
     stringwidth = noegnud_width_dynamic(rip_font_font, buf);
     widget_text = noegnud_gui_create_text(
-        ((noegnud_gui_twidget *) tmpwin)->child,
+        ((noegnud_gui_twidget *) winptr)->child,
         rip_year_x->value - (((float) stringwidth) / 2), rip_year_y->value,
         //		strlen(buf)*rip_font_font->width,
         stringwidth, rip_font_font->height, rip_tomb_colour->r,
@@ -125,7 +120,7 @@ noegnud_rip_outrip_finalize(winid tmpwin)
 #endif
     stringwidth = noegnud_width_dynamic(rip_font_font, buf);
     widget_text = noegnud_gui_create_text(
-        ((noegnud_gui_twidget *) tmpwin)->child,
+        ((noegnud_gui_twidget *) winptr)->child,
         rip_gold_x->value - (((float) stringwidth) / 2), rip_gold_y->value,
         //		strlen(buf)*rip_font_font->width,
         stringwidth, rip_font_font->height, rip_tomb_colour->r,
@@ -139,12 +134,12 @@ noegnud_rip_outrip_finalize(winid tmpwin)
         impossible("bad killer format?");
     case KILLED_BY_AN:
         Strcpy(buf,
-               killed_by_prefix[((noegnud_gui_twindow *) tmpwin)->rip_how]);
+               killed_by_prefix[winptr->rip_how]);
         Strcat(buf, an(killer));
         break;
     case KILLED_BY:
         Strcpy(buf,
-               killed_by_prefix[((noegnud_gui_twindow *) tmpwin)->rip_how]);
+               killed_by_prefix[winptr->rip_how]);
         Strcat(buf, killer);
         break;
     case NO_KILLER_PREFIX:
@@ -165,7 +160,7 @@ noegnud_rip_outrip_finalize(winid tmpwin)
 
             stringwidth = noegnud_width_dynamic(rip_font_font, bufs);
             widget_text = noegnud_gui_create_text(
-                ((noegnud_gui_twidget *) tmpwin)->child,
+                ((noegnud_gui_twidget *) winptr)->child,
                 rip_how_x->value - (((float) stringwidth) / 2),
                 rip_how_y->value,
                 //		strlen(buf)*rip_font_font->width,
@@ -181,7 +176,7 @@ noegnud_rip_outrip_finalize(winid tmpwin)
 
     stringwidth = noegnud_width_dynamic(rip_font_font, bufs);
     widget_text = noegnud_gui_create_text(
-        ((noegnud_gui_twidget *) tmpwin)->child,
+        ((noegnud_gui_twidget *) winptr)->child,
         rip_how_x->value - (((float) stringwidth) / 2), rip_how_y->value,
         stringwidth, rip_font_font->height, rip_tomb_colour->r,
         rip_tomb_colour->g, rip_tomb_colour->b, bufs);
@@ -192,6 +187,7 @@ noegnud_rip_outrip_finalize(winid tmpwin)
 void
 noegnud_rip_outrip(winid tmpwin, int how)
 {
+    noegnud_gui_twindow *winptr = noegnud_gui_winid_to_window(tmpwin);
     noegnud_optiontype_int *rip_description_x;
     noegnud_optiontype_int *rip_description_y;
 
@@ -200,15 +196,15 @@ noegnud_rip_outrip(winid tmpwin, int how)
     rip_description_y = noegnud_collection_data(
         noegnud_options, "gui.window.tombstone.description.y");
 
-    ((noegnud_gui_twindow *) tmpwin)->rip = 1;
-    ((noegnud_gui_twindow *) tmpwin)->rip_how = how;
+    winptr->rip = 1;
+    winptr->rip_how = how;
 
-    noegnud_gui_create_widget((noegnud_gui_twidget *) tmpwin, 0, 0,
+    noegnud_gui_create_widget((noegnud_gui_twidget *) winptr, 0, 0,
                               noegnud_options_screenwidth->value,
                               noegnud_options_screenheight->value, 0);
 
     noegnud_gui_create_widget(
-        (noegnud_gui_twidget *) tmpwin, rip_description_x->value,
+        (noegnud_gui_twidget *) winptr, rip_description_x->value,
         rip_description_y->value, 80 * noegnud_gui_get_fontwidth(),
         6 * (noegnud_gui_get_fontheight() + 8), 0);
 }
