@@ -1951,13 +1951,10 @@ noegnud_gui_nh_yn_function(const char *question, const char *choices,
         }
     } else {
         if (question[strlen(question) - 1] == ']') {
-            noegnud_gui_add_actionbutton((noegnud_gui_twindow *) widget,
-                                         "[?] Obvious Choices", '?');
-            noegnud_gui_add_actionbutton((noegnud_gui_twindow *) widget,
-                                         "[*] All", '*');
+            noegnud_gui_add_actionbutton(window, "[?] Obvious Choices", '?');
+            noegnud_gui_add_actionbutton(window, "[*] All", '*');
         }
-        noegnud_gui_add_actionbutton((noegnud_gui_twindow *) widget, "Cancel",
-                                     '\033');
+        noegnud_gui_add_actionbutton(window, "Cancel", '\033');
     }
 
     widget->x = (noegnud_options_screenwidth->value - widget->width) / 2;
