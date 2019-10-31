@@ -623,9 +623,6 @@ noegnud_gui_draw_window(noegnud_gui_twindow *window, int drawchildren)
             glVertex2i(window->widget.width, 0);
             glEnd();
         } else {
-            block_x = 0;
-            block_y = 0;
-
             for (block_y = 0; block_y < window->image->block_height;
                  block_y++)
                 for (block_x = 0; block_x < window->image->block_width;
@@ -1767,19 +1764,7 @@ noegnud_gui_nh_yn_function(const char *question, const char *choices,
     widget = (noegnud_gui_twidget *) window;
     widget->theme = noegnud_gui_default_widgettheme;
     noegnud_end_menu(noegnud_gui_window_to_winid(window), question);
-    width = widget->width;
 
-    /*
-    noegnud_gui_create_text( widget,
-                             NOEGNUD_GUI_BORDER_SIZE,
-                             NOEGNUD_GUI_BORDER_SIZE,
-                             width-(2*NOEGNUD_GUI_BORDER_SIZE),
-                             noegnud_gui_font->height,
-                             noegnud_options_gui_window_console_text_colour_default->r,
-                             noegnud_options_gui_window_console_text_colour_default->g,
-                             noegnud_options_gui_window_console_text_colour_default->b,
-                             question);
-    */
     if (choices) {
         c = 0;
         ch = (char *) choices;
