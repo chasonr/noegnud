@@ -2629,7 +2629,7 @@ noegnud_print_glyph(winid window, int nhx, int nhy, int glyph)
 
     {
         struct trap *ttrap;
-        int cmap;
+        int cmap = 0;
 
         if (glyph_is_cmap(noegnud_map[x][y].glyph_middle)) {
             cmap = glyph_to_cmap(noegnud_map[x][y].glyph_middle);
@@ -2988,7 +2988,9 @@ noegnud_noegnud_options_displaymethod_text(int offset)
         }
     }
 
-    closedir(direcH);
+    if (direcH != NULL) {
+        closedir(direcH);
+    }
 
     while (direcG && (de = readdir(direcG))) {
         if (de->d_name[0] != '.'
@@ -3001,13 +3003,18 @@ noegnud_noegnud_options_displaymethod_text(int offset)
             if (!filelist) {
                 filelist = noegnud_collection_create(fname, fname);
             } else {
-                if (!noegnud_collection_data(filelist, fname))
+                if (!noegnud_collection_data(filelist, fname)) {
                     noegnud_collection_add(filelist, fname, fname);
+                } else {
+                    noegnud_mem_free(fname);
+                }
             }
         }
     }
 
-    closedir(direcG);
+    if (direcG != NULL) {
+        closedir(direcG);
+    }
 
     menu_list = 0;
     window = noegnud_create_nhwindow(NHW_MENU);
@@ -3119,7 +3126,9 @@ noegnud_noegnud_options_displaymethod_tile()
             noegnud_mem_free(fname);
         }
     }
-    closedir(direcH);
+    if (direcH != NULL) {
+        closedir(direcH);
+    }
 
     sprintf(direcname, "%s/tilesets/" VARIANT_TILETYPE, szHomedir);
     noegnud_mem_free(szHomedir);
@@ -3150,9 +3159,8 @@ noegnud_noegnud_options_displaymethod_tile()
                 noegnud_mem_free(fname);
             }
         }
+        closedir(direcH);
     };
-
-    closedir(direcH);
 
     while (direcG && (de = readdir(direcG))) {
         if (de->d_name[0] != '.'
@@ -3165,12 +3173,17 @@ noegnud_noegnud_options_displaymethod_tile()
             if (!filelist) {
                 filelist = noegnud_collection_create(fname, fname);
             } else {
-                if (!noegnud_collection_data(filelist, fname))
+                if (!noegnud_collection_data(filelist, fname)) {
                     noegnud_collection_add(filelist, fname, fname);
+                } else {
+                    noegnud_mem_free(fname);
+                }
             }
         }
     }
-    closedir(direcG);
+    if (direcG != NULL) {
+        closedir(direcG);
+    }
 
     if ((direcG =
              opendir("../" NOEGNUD_DATADIR "/tilesets/" VARIANT_TILETYPE))) {
@@ -3204,8 +3217,8 @@ noegnud_noegnud_options_displaymethod_tile()
                 noegnud_mem_free(fname);
             }
         }
+        closedir(direcG);
     };
-    closedir(direcG);
 
     menu_list = 0;
     window = noegnud_create_nhwindow(NHW_MENU);
