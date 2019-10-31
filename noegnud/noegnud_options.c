@@ -161,7 +161,7 @@ noegnud_optiontype_string *noegnud_options_language = NULL;
 
 noegnud_tcollection *noegnud_options = NULL;
 
-static void noegnud_options_defaults();
+static void noegnud_options_defaults(void);
 static void noegnud_options_done(void);
 static void noegnud_options_load(void);
 static void noegnud_options_save(void);
@@ -172,7 +172,7 @@ static noegnud_optiontype_rgb *noegnud_options_create_rgb(
         int perm, float r, float g, float b);
 
 void
-noegnud_options_init()
+noegnud_options_init(void)
 {
     noegnud_options_defaults();
     noegnud_options_load();
@@ -180,7 +180,7 @@ noegnud_options_init()
     atexit(noegnud_options_done);
 }
 static void
-noegnud_options_done()
+noegnud_options_done(void)
 {
     noegnud_tcollection *stepcoll;
 
@@ -289,7 +289,7 @@ noegnud_options_loadfrom_parser(char *setting, int nparams, char *params,
 }
 
 char *
-noegnud_options_get_home()
+noegnud_options_get_home(void)
 {
     char *directory;
     /* *unix */
@@ -322,7 +322,7 @@ noegnud_options_get_home()
 };
 
 static void
-noegnud_options_load()
+noegnud_options_load(void)
 {
     char *homedir;
     char *homedir_configfile;
@@ -357,7 +357,7 @@ noegnud_options_load()
 }
 
 static void
-noegnud_options_save()
+noegnud_options_save(void)
 {
     noegnud_tcollection *save_options;
     char *homedir;
@@ -427,7 +427,7 @@ noegnud_options_save()
     _v2 = noegnud_collection_data(noegnud_options, _n)
 
 static void
-noegnud_options_defaults()
+noegnud_options_defaults(void)
 {
     noegnud_options = noegnud_collection_create(
         "noegnud.name",

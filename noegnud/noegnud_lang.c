@@ -17,14 +17,14 @@ static void noegnud_lang_done(void);
 static void noegnud_lang_load(char *filename);
 
 void
-noegnud_lang_init()
+noegnud_lang_init(void)
 {
     atexit(noegnud_lang_done);
     noegnud_lang_load(noegnud_options_language->value);
 }
 
 void
-noegnud_lang_done()
+noegnud_lang_done(void)
 {
     noegnud_tcollection *stepcoll;
 

@@ -21,7 +21,7 @@ noegnud_common_pushevent_keypress(SDLKey key)
 }
 
 void
-noegnud_common_flush_events()
+noegnud_common_flush_events(void)
 {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {

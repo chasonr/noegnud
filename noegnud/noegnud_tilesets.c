@@ -12,7 +12,7 @@
 ts_tileset *noegnud_activetileset;
 
 extern noegnud_gui_twidget *noegnud_guiwidget_desktop;
-extern void noegnud_render_loop();
+extern void noegnud_render_loop(void);
 
 static void
 noegnud_tilesets_init_addtileset_parser(char *setting, int nparams,

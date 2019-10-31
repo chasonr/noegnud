@@ -8,7 +8,7 @@
 #define noegnud_debug_mem_printused \
     noegnud_mem_debug_printused(__FILE__, __LINE__)
 
-void noegnud_debug_init();
+void noegnud_debug_init(void);
 
 #else
 

@@ -21,7 +21,7 @@
 
 #include "hack.h"
 
-void noegnud_gui_init();
+void noegnud_gui_init(void);
 
 int noegnud_gui_get_fontwidth(void);
 int noegnud_gui_get_fontheight(void);

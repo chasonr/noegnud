@@ -22,18 +22,18 @@ typedef struct {
 } noegnud_textcolouring_item;
 
 
-static void noegnud_textcolouring_done();
+static void noegnud_textcolouring_done(void);
 static void noegnud_textcolouring_load(char *filename);
 
 void
-noegnud_textcolouring_init()
+noegnud_textcolouring_init(void)
 {
     noegnud_textcolouring_load(noegnud_options_gui_text_colouring->value);
     atexit(noegnud_textcolouring_done);
 }
 
 static void
-noegnud_textcolouring_done()
+noegnud_textcolouring_done(void)
 {
     noegnud_tcollection *stepcoll;
 

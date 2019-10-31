@@ -22,7 +22,7 @@ typedef struct {
         *block[NOEGNUD_GLFUNCS_BLOCK_MAX][NOEGNUD_GLFUNCS_BLOCK_MAX];
 } noegnud_glfuncs_timage;
 
-void noegnud_glfuncs_init();
+void noegnud_glfuncs_init(void);
 noegnud_glfuncs_timage *noegnud_glfuncs_loadimage(const char *filename,
                                                   int split, int tileable,
                                                   int forcemipmaps);

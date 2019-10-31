@@ -104,7 +104,7 @@ static void noegnud_gui_event_menuitem(noegnud_gui_tmenuitem *menuitem,
                                        SDL_Event *event);
 
 void
-noegnud_gui_init()
+noegnud_gui_init(void)
 {
     winid i;
 
@@ -146,7 +146,7 @@ noegnud_gui_init()
 }
 
 static void
-noegnud_gui_done()
+noegnud_gui_done(void)
 {
     noegnud_fonts_deletefont(&noegnud_gui_font);
     noegnud_glfuncs_unloadimage(noegnud_gui_windowimage);

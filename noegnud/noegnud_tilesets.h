@@ -17,9 +17,9 @@ typedef struct {
     int iso;
 } ts_tileset;
 
-void noegnud_tilesets_init();
-void noegnud_tilesets_next();
-void noegnud_tilesets_done();
+void noegnud_tilesets_init(void);
+void noegnud_tilesets_next(void);
+void noegnud_tilesets_done(void);
 
 ts_tileset *noegnud_tilesets_loadtileset(const char *name);
 void noegnud_tilesets_clearloaded(ts_tileset *tileset);

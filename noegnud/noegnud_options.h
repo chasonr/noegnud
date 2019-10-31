@@ -47,10 +47,10 @@ typedef struct {
     float a;
 } noegnud_optiontype_rgba;
 
-void noegnud_options_init();
+void noegnud_options_init(void);
 noegnud_optiontype_string *noegnud_options_create_string(int perm,
                                                          char *value);
 
-char *noegnud_options_get_home();
+char *noegnud_options_get_home(void);
 
 #endif //_NOEGNUD_OPTIONS_H_

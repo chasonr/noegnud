@@ -15,12 +15,12 @@ typedef struct {
 static noegnud_tcollection *noegnud_sounds = NULL;
 static int noegnud_sound_initialised = FALSE;
 
-static int noegnud_sound_startup();
-static void noegnud_sound_done();
+static int noegnud_sound_startup(void);
+static void noegnud_sound_done(void);
 static noegnud_tcollection *noegnud_sound_load(const char *filename);
 
 static void
-noegnud_sound_done()
+noegnud_sound_done(void)
 {
     noegnud_tcollection *sound;
 
@@ -41,7 +41,7 @@ noegnud_sound_done()
 }
 
 static int
-noegnud_sound_startup()
+noegnud_sound_startup(void)
 {
     noegnud_sounds = NULL;
 
@@ -57,7 +57,7 @@ noegnud_sound_startup()
 }
 
 void
-noegnud_sound_init()
+noegnud_sound_init(void)
 {
     printf("* initialising sound\n");
 

@@ -234,7 +234,7 @@ noegnud_render_map_single_tile_sunken_walls(int glyph_tile, float height,
 }
 
 static void
-noegnud_render_map_tile_highlight_block()
+noegnud_render_map_tile_highlight_block(void)
 {
     glDisable(GL_TEXTURE_2D);
 
@@ -278,7 +278,7 @@ noegnud_render_map_tile_highlight_block()
 }
 
 void
-noegnud_render_map_tile()
+noegnud_render_map_tile(void)
 {
     int x, y;
     int xs, xe, xd;

@@ -22,7 +22,7 @@ typedef struct {
     int tiled_y;
 } noegnud_widgettheme_tsegment;
 
-void noegnud_widgettheme_init();
+void noegnud_widgettheme_init(void);
 
 noegnud_tcollection *noegnud_widgettheme_load(const char *filename);
 

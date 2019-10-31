@@ -70,7 +70,7 @@ noegnud_render_map_single_selection_char(int x, int y)
 }
 
 static void
-noegnud_render_map_char_highlight_block()
+noegnud_render_map_char_highlight_block(void)
 {
     float w, h;
 
@@ -116,7 +116,7 @@ noegnud_render_map_char_highlight_block()
 }
 
 void
-noegnud_render_map_char()
+noegnud_render_map_char(void)
 {
     int x, y;
 

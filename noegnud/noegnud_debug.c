@@ -9,13 +9,13 @@ int noegnud_debug_mem_memused = 0;
 int noegnud_debug_mem_mostmemused = 0;
 noegnud_tcollection *noegnud_debug_mem_ptrsizemap = 0;
 
-void noegnud_debug_done();
+static void noegnud_debug_done(void);
 
 #define noegnud_debug_init_string_ "DEBUG_INIT: forced \"memory leak\""
 char noegnud_debug_init_string[sizeof(noegnud_debug_init_string_)] =
     noegnud_debug_init_string_;
 void
-noegnud_debug_init()
+noegnud_debug_init(void)
 {
     atexit(noegnud_debug_done);
 
@@ -26,7 +26,7 @@ noegnud_debug_init()
 }
 
 void
-noegnud_debug_done()
+noegnud_debug_done(void)
 {
     noegnud_tcollection *leaklist;
     tnoegnud_mem_block *memblock;

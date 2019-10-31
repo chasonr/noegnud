@@ -382,7 +382,7 @@ noegnud_fonts_deletefont(noegnud_fonts_tfont **font_)
 }
 
 void
-noegnud_fonts_cleanup()
+noegnud_fonts_cleanup(void)
 {
     noegnud_tcollection *font;
 

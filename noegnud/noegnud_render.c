@@ -127,7 +127,7 @@ noegnud_render_loop(void)
 }
 
 static void
-noegnud_render_map()
+noegnud_render_map(void)
 {
     int viewport_coords[4] = { 0 };
 

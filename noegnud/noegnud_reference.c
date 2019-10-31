@@ -17,14 +17,14 @@ static void noegnud_reference_load(char *filename);
 static void noegnud_reference_done(void);
 
 void
-noegnud_reference_init()
+noegnud_reference_init(void)
 {
     noegnud_reference_load(VARIANT_TILETYPE);
     atexit(noegnud_reference_done);
 }
 
 static void
-noegnud_reference_done()
+noegnud_reference_done(void)
 {
     noegnud_tcollection *stepcoll;
 

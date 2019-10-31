@@ -2,7 +2,7 @@
 #define _NOEGNUD_COMMON_H_
 
 void noegnud_common_pushevent_keypress(SDLKey key);
-void noegnud_common_flush_events();
+void noegnud_common_flush_events(void);
 int noegnud_common_power2(int n);
 char *noegnud_common_str_replace(const char *haystack, const char *needle,
                                  const char *camel);

@@ -3,7 +3,7 @@
 
 #include "noegnud_collection.h"
 
-void noegnud_sound_init();
+void noegnud_sound_init(void);
 
 void noegnud_sound_play(const char *filename, float volume);
 

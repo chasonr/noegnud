@@ -11,7 +11,7 @@
 int noegnud_glfuncs_maximum_texturesize;
 
 static void
-noegnud_glfuncs_cheaplight_init()
+noegnud_glfuncs_cheaplight_init(void)
 {
     GLfloat ambient[4];
     GLfloat diffuse[4];
@@ -47,7 +47,7 @@ noegnud_glfuncs_cheaplight_init()
 }
 
 static void
-noegnud_glfuncs_maximum_texturesize_init()
+noegnud_glfuncs_maximum_texturesize_init(void)
 {
     GLuint texture;
 
@@ -74,7 +74,7 @@ noegnud_glfuncs_maximum_texturesize_init()
 }
 
 void
-noegnud_glfuncs_init()
+noegnud_glfuncs_init(void)
 {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();

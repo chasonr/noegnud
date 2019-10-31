@@ -27,6 +27,6 @@ int noegnud_width_dynamic(noegnud_fonts_tfont *font, char *string);
 void noegnud_fonts_print_dynamic(noegnud_fonts_tfont *font, int x, int y,
                                  char *string);
 void noegnud_fonts_deletefont(noegnud_fonts_tfont **font_);
-void noegnud_fonts_cleanup();
+void noegnud_fonts_cleanup(void);
 
 #endif // _NOEGNUD_FONTS_H_

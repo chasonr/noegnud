@@ -13,7 +13,7 @@ static int noegnud_widgettheme_startup(void);
 static void noegnud_widgettheme_done(void);
 
 static void
-noegnud_widgettheme_done()
+noegnud_widgettheme_done(void)
 {
     noegnud_tcollection *widgetthemes_run;
     noegnud_tcollection *widgettheme_inner;
@@ -41,14 +41,14 @@ noegnud_widgettheme_done()
 }
 
 static int
-noegnud_widgettheme_startup()
+noegnud_widgettheme_startup(void)
 {
     noegnud_widgetthemes = NULL;
     return 1;
 }
 
 void
-noegnud_widgettheme_init()
+noegnud_widgettheme_init(void)
 {
     printf("* initialising widgetthemes\n");
 
