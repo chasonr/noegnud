@@ -82,6 +82,7 @@ noegnud_tilesets_loadtileset(const char *name)
 
     if (!noegnud_common_file_exists((const char *) infname)) {
         printf("    error locating file [%s].\n", infname);
+        noegnud_mem_free(loading);
         return NULL;
     }
 
