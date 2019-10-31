@@ -164,8 +164,8 @@ noegnud_textcolouring_colourise(const char *string)
         walk_through = walk_through->next;
     }
 
-    colourisation = noegnud_mem_malloc(strlen(replaced) + 1);
-    strcpy(colourisation, replaced);
+    colourisation = noegnud_mem_malloc(strlen(replaced ? replaced : "") + 1);
+    strcpy(colourisation, replaced ? replaced : "");
 
     if (replaced != string)
         noegnud_mem_free(replaced);
