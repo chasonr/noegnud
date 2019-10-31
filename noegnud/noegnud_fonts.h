@@ -23,7 +23,7 @@ void noegnud_fonts_printchar_scaled(noegnud_fonts_tfont *font,
                                     float scale_y);
 void noegnud_fonts_print(noegnud_fonts_tfont *font, int x, int y,
                          char *string);
-int noegnud_width_dynamic(noegnud_fonts_tfont *font, char *string);
+int noegnud_width_dynamic(noegnud_fonts_tfont *font, const char *string);
 void noegnud_fonts_print_dynamic(noegnud_fonts_tfont *font, int x, int y,
                                  char *string);
 void noegnud_fonts_deletefont(noegnud_fonts_tfont **font_);

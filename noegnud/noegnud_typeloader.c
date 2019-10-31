@@ -51,8 +51,8 @@ typeloader_processline(noegnud_typeloader_output *proc, char *line,
 }
 
 int
-noegnud_typeloader_parsefile(noegnud_typeloader_output *proc, char *filename,
-                             void *data)
+noegnud_typeloader_parsefile(noegnud_typeloader_output *proc,
+                             const char *filename, void *data)
 {
     char line[MAX_LINE_LENGTH + 1];
     int nchar;
@@ -70,7 +70,7 @@ noegnud_typeloader_parsefile(noegnud_typeloader_output *proc, char *filename,
         case 0x0A:
             line[nchar] = 0;
             if (line[0])
-                typeloader_processline(proc, (char *) &line, data);
+                typeloader_processline(proc, line, data);
             nchar = 0;
             break;
         default:
@@ -80,7 +80,7 @@ noegnud_typeloader_parsefile(noegnud_typeloader_output *proc, char *filename,
     if (nchar) {
         line[nchar - 1] = 0;
         if (line[0])
-            typeloader_processline(proc, (char *) &line, data);
+            typeloader_processline(proc, line, data);
     }
     fclose(inputfile);
     return 1;

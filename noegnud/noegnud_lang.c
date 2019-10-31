@@ -48,7 +48,7 @@ noegnud_lang_load_parser(char *setting, int nparams, char *params, void *data)
 
     if ((value = noegnud_collection_data(noegnud_lang, setting))) {
         // realloc(value,strlen(params)+1);
-        strcpy(value, (char *) params);
+        strcpy(value, params);
     } else {
         // value=noegnud_mem_malloc(strlen(params)+1);
         value = noegnud_mem_malloc(256);

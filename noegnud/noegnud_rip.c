@@ -148,7 +148,7 @@ noegnud_rip_outrip_finalize(winid tmpwin)
     }
 
     //	if (rip_width->value<23) rip_width->value=23;
-    bufs = (char *) &buf;
+    bufs = buf;
     if (strlen(buf) > rip_width->value) {
         while (strlen(bufs) > rip_width->value) {
             bufc = bufs + rip_width->value;

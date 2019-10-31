@@ -298,12 +298,12 @@ noegnud_create_rolename(void)
 }
 
 static void
-noegnud_create_screenshot_filename(char *dest, char *suffix, int num)
+noegnud_create_screenshot_filename(char *dest, const char *suffix, int num)
 {
     char *role;
     char *homedir;
 
-    homedir = (char *) noegnud_options_get_home();
+    homedir = noegnud_options_get_home();
     sprintf(dest, "%s/noeGNUd_capture_%s_%d_%08d_%08d_", homedir, plname,
             (int) yyyymmdd(u.ubirthday), (int) moves, num);
     role = noegnud_create_rolename();
@@ -321,8 +321,7 @@ noegnud_screenshot_txt(void)
     char filename[2048];
     FILE *screenshot_file;
 
-    noegnud_create_screenshot_filename((char *) &filename, "txt",
-                                       noegnud_moves);
+    noegnud_create_screenshot_filename(filename, "txt", noegnud_moves);
     screenshot_file = fopen(filename, "w");
 
     fprintf(screenshot_file,
@@ -367,10 +366,9 @@ noegnud_screenshot_html(void)
 
     char colour[7];
 
-    noegnud_create_screenshot_filename((char *) &filename, "html",
-                                       noegnud_moves);
+    noegnud_create_screenshot_filename(filename, "html", noegnud_moves);
     if (record_game)
-        noegnud_create_screenshot_filename((char *) &nextfilename, "html",
+        noegnud_create_screenshot_filename(nextfilename, "html",
                                            noegnud_moves + 1);
     screenshot_file = fopen(filename, "w");
 
@@ -403,7 +401,7 @@ noegnud_screenshot_html(void)
                     fprintf(screenshot_file, "<font color=\"#");
                     switch (noegnud_map[x][y].colour_primary) {
                     case CLR_BLACK:
-                        strcpy((char *) &colour, "000000");
+                        strcpy(colour, "000000");
                         fprintf(screenshot_file, "000000");
                         break;
                     case CLR_RED:
@@ -502,8 +500,7 @@ noegnud_screenshot_bmp(void)
 
     int ycount;
 
-    noegnud_create_screenshot_filename((char *) &filename, "bmp",
-                                       noegnud_moves);
+    noegnud_create_screenshot_filename(filename, "bmp", noegnud_moves);
 
     pixeldata = noegnud_mem_malloc(noegnud_options_screenwidth->value
                                    * noegnud_options_screenheight->value * 3);
@@ -546,8 +543,7 @@ noegnud_screenshot_tga(void)
     char filename[2048];
     void *pixeldata;
 
-    noegnud_create_screenshot_filename((char *) &filename, "tga",
-                                       noegnud_moves);
+    noegnud_create_screenshot_filename(filename, "tga", noegnud_moves);
 
     pixeldata = noegnud_mem_malloc(noegnud_options_screenwidth->value
                                    * noegnud_options_screenheight->value * 3);
@@ -947,7 +943,7 @@ noegnud_internal_init_graphics_system(void)
     }
 #endif
 
-    sprintf((char *) &buffer,
+    sprintf(buffer,
             "press ( %s ) to lower the console at any time.",
             SDL_GetKeyName(noegnud_options_keys_console->value));
     noegnud_gui_inconsole_noegnudtext(
@@ -956,7 +952,7 @@ noegnud_internal_init_graphics_system(void)
         noegnud_options_gui_window_console_text_colour_system->g,
         noegnud_options_gui_window_console_text_colour_system->b);
 
-    sprintf((char *) &buffer,
+    sprintf(buffer,
             "------------------------------------- happy hacking -----[ %s "
             "for Options ]--",
             SDL_GetKeyName(noegnud_options_keys_options->value));
@@ -1939,7 +1935,7 @@ noegnud_end_menu(winid window, const char *prompt)
     noegnud_gui_twindow *winptr = noegnud_gui_winid_to_window(window);
     noegnud_gui_twindow *new_win;
     noegnud_gui_ttext *new_text;
-    char *title;
+    const char *title;
     int text_width, text_height;
     char tmpstring[1024];
     char *stringtoken;
@@ -1952,13 +1948,12 @@ noegnud_end_menu(winid window, const char *prompt)
     noegnud_gui_menu_assignchars(winptr);
 
     if (prompt) {
-        title = (char *) prompt;
+        title = prompt;
     } else {
-        title = noegnud_mem_malloc(1024);
         if (window == WIN_INVEN) {
-            strcpy(title, "Inventory");
+            title = "Inventory";
         } else {
-            strcpy(title, "noeGNUd");
+            title = "noeGNUd";
         }
     }
 
@@ -2033,8 +2028,6 @@ noegnud_end_menu(winid window, const char *prompt)
             }
         }
     }
-    if (!prompt)
-        noegnud_mem_free(title);
 };
 
 extern int noegnud_gui_currentmenuselectionmethod;
@@ -2288,7 +2281,7 @@ noegnud_select_menu(winid window, int how, menu_item **menu_list)
                                    menuitem->window.widget.nextsibling;
                 }
             } else if (ch == MENU_SEARCH) {
-                noegnud_getlin("Search for:", (char *) &stringbuffer);
+                noegnud_getlin("Search for:", stringbuffer);
                 if (*stringbuffer) {
                     menuitem =
                         (noegnud_gui_tmenuitem *) ((noegnud_gui_twidget *)
@@ -2297,7 +2290,7 @@ noegnud_select_menu(winid window, int how, menu_item **menu_list)
                     while (menuitem) {
                         if (menuitem->window.widget.type
                                 == NOEGNUD_GUI_MENUITEM
-                            && strstr(menuitem->text, (char *) &stringbuffer))
+                            && strstr(menuitem->text, stringbuffer))
                             menuitem->selected = !menuitem->selected;
                         menuitem = (noegnud_gui_tmenuitem *)
                                        menuitem->window.widget.nextsibling;
@@ -2385,14 +2378,14 @@ noegnud_message_menu(CHAR_P let, int how, const char *mesg)
     winid window;
     anything identifier;
     menu_item *menu_list;
-    char *str;
+    const char *str;
     char retch;
 
     menu_list = 0;
     window = noegnud_create_nhwindow(NHW_MENU);
     noegnud_start_menu(window);
     identifier.a_int = 1;
-    str = (char *) mesg;
+    str = mesg;
     if ((str[0] == let) && (str[2] == '-'))
         str += 4;
     noegnud_add_menu(window, NO_GLYPH, &identifier, let, 0, 0, str, 0);
@@ -3056,8 +3049,8 @@ noegnud_noegnud_options_displaymethod_text(int offset)
     if (chosen) {
         filelist_run = (noegnud_tcollection *) chosen;
 
-        ffname = noegnud_mem_malloc(strlen((char *) filelist_run->name) + 50);
-        sprintf(ffname, "char/%s", (char *) filelist_run->name);
+        ffname = noegnud_mem_malloc(strlen(filelist_run->name) + 50);
+        sprintf(ffname, "char/%s", filelist_run->name);
 
         strcpy(noegnud_options_mode_char_font->value, ffname);
 
@@ -3288,26 +3281,22 @@ noegnud_noegnud_options_keys(void)
     window = noegnud_create_nhwindow(NHW_MENU);
     noegnud_start_menu(window);
 
-    sprintf((char *) &buffer, "Options - [ %s ]",
+    sprintf(buffer, "Options - [ %s ]",
             SDL_GetKeyName(noegnud_options_keys_options->value));
     identifier.a_void = noegnud_options_keys_options;
-    noegnud_add_menu(window, NO_GLYPH, &identifier, 0, 0, 0, (char *) &buffer,
-                     0);
-    sprintf((char *) &buffer, "Console - [ %s ]",
+    noegnud_add_menu(window, NO_GLYPH, &identifier, 0, 0, 0, buffer, 0);
+    sprintf(buffer, "Console - [ %s ]",
             SDL_GetKeyName(noegnud_options_keys_console->value));
     identifier.a_void = noegnud_options_keys_console;
-    noegnud_add_menu(window, NO_GLYPH, &identifier, 0, 0, 0, (char *) &buffer,
-                     0);
-    sprintf((char *) &buffer, "MiniMap - [ %s ]",
+    noegnud_add_menu(window, NO_GLYPH, &identifier, 0, 0, 0, buffer, 0);
+    sprintf(buffer, "MiniMap - [ %s ]",
             SDL_GetKeyName(noegnud_options_keys_minimap->value));
     identifier.a_void = noegnud_options_keys_minimap;
-    noegnud_add_menu(window, NO_GLYPH, &identifier, 0, 0, 0, (char *) &buffer,
-                     0);
-    sprintf((char *) &buffer, "HideGUI - [ %s ]",
+    noegnud_add_menu(window, NO_GLYPH, &identifier, 0, 0, 0, buffer, 0);
+    sprintf(buffer, "HideGUI - [ %s ]",
             SDL_GetKeyName(noegnud_options_keys_hidegui->value));
     identifier.a_void = noegnud_options_keys_hidegui;
-    noegnud_add_menu(window, NO_GLYPH, &identifier, 0, 0, 0, (char *) &buffer,
-                     0);
+    noegnud_add_menu(window, NO_GLYPH, &identifier, 0, 0, 0, buffer, 0);
 
     noegnud_end_menu(window, "View/Change noeGNUd keys");
     chosen = 0;
@@ -4679,7 +4668,7 @@ static char
 noegnud_yn_function(const char *ques, const char *choices, CHAR_P def)
 {
     char ch;
-    char *ch2;
+    const char *ch2;
     char retch;
     char stringbuffer[2048];
     noegnud_gui_twidget *noegnud_gui_active_old = noegnud_gui_active;
@@ -4699,19 +4688,19 @@ noegnud_yn_function(const char *ques, const char *choices, CHAR_P def)
         noegnud_gui_active =
             noegnud_gui_nh_yn_function(ques, choices, (char) def);
     } else {
-        strcpy((char *) &stringbuffer, ques);
+        strcpy(stringbuffer, ques);
         if (choices) {
-            strcat((char *) &stringbuffer, " [");
-            strcat((char *) &stringbuffer, choices);
-            strcat((char *) &stringbuffer, "]");
+            strcat(stringbuffer, " [");
+            strcat(stringbuffer, choices);
+            strcat(stringbuffer, "]");
         }
         if (def) {
-            strcat((char *) &stringbuffer, " (");
+            strcat(stringbuffer, " (");
             stringbuffer[strlen(stringbuffer) + 1] = 0;
             stringbuffer[strlen(stringbuffer)] = def;
-            strcat((char *) &stringbuffer, ")");
+            strcat(stringbuffer, ")");
         }
-        noegnud_raw_print((char *) &stringbuffer);
+        noegnud_raw_print(stringbuffer);
     }
     ch = noegnud_nhgetch();
     if (noegnud_options_interface_yn_function_windowed->value) {
@@ -4723,7 +4712,7 @@ noegnud_yn_function(const char *ques, const char *choices, CHAR_P def)
 
     if (choices) {
         retch = def;
-        ch2 = (char *) choices;
+        ch2 = choices;
         while (*ch2) {
             if (*ch2 == ch)
                 retch = ch;

@@ -230,7 +230,7 @@ noegnud_options_loadfrom_parser(char *setting, int nparams, char *params,
                 noegnud_options_build_incompatibility = 1;
             } else {
                 strcpy(
-                    (char *) (&((noegnud_optiontype_string *) option)->value),
+                    ((noegnud_optiontype_string *) option)->value,
                     params);
             }
             break;
@@ -390,7 +390,7 @@ noegnud_options_save(void)
             case NOEGNUD_OPTIONTYPE_STRING:
                 fprintf(
                     savefile, "%s",
-                    (char *) &((noegnud_optiontype_string *) option)->value);
+                    ((noegnud_optiontype_string *) option)->value);
                 break;
             case NOEGNUD_OPTIONTYPE_RGB:
                 fprintf(savefile, "%f,%f,%f",
@@ -848,14 +848,14 @@ noegnud_options_create_float(int perm, float value)
 }
 
 noegnud_optiontype_string *
-noegnud_options_create_string(int perm, char *value)
+noegnud_options_create_string(int perm, const char *value)
 {
     noegnud_optiontype_string *type_string;
 
     type_string = noegnud_mem_malloc(sizeof(noegnud_optiontype) + 256 + 1);
     type_string->meta.type = NOEGNUD_OPTIONTYPE_STRING;
     type_string->meta.perm = perm;
-    strcpy((char *) &type_string->value, value);
+    strcpy(type_string->value, value);
 
     return type_string;
 }

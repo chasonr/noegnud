@@ -21,8 +21,8 @@ noegnud_debug_init(void)
 
     noegnud_debug_mem_ptrsizemap = noegnud_collection_create(
         noegnud_debug_init_string,
-        noegnud_mem_memblock_create((char *) &noegnud_debug_init_string,
-                                    __LINE__, &noegnud_debug_init_string, 0));
+        noegnud_mem_memblock_create(noegnud_debug_init_string,
+                                    __LINE__, noegnud_debug_init_string, 0));
 }
 
 void

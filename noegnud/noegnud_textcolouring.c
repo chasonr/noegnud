@@ -50,7 +50,7 @@ noegnud_textcolouring_load_parser(char *setting, int nparams, char *params,
                                   void *data)
 {
     noegnud_textcolouring_item *textcolouring_item;
-    char *regex_error;
+    const char *regex_error;
 
     if (!strcmp(setting, "$include$")) {
         noegnud_textcolouring_load(params);
@@ -93,7 +93,7 @@ noegnud_textcolouring_load_parser(char *setting, int nparams, char *params,
         params++;
     params++;
 
-    if ((regex_error = (char *) re_compile_pattern(
+    if ((regex_error = re_compile_pattern(
              setting, strlen(setting), textcolouring_item->pattern_buffer))) {
         free(textcolouring_item->pattern_buffer);
         textcolouring_item->pattern_buffer = NULL;

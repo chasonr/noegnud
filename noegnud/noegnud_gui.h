@@ -135,14 +135,14 @@ typedef struct { // inherits from window
 noegnud_gui_tbutton *noegnud_gui_create_button(
     noegnud_gui_twidget *parent, int x, int y, int width, int height,
     GLfloat r, GLfloat g, GLfloat b, GLfloat a, GLfloat tr, GLfloat tg,
-    GLfloat tb, char *string, int accelerator);
+    GLfloat tb, const char *string, int accelerator);
 
 // -------------------------------------------------------- TEXTBUTTON
 
 noegnud_gui_tbutton *noegnud_gui_create_textbutton(
     noegnud_gui_twidget *parent, int x, int y, GLfloat r, GLfloat g,
-    GLfloat b, GLfloat a, GLfloat tr, GLfloat tg, GLfloat tb, char *string,
-    char accelerator);
+    GLfloat b, GLfloat a, GLfloat tr, GLfloat tg, GLfloat tb,
+    const char *string, char accelerator);
 
 // -------------------------------------------------------- GLYPH
 

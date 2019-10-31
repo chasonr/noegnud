@@ -21,7 +21,7 @@ noegnud_tilesets_init_addtileset_parser(char *setting, int nparams,
     ts_tileset *tileset = data;
 
     if (!strcmp(setting, "location")) {
-        sprintf((char *) &tileset->location, "tilesets/%s", params);
+        sprintf(tileset->location, "tilesets/%s", params);
     } else if (!strcmp(setting, "width")) {
         tileset->width = atoi(params);
     } else if (!strcmp(setting, "height")) {
@@ -76,7 +76,7 @@ noegnud_tilesets_loadtileset(const char *name)
     sprintf(infname, "%s/tilesets/%s.inf", szHomedir, name);
     noegnud_mem_free(szHomedir);
     if (!noegnud_common_file_exists(infname))
-        sprintf((char *) &infname, "../" NOEGNUD_DATADIR "/tilesets/%s.inf",
+        sprintf(infname, "../" NOEGNUD_DATADIR "/tilesets/%s.inf",
                 name);
     printf("* Loading tileset : %s (%s)\n", name, infname);
 
@@ -87,7 +87,7 @@ noegnud_tilesets_loadtileset(const char *name)
     }
 
     noegnud_typeloader_parsefile(noegnud_tilesets_init_addtileset_parser,
-                                 (char *) &infname, loading);
+                                 infname, loading);
 
     /*
             loading->glwidth =

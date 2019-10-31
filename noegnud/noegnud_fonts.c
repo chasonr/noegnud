@@ -176,13 +176,12 @@ noegnud_fonts_loadfont(const char *name)
     font = noegnud_mem_malloc(sizeof(noegnud_fonts_tfont));
 
     szHomedir = noegnud_options_get_home();
-    sprintf((char *) &font->imagefilename, "%s/%s.png", szHomedir, name);
+    sprintf(font->imagefilename, "%s/%s.png", szHomedir, name);
     noegnud_mem_free(szHomedir);
-    if (!noegnud_common_file_exists((char *) &font->imagefilename))
-        sprintf((char *) &font->imagefilename,
-                "../" NOEGNUD_DATADIR "/%s.png", name);
+    if (!noegnud_common_file_exists(font->imagefilename))
+        sprintf(font->imagefilename, "../" NOEGNUD_DATADIR "/%s.png", name);
 
-    printf(" (%s)\n", (char *) &font->imagefilename);
+    printf(" (%s)\n", font->imagefilename);
     noegnud_fonts_loadimage(font);
 
     if (!(font_placement = noegnud_collection_structure(
@@ -276,10 +275,10 @@ noegnud_fonts_print(noegnud_fonts_tfont *font, int x, int y, char *string)
 }
 
 int
-noegnud_width_dynamic(noegnud_fonts_tfont *font, char *string)
+noegnud_width_dynamic(noegnud_fonts_tfont *font, const char *string)
 {
     int width_count = 0;
-    char *ch;
+    const char *ch;
 
     ch = string;
     while (*ch) {

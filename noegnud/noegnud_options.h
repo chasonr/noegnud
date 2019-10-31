@@ -49,7 +49,7 @@ typedef struct {
 
 void noegnud_options_init(void);
 noegnud_optiontype_string *noegnud_options_create_string(int perm,
-                                                         char *value);
+                                                         const char *value);
 
 char *noegnud_options_get_home(void);
 

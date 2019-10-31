@@ -829,7 +829,7 @@ noegnud_gui_tbutton *
 noegnud_gui_create_button(noegnud_gui_twidget *parent, int x, int y,
                           int width, int height, GLfloat r, GLfloat g,
                           GLfloat b, GLfloat a, GLfloat tr, GLfloat tg,
-                          GLfloat tb, char *string, int accelerator)
+                          GLfloat tb, const char *string, int accelerator)
 {
     noegnud_gui_tbutton *button;
     noegnud_gui_ttext *text;
@@ -968,7 +968,7 @@ noegnud_gui_tbutton *
 noegnud_gui_create_textbutton(noegnud_gui_twidget *parent, int x, int y,
                               GLfloat r, GLfloat g, GLfloat b, GLfloat a,
                               GLfloat tr, GLfloat tg, GLfloat tb,
-                              char *string, char accelerator)
+                              const char *string, char accelerator)
 {
     noegnud_gui_tbutton *button;
 
@@ -1582,7 +1582,7 @@ noegnud_gui_add_actionbutton(noegnud_gui_twindow *window, const char *text,
                                   NOEGNUD_GUI_BORDER_SIZE, y, w, h, 0),
         1, NOEGNUD_GUI_BORDER_SIZE + 1, w - 2,
         h - (NOEGNUD_GUI_BORDER_SIZE + 2), 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0,
-        (char *) text, accelerator);
+        text, accelerator);
 
     button->window.widget.clipto = (noegnud_gui_twidget *) window;
     button->window.widget.child->clipto = (noegnud_gui_twidget *) window;
@@ -1624,14 +1624,14 @@ noegnud_gui_nh_addmenu_menuitem_addaccelerator(noegnud_gui_twidget *menuitem,
     item = (noegnud_gui_twidget *) noegnud_gui_create_text(
         menuitem, NOEGNUD_GUI_BORDER_SIZE + 0 * noegnud_gui_font->width, y2,
         noegnud_gui_font->width, noegnud_gui_font->height, 0.5, 0.25, 0.0,
-        (char *) &smallstring);
+        smallstring);
     item->clipto = menuitem->parent;
 
     smallstring[0] = '-';
     item = (noegnud_gui_twidget *) noegnud_gui_create_text(
         menuitem, NOEGNUD_GUI_BORDER_SIZE + 2 * noegnud_gui_font->width, y2,
         noegnud_gui_font->width, noegnud_gui_font->height, 7.0, 7.0, 7.0,
-        (char *) &smallstring);
+        smallstring);
     item->clipto = menuitem->parent;
 }
 
@@ -1739,7 +1739,7 @@ noegnud_gui_nh_yn_function(const char *question, const char *choices,
     noegnud_gui_twidget *button;
 
     int width, height;
-    char *ch;
+    const char *ch;
     int c;
     char shortstring[2];
 
@@ -1767,7 +1767,7 @@ noegnud_gui_nh_yn_function(const char *question, const char *choices,
 
     if (choices) {
         c = 0;
-        ch = (char *) choices;
+        ch = choices;
         while (*ch) {
             shortstring[0] = *ch;
             r = g = b = 0.0;
@@ -1788,7 +1788,7 @@ noegnud_gui_nh_yn_function(const char *question, const char *choices,
                     + NOEGNUD_GUI_BORDER_SIZE,
                 NOEGNUD_GUI_BORDER_SIZE + noegnud_gui_font->height
                     + NOEGNUD_GUI_BORDER_SIZE,
-                1.0, 1.0, 1.0, 1.0, r, g, b, (char *) &shortstring,
+                1.0, 1.0, 1.0, 1.0, r, g, b, shortstring,
                 (int) (*ch));
 
             if (button->x + button->width + NOEGNUD_GUI_BORDER_SIZE

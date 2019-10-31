@@ -13,7 +13,7 @@
 noegnud_tcollection *noegnud_reference = NULL;
 int noegnud_reference_tile_amount = 0;
 
-static void noegnud_reference_load(char *filename);
+static void noegnud_reference_load(const char *filename);
 static void noegnud_reference_done(void);
 
 void
@@ -54,7 +54,7 @@ noegnud_reference_load_parser(char *setting, int nparams, char *params,
 }
 
 static void
-noegnud_reference_load(char *refname)
+noegnud_reference_load(const char *refname)
 {
     char filename[2048];
     char *szHomedir;

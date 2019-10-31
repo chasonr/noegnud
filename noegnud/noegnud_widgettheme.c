@@ -126,11 +126,11 @@ noegnud_widgettheme_load_parser(char *setting, int nparams, char *params,
                 ;
             segment->tiled_y = (atoi(eachparam) != 0);
 
-            sprintf((char *) &filename, "widgetthemes/%s", params);
+            sprintf(filename, "widgetthemes/%s", params);
             segment->image = noegnud_glfuncs_loadimage(
                 filename, 0, segment->tiled_x || segment->tiled_y, 0);
 
-            sprintf((char *) &filename, "segment: %d",
+            sprintf(filename, "segment: %d",
                     noegnud_widgettheme_load_parser_counter);
 
             if (*widgettheme) {
@@ -163,13 +163,13 @@ noegnud_widgettheme_load(const char *filename)
     }
 
     szHomedir = noegnud_options_get_home();
-    sprintf((char *) &physical_filename, "%s/widgetthemes/%s.theme",
+    sprintf(physical_filename, "%s/widgetthemes/%s.theme",
             szHomedir, filename);
     noegnud_mem_free(szHomedir);
-    if (!noegnud_common_file_exists((char *) &physical_filename))
-        sprintf((char *) &physical_filename,
+    if (!noegnud_common_file_exists(physical_filename))
+        sprintf(physical_filename,
                 "../" NOEGNUD_DATADIR "/widgetthemes/%s.theme", filename);
-    if (!noegnud_common_file_exists((char *) &physical_filename)) {
+    if (!noegnud_common_file_exists(physical_filename)) {
         printf(
             "[WIDGETTHEME] noegnud_widgettheme_load: file not found \"%s\"\n",
             filename);
@@ -182,7 +182,7 @@ noegnud_widgettheme_load(const char *filename)
     widgettheme = NULL;
     noegnud_typeloader_IFS = ',';
     noegnud_typeloader_parsefile(noegnud_widgettheme_load_parser,
-                                 (char *) physical_filename, &widgettheme);
+                                 physical_filename, &widgettheme);
 
     if (widgettheme) {
         if (!noegnud_widgetthemes) {

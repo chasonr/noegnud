@@ -86,14 +86,13 @@ noegnud_sound_load(const char *filename)
     }
 
     szHomedir = noegnud_options_get_home();
-    sprintf((char *) &physical_filename, "%s/%s", szHomedir, filename);
+    sprintf(physical_filename, "%s/%s", szHomedir, filename);
     noegnud_mem_free(szHomedir);
-    if (!noegnud_common_file_exists((char *) &physical_filename))
-        sprintf((char *) &physical_filename, "../" NOEGNUD_DATADIR "/%s",
-                filename);
-    if (!noegnud_common_file_exists((char *) &physical_filename))
-        sprintf((char *) &physical_filename, "%s", filename);
-    if (!noegnud_common_file_exists((char *) &physical_filename)) {
+    if (!noegnud_common_file_exists(physical_filename))
+        sprintf(physical_filename, "../" NOEGNUD_DATADIR "/%s", filename);
+    if (!noegnud_common_file_exists(physical_filename))
+        sprintf(physical_filename, "%s", filename);
+    if (!noegnud_common_file_exists(physical_filename)) {
         printf("[SOUND] noegnud_sound_load: file not found \"%s\"\n",
                filename);
         return NULL;
