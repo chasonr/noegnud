@@ -134,9 +134,9 @@ noegnud_widgettheme_load_parser(char *setting, int nparams, char *params,
                     noegnud_widgettheme_load_parser_counter);
 
             if (*widgettheme) {
-                noegnud_collection_add(*widgettheme, filename, segment);
+                noegnud_collection_add(*widgettheme, filename, segment, NULL);
             } else {
-                *widgettheme = noegnud_collection_create(filename, segment);
+                *widgettheme = noegnud_collection_create(filename, segment, NULL);
             }
 
         } else {
@@ -187,10 +187,10 @@ noegnud_widgettheme_load(const char *filename)
     if (widgettheme) {
         if (!noegnud_widgetthemes) {
             noegnud_widgetthemes =
-                noegnud_collection_create(filename, widgettheme);
+                noegnud_collection_create(filename, widgettheme, NULL);
         } else {
             noegnud_collection_add(noegnud_widgetthemes, filename,
-                                   widgettheme);
+                                   widgettheme, NULL);
         }
     } else {
         printf("[WIDGETTHEME] warning: empty theme \"%s\" (%s).\n", filename,

@@ -187,9 +187,9 @@ noegnud_fonts_loadfont(const char *name)
     if (!(font_placement = noegnud_collection_structure(
               noegnud_fonts_fontsloaded, name))) {
         if (!noegnud_fonts_fontsloaded) {
-            noegnud_fonts_fontsloaded = noegnud_collection_create(name, font);
+            noegnud_fonts_fontsloaded = noegnud_collection_create(name, font, NULL);
         } else {
-            noegnud_collection_add(noegnud_fonts_fontsloaded, name, font);
+            noegnud_collection_add(noegnud_fonts_fontsloaded, name, font, NULL);
         }
     } else {
         font_placement->data = font;

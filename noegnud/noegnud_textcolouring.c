@@ -105,10 +105,10 @@ noegnud_textcolouring_load_parser(char *setting, int nparams, char *params,
 
     if (noegnud_textcolouring) {
         noegnud_collection_add(noegnud_textcolouring, setting,
-                               textcolouring_item);
+                               textcolouring_item, NULL);
     } else {
         noegnud_textcolouring =
-            noegnud_collection_create(setting, textcolouring_item);
+            noegnud_collection_create(setting, textcolouring_item, NULL);
     }
 }
 

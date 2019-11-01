@@ -54,9 +54,9 @@ noegnud_lang_load_parser(char *setting, int nparams, char *params, void *data)
         value = noegnud_mem_malloc(256);
         strcpy(value, params);
         if (noegnud_lang) {
-            noegnud_collection_add(noegnud_lang, setting, value);
+            noegnud_collection_add(noegnud_lang, setting, value, NULL);
         } else {
-            noegnud_lang = noegnud_collection_create(setting, value);
+            noegnud_lang = noegnud_collection_create(setting, value, NULL);
         }
     }
 }

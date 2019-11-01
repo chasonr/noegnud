@@ -2951,9 +2951,9 @@ noegnud_noegnud_options_displaymethod_text(int offset)
             sprintf(fname2, "%s (~)", fname);
 
             if (!filelist) {
-                filelist = noegnud_collection_create(fname, fname2);
+                filelist = noegnud_collection_create(fname, fname2, NULL);
             } else {
-                noegnud_collection_add(filelist, fname, fname2);
+                noegnud_collection_add(filelist, fname, fname2, NULL);
             }
             noegnud_mem_free(fname);
         }
@@ -2972,10 +2972,10 @@ noegnud_noegnud_options_displaymethod_text(int offset)
             fname[strlen(de->d_name) - 4] = 0;
 
             if (!filelist) {
-                filelist = noegnud_collection_create(fname, fname);
+                filelist = noegnud_collection_create(fname, fname, NULL);
             } else {
                 if (!noegnud_collection_data(filelist, fname)) {
-                    noegnud_collection_add(filelist, fname, fname);
+                    noegnud_collection_add(filelist, fname, fname, NULL);
                 } else {
                     noegnud_mem_free(fname);
                 }
@@ -3090,9 +3090,9 @@ noegnud_noegnud_options_displaymethod_tile(void)
             sprintf(fname2, "%s (~)", fname);
 
             if (!filelist) {
-                filelist = noegnud_collection_create(fname, fname2);
+                filelist = noegnud_collection_create(fname, fname2, NULL);
             } else {
-                noegnud_collection_add(filelist, fname, fname2);
+                noegnud_collection_add(filelist, fname, fname2, NULL);
             }
             noegnud_mem_free(fname);
         }
@@ -3123,9 +3123,9 @@ noegnud_noegnud_options_displaymethod_tile(void)
                 sprintf(fname2, "%s [%s] (~)", fname2, VARIANT_TILETYPE);
 
                 if (!filelist) {
-                    filelist = noegnud_collection_create(fname, fname2);
+                    filelist = noegnud_collection_create(fname, fname2, NULL);
                 } else {
-                    noegnud_collection_add(filelist, fname, fname2);
+                    noegnud_collection_add(filelist, fname, fname2, NULL);
                 }
                 noegnud_mem_free(fname);
             }
@@ -3142,10 +3142,10 @@ noegnud_noegnud_options_displaymethod_tile(void)
             fname[strlen(de->d_name) - 4] = 0;
 
             if (!filelist) {
-                filelist = noegnud_collection_create(fname, fname);
+                filelist = noegnud_collection_create(fname, fname, NULL);
             } else {
                 if (!noegnud_collection_data(filelist, fname)) {
-                    noegnud_collection_add(filelist, fname, fname);
+                    noegnud_collection_add(filelist, fname, fname, NULL);
                 } else {
                     noegnud_mem_free(fname);
                 }
@@ -3177,10 +3177,10 @@ noegnud_noegnud_options_displaymethod_tile(void)
                 sprintf(fname2, "%s [%s]", fname2, VARIANT_TILETYPE);
 
                 if (!filelist) {
-                    filelist = noegnud_collection_create(fname, fname2);
+                    filelist = noegnud_collection_create(fname, fname2, NULL);
                 } else {
                     if (!noegnud_collection_data(filelist, fname)) {
-                        noegnud_collection_add(filelist, fname, fname2);
+                        noegnud_collection_add(filelist, fname, fname2, NULL);
                     } else
                         noegnud_mem_free(fname2);
                 }

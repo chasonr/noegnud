@@ -110,9 +110,9 @@ noegnud_sound_load(const char *filename)
 
     if (!noegnud_sounds) {
         returnvalue = noegnud_sounds =
-            noegnud_collection_create(filename, sound);
+            noegnud_collection_create(filename, sound, NULL);
     } else {
-        returnvalue = noegnud_collection_add(noegnud_sounds, filename, sound);
+        returnvalue = noegnud_collection_add(noegnud_sounds, filename, sound, NULL);
     }
 
     return returnvalue;

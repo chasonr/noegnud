@@ -6,8 +6,16 @@
 
 #include "noegnud_mem.h"
 #include "noegnud_collection.h"
+
+static void
+default_destructor(void *p)
+{
+    noegnud_mem_free(p);
+}
+
 noegnud_tcollection *
-noegnud_collection_create(const char *name, void *data)
+noegnud_collection_create(const char *name, void *data,
+                          void (*destructor)(void *))
 {
     noegnud_tcollection *collection;
 #ifdef NOEGNUDDEBUG
@@ -28,6 +36,7 @@ noegnud_collection_create(const char *name, void *data)
     collection->name = noegnud_mem_malloc(strlen(name) + 1);
     strcpy(collection->name, name);
     collection->data = data;
+    collection->destructor = destructor ? destructor : default_destructor;
 #ifdef NOEGNUDDEBUG
     //	printf("[DEBUG] testing new collection data integrity for [\"%s\"]
     //...\n",name);
@@ -42,14 +51,14 @@ noegnud_collection_create(const char *name, void *data)
 }
 noegnud_tcollection *
 noegnud_collection_add(noegnud_tcollection *collection, const char *name,
-                       void *data)
+                       void *data, void (*destructor)(void *))
 {
     noegnud_tcollection *add;
     noegnud_tcollection *made;
 
     add = collection;
     if (!add)
-        return noegnud_collection_create(name, data);
+        return noegnud_collection_create(name, data, destructor);
     while (add->next) {
         if (!strcmp(name, add->name)) {
 #ifdef NOEGNUDDEBUG
@@ -60,7 +69,8 @@ noegnud_collection_add(noegnud_tcollection *collection, const char *name,
             // ***** FAILED TO FIND REFERENCE ..... well, duh, it might be
             // part of "ram debug" collection ...
 
-            noegnud_mem_free(add->data);
+            add->destructor(add->data);
+            add->destructor = destructor ? destructor : default_destructor;
             add->data = data;
             return add;
         }
@@ -68,21 +78,23 @@ noegnud_collection_add(noegnud_tcollection *collection, const char *name,
     }
     made =
         (noegnud_tcollection *) (add->next = (struct noegnud_tcollection *)
-                                     noegnud_collection_create(name, data));
+                                     noegnud_collection_create(name, data, destructor));
     return made;
 }
 void
 noegnud_collection_destroy(noegnud_tcollection **collectionp)
 {
-    noegnud_tcollection *collection;
-    collection = *collectionp;
-    if (!collection)
-        return;
-    if (collection->next)
-        noegnud_collection_destroy(
-            (noegnud_tcollection **) &collection->next);
-    noegnud_mem_free(collection->name);
-    noegnud_mem_free(collection);
+    noegnud_tcollection *p;
+
+    p = *collectionp;
+    while (p != NULL) {
+        noegnud_tcollection *q;
+        q = p;
+        p = q->next;
+        q->destructor(p->data);
+        noegnud_mem_free(q->name);
+        noegnud_mem_free(q);
+    }
     *collectionp = NULL;
 }
 

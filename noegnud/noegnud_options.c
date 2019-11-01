@@ -264,7 +264,8 @@ noegnud_options_loadfrom_parser(char *setting, int nparams, char *params,
                 noegnud_collection_add(
                     noegnud_options, setting,
                     noegnud_options_create_string(
-                        NOEGNUD_OPTIONPERM_CONFIGCHANGE, tmpstring));
+                        NOEGNUD_OPTIONPERM_CONFIGCHANGE, tmpstring),
+                    NULL);
             }
             break;
         }
@@ -284,7 +285,8 @@ noegnud_options_loadfrom_parser(char *setting, int nparams, char *params,
         noegnud_collection_add(
             noegnud_options, setting,
             noegnud_options_create_string(NOEGNUD_OPTIONPERM_CONFIGCHANGE,
-                                          tmpstring));
+                                          tmpstring),
+            NULL);
     }
 }
 
@@ -411,19 +413,19 @@ noegnud_options_save(void)
 
 #define noegnud_options_defadd_int(_n, _p, _v, _v2)             \
     noegnud_collection_add(noegnud_options, _n,                 \
-                           noegnud_options_create_int(_p, _v)); \
+                           noegnud_options_create_int(_p, _v), NULL); \
     _v2 = noegnud_collection_data(noegnud_options, _n)
 #define noegnud_options_defadd_float(_n, _p, _v, _v2)             \
     noegnud_collection_add(noegnud_options, _n,                   \
-                           noegnud_options_create_float(_p, _v)); \
+                           noegnud_options_create_float(_p, _v), NULL); \
     _v2 = noegnud_collection_data(noegnud_options, _n)
 #define noegnud_options_defadd_string(_n, _p, _v, _v2)             \
     noegnud_collection_add(noegnud_options, _n,                    \
-                           noegnud_options_create_string(_p, _v)); \
+                           noegnud_options_create_string(_p, _v), NULL); \
     _v2 = noegnud_collection_data(noegnud_options, _n)
 #define noegnud_options_defadd_rgb(_n, _p, _vr, _vg, _vb, _v2)             \
     noegnud_collection_add(noegnud_options, _n,                            \
-                           noegnud_options_create_rgb(_p, _vr, _vg, _vb)); \
+                           noegnud_options_create_rgb(_p, _vr, _vg, _vb), NULL); \
     _v2 = noegnud_collection_data(noegnud_options, _n)
 
 static void
@@ -431,15 +433,18 @@ noegnud_options_defaults(void)
 {
     noegnud_options = noegnud_collection_create(
         "noegnud.name",
-        noegnud_options_create_string(NOEGNUD_OPTIONPERM_NONE, NOEGNUD_NAME));
+        noegnud_options_create_string(NOEGNUD_OPTIONPERM_NONE, NOEGNUD_NAME),
+        NULL);
     noegnud_collection_add(noegnud_options, "noegnud.version",
                            noegnud_options_create_string(
-                               NOEGNUD_OPTIONPERM_NONE, NOEGNUD_VERSION));
+                               NOEGNUD_OPTIONPERM_NONE, NOEGNUD_VERSION),
+                           NULL);
 
     noegnud_collection_add(
         noegnud_options, VARIANT_FULLNAME ".noegnud.build",
         noegnud_options_create_string(NOEGNUD_OPTIONPERM_CONFIGCHANGE,
-                                      NOEGNUD_BUILD));
+                                      NOEGNUD_BUILD),
+        NULL);
 
     noegnud_options_defadd_int("screen.width",
                                NOEGNUD_OPTIONPERM_CONFIGCHANGE, 1024,
@@ -560,83 +565,99 @@ noegnud_options_defaults(void)
     noegnud_collection_add(
         noegnud_options, "gui.window.tombstone.theme",
         noegnud_options_create_string(NOEGNUD_OPTIONPERM_CONFIGCHANGE,
-                                      "tomb/theme_traditional.inf"));
+                                      "tomb/theme_traditional.inf"),
+        NULL);
 
     noegnud_collection_add(
         noegnud_options, "gui.window.tombstone.image",
         noegnud_options_create_string(NOEGNUD_OPTIONPERM_CONFIGCHANGE
                                           | NOEGNUD_OPTIONPERM_DONTSAVETHIS,
-                                      ""));
+                                      ""),
+        NULL);
     noegnud_collection_add(
         noegnud_options, "gui.window.tombstone.font",
         noegnud_options_create_string(NOEGNUD_OPTIONPERM_CONFIGCHANGE
                                           | NOEGNUD_OPTIONPERM_DONTSAVETHIS,
-                                      ""));
+                                      ""),
+        NULL);
     noegnud_collection_add(
         noegnud_options, "gui.window.tombstone.width",
         noegnud_options_create_int(NOEGNUD_OPTIONPERM_CONFIGCHANGE
                                        | NOEGNUD_OPTIONPERM_DONTSAVETHIS,
-                                   23));
+                                   23),
+        NULL);
     noegnud_collection_add(
         noegnud_options, "gui.window.tombstone.name.x",
         noegnud_options_create_int(NOEGNUD_OPTIONPERM_CONFIGCHANGE
                                        | NOEGNUD_OPTIONPERM_DONTSAVETHIS,
-                                   0));
+                                   0),
+        NULL);
     noegnud_collection_add(
         noegnud_options, "gui.window.tombstone.name.y",
         noegnud_options_create_int(NOEGNUD_OPTIONPERM_CONFIGCHANGE
                                        | NOEGNUD_OPTIONPERM_DONTSAVETHIS,
-                                   0));
+                                   0),
+        NULL);
     noegnud_collection_add(
         noegnud_options, "gui.window.tombstone.year.x",
         noegnud_options_create_int(NOEGNUD_OPTIONPERM_CONFIGCHANGE
                                        | NOEGNUD_OPTIONPERM_DONTSAVETHIS,
-                                   0));
+                                   0),
+        NULL);
     noegnud_collection_add(
         noegnud_options, "gui.window.tombstone.year.y",
         noegnud_options_create_int(NOEGNUD_OPTIONPERM_CONFIGCHANGE
                                        | NOEGNUD_OPTIONPERM_DONTSAVETHIS,
-                                   0));
+                                   0),
+        NULL);
     noegnud_collection_add(
         noegnud_options, "gui.window.tombstone.gold.x",
         noegnud_options_create_int(NOEGNUD_OPTIONPERM_CONFIGCHANGE
                                        | NOEGNUD_OPTIONPERM_DONTSAVETHIS,
-                                   0));
+                                   0),
+        NULL);
     noegnud_collection_add(
         noegnud_options, "gui.window.tombstone.gold.y",
         noegnud_options_create_int(NOEGNUD_OPTIONPERM_CONFIGCHANGE
                                        | NOEGNUD_OPTIONPERM_DONTSAVETHIS,
-                                   0));
+                                   0),
+        NULL);
     noegnud_collection_add(
         noegnud_options, "gui.window.tombstone.how.x",
         noegnud_options_create_int(NOEGNUD_OPTIONPERM_CONFIGCHANGE
                                        | NOEGNUD_OPTIONPERM_DONTSAVETHIS,
-                                   0));
+                                   0),
+        NULL);
     noegnud_collection_add(
         noegnud_options, "gui.window.tombstone.how.y",
         noegnud_options_create_int(NOEGNUD_OPTIONPERM_CONFIGCHANGE
                                        | NOEGNUD_OPTIONPERM_DONTSAVETHIS,
-                                   0));
+                                   0),
+        NULL);
     noegnud_collection_add(
         noegnud_options, "gui.window.tombstone.description.x",
         noegnud_options_create_int(NOEGNUD_OPTIONPERM_CONFIGCHANGE
                                        | NOEGNUD_OPTIONPERM_DONTSAVETHIS,
-                                   0));
+                                   0),
+        NULL);
     noegnud_collection_add(
         noegnud_options, "gui.window.tombstone.description.y",
         noegnud_options_create_int(NOEGNUD_OPTIONPERM_CONFIGCHANGE
                                        | NOEGNUD_OPTIONPERM_DONTSAVETHIS,
-                                   0));
+                                   0),
+        NULL);
     noegnud_collection_add(
         noegnud_options, "gui.window.tombstone.tomb.colour",
         noegnud_options_create_rgb(NOEGNUD_OPTIONPERM_CONFIGCHANGE
                                        | NOEGNUD_OPTIONPERM_DONTSAVETHIS,
-                                   1.0, 1.0, 1.0));
+                                   1.0, 1.0, 1.0),
+        NULL);
     noegnud_collection_add(
         noegnud_options, "gui.window.tombstone.text.colour",
         noegnud_options_create_rgb(NOEGNUD_OPTIONPERM_CONFIGCHANGE
                                        | NOEGNUD_OPTIONPERM_DONTSAVETHIS,
-                                   1.0, 1.0, 1.0));
+                                   1.0, 1.0, 1.0),
+        NULL);
 
     noegnud_options_defadd_int("drawmode", NOEGNUD_OPTIONPERM_CONFIGCHANGE,
                                NOEGNUD_RENDER_DRAWMODE_TILE,

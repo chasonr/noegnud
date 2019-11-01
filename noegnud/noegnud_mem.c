@@ -74,7 +74,7 @@ noegnud_mem_debug_malloc(const char *filename, const int linenumber, int size)
     if (memstruct) {
         memstruct->data = memblock;
     } else {
-        noegnud_collection_add(noegnud_debug_mem_ptrsizemap, buf, memblock);
+        noegnud_collection_add(noegnud_debug_mem_ptrsizemap, buf, memblock, NULL);
     }
 
     noegnud_mem_lock = 0;
@@ -151,7 +151,7 @@ noegnud_mem_debug_img_load(const char *filename, const int linenumber,
             memstruct->data = memblock;
         } else {
             noegnud_collection_add(noegnud_debug_mem_ptrsizemap, buf,
-                                   memblock);
+                                   memblock, NULL);
         }
     }
     noegnud_mem_lock = 0;
@@ -187,7 +187,7 @@ noegnud_mem_debug_sdl_creatergbsurface(const char *filename,
             memstruct->data = memblock;
         } else {
             noegnud_collection_add(noegnud_debug_mem_ptrsizemap, buf,
-                                   memblock);
+                                   memblock, NULL);
         }
     }
     noegnud_mem_lock = 0;
@@ -224,7 +224,7 @@ noegnud_mem_debug_sdl_creatergbsurfacefrom(const char *filename,
             memstruct->data = memblock;
         } else {
             noegnud_collection_add(noegnud_debug_mem_ptrsizemap, buf,
-                                   memblock);
+                                   memblock, NULL);
         }
     }
     noegnud_mem_lock = 0;

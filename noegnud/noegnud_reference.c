@@ -46,9 +46,9 @@ noegnud_reference_load_parser(char *setting, int nparams, char *params,
     strcpy(value, params);
 
     if (noegnud_reference) {
-        noegnud_collection_add(noegnud_reference, setting, value);
+        noegnud_collection_add(noegnud_reference, setting, value, NULL);
     } else {
-        noegnud_reference = noegnud_collection_create(setting, value);
+        noegnud_reference = noegnud_collection_create(setting, value, NULL);
     }
     noegnud_reference_tile_amount++;
 }

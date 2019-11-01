@@ -1144,7 +1144,8 @@ noegnud_gui_kill_text(noegnud_gui_twidget *widget)
         noegnud_collection_add(
             noegnud_options, tmpstring,
             noegnud_options_create_string(NOEGNUD_OPTIONPERM_CONFIGCHANGE,
-                                          tmpvalue));
+                                          tmpvalue),
+            NULL);
         sprintf(tmpstring, "gui.window.implicit.%s.position.%d.%d.y",
                 text->text, noegnud_options_screenwidth->value,
                 noegnud_options_screenheight->value);
@@ -1152,7 +1153,8 @@ noegnud_gui_kill_text(noegnud_gui_twidget *widget)
         noegnud_collection_add(
             noegnud_options, tmpstring,
             noegnud_options_create_string(NOEGNUD_OPTIONPERM_CONFIGCHANGE,
-                                          tmpvalue));
+                                          tmpvalue),
+            NULL);
         sprintf(tmpstring, "gui.window.implicit.%s.colour", text->text);
         window = (noegnud_gui_twindow *) widget->parent->parent;
         sprintf(tmpvalue, "%2.3f,%2.3f,%2.3f,%2.3f", window->widget.r,
@@ -1160,7 +1162,8 @@ noegnud_gui_kill_text(noegnud_gui_twidget *widget)
         noegnud_collection_add(
             noegnud_options, tmpstring,
             noegnud_options_create_string(NOEGNUD_OPTIONPERM_CONFIGCHANGE,
-                                          tmpvalue));
+                                          tmpvalue),
+            NULL);
     }
 
     noegnud_mem_free(text->text);
