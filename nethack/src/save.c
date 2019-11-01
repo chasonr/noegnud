@@ -37,7 +37,7 @@ STATIC_DCL boolean NDECL(swapout_oldest);
 STATIC_DCL void FDECL(copyfile, (char *,char *));
 #endif /* MFLOPPY */
 #ifdef GCC_WARN
-static long nulls[10];
+static long nulls[100];
 #else
 #define nulls nul
 #endif
