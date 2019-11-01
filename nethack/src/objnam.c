@@ -29,6 +29,11 @@ struct Jitem {
 			   typ != BLACK_OPAL && 	\
 			   typ != EMERALD && typ != OPAL)))
 
+#define BSTRCMP(base,ptr,string) ((ptr) < base || strcmp((ptr),string))
+#define BSTRCMPI(base,ptr,string) ((ptr) < base || strcmpi((ptr),string))
+#define BSTRNCMP(base,ptr,string,num) ((ptr)<base || strncmp((ptr),string,num))
+#define BSTRNCMPI(base,ptr,string,num) ((ptr)<base||strncmpi((ptr),string,num))
+
 #ifndef OVLB
 
 STATIC_DCL struct Jitem Japanese_items[];
@@ -1327,130 +1332,130 @@ const char *oldstr;
 
 	/* Same singular and plural; mostly Japanese words except for "manes" */
 	if ((len == 2 && !strcmp(str, "ya")) ||
-	    (len >= 2 && !strcmp(spot-1, "ai")) || /* samurai, Uruk-hai */
-	    (len >= 3 && !strcmp(spot-2, " ya")) ||
+	    (len >= 2 && !BSTRCMP(str, spot-1, "ai")) || /* samurai, Uruk-hai */
+	    (len >= 3 && !BSTRCMP(str, spot-2, " ya")) ||
 	    (len >= 4 &&
-	     (!strcmp(spot-3, "fish") || !strcmp(spot-3, "tuna") ||
-	      !strcmp(spot-3, "deer") || !strcmp(spot-3, "yaki"))) ||
-	    (len >= 5 && (!strcmp(spot-4, "sheep") ||
-			!strcmp(spot-4, "ninja") ||
-			!strcmp(spot-4, "ronin") ||
-			!strcmp(spot-4, "shito") ||
-			!strcmp(spot-7, "shuriken") ||
-			!strcmp(spot-4, "tengu") ||
-			!strcmp(spot-4, "manes"))) ||
-	    (len >= 6 && !strcmp(spot-5, "ki-rin")) ||
-	    (len >= 7 && !strcmp(spot-6, "gunyoki")))
+	     (!BSTRCMP(str, spot-3, "fish") || !BSTRCMP(str, spot-3, "tuna") ||
+	      !BSTRCMP(str, spot-3, "deer") || !BSTRCMP(str, spot-3, "yaki"))) ||
+	    (len >= 5 && (!BSTRCMP(str, spot-4, "sheep") ||
+			!BSTRCMP(str, spot-4, "ninja") ||
+			!BSTRCMP(str, spot-4, "ronin") ||
+			!BSTRCMP(str, spot-4, "shito") ||
+			!BSTRCMP(str, spot-7, "shuriken") ||
+			!BSTRCMP(str, spot-4, "tengu") ||
+			!BSTRCMP(str, spot-4, "manes"))) ||
+	    (len >= 6 && !BSTRCMP(str, spot-5, "ki-rin")) ||
+	    (len >= 7 && !BSTRCMP(str, spot-6, "gunyoki")))
 		goto bottom;
 
 	/* man/men ("Wiped out all cavemen.") */
-	if (len >= 3 && !strcmp(spot-2, "man") &&
-			(len<6 || strcmp(spot-5, "shaman")) &&
-			(len<5 || strcmp(spot-4, "human"))) {
+	if (len >= 3 && !BSTRCMP(str, spot-2, "man") &&
+			(len<6 || BSTRCMP(str, spot-5, "shaman")) &&
+			(len<5 || BSTRCMP(str, spot-4, "human"))) {
 		*(spot-1) = 'e';
 		goto bottom;
 	}
 
 	/* tooth/teeth */
-	if (len >= 5 && !strcmp(spot-4, "tooth")) {
+	if (len >= 5 && !BSTRCMP(str, spot-4, "tooth")) {
 		Strcpy(spot-3, "eeth");
 		goto bottom;
 	}
 
 	/* knife/knives, etc... */
-	if (!strcmp(spot-1, "fe")) {
+	if (!BSTRCMP(str, spot-1, "fe")) {
 		Strcpy(spot-1, "ves");
 		goto bottom;
 	} else if (*spot == 'f') {
 		if (index("lr", *(spot-1)) || index(vowels, *(spot-1))) {
 			Strcpy(spot, "ves");
 			goto bottom;
-		} else if (len >= 5 && !strncmp(spot-4, "staf", 4)) {
+		} else if (len >= 5 && !BSTRNCMP(str, spot-4, "staf", 4)) {
 			Strcpy(spot-1, "ves");
 			goto bottom;
 		}
 	}
 
 	/* foot/feet (body part) */
-	if (len >= 4 && !strcmp(spot-3, "foot")) {
+	if (len >= 4 && !BSTRCMP(str, spot-3, "foot")) {
 		Strcpy(spot-2, "eet");
 		goto bottom;
 	}
 
 	/* ium/ia (mycelia, baluchitheria) */
-	if (len >= 3 && !strcmp(spot-2, "ium")) {
+	if (len >= 3 && !BSTRCMP(str, spot-2, "ium")) {
 		*(spot--) = (char)0;
 		*spot = 'a';
 		goto bottom;
 	}
 
 	/* algae, larvae, hyphae (another fungus part) */
-	if ((len >= 4 && !strcmp(spot-3, "alga")) ||
+	if ((len >= 4 && !BSTRCMP(str, spot-3, "alga")) ||
 	    (len >= 5 &&
-	     (!strcmp(spot-4, "hypha") || !strcmp(spot-4, "larva")))) {
+	     (!BSTRCMP(str, spot-4, "hypha") || !BSTRCMP(str, spot-4, "larva")))) {
 		Strcpy(spot, "ae");
 		goto bottom;
 	}
 
 	/* fungus/fungi, homunculus/homunculi, but buses, lotuses, wumpuses */
-	if (len > 3 && !strcmp(spot-1, "us") &&
-	    (len < 5 || (strcmp(spot-4, "lotus") &&
-			 (len < 6 || strcmp(spot-5, "wumpus"))))) {
+	if (len > 3 && !BSTRCMP(str, spot-1, "us") &&
+	    (len < 5 || (BSTRCMP(str, spot-4, "lotus") &&
+			 (len < 6 || BSTRCMP(str, spot-5, "wumpus"))))) {
 		*(spot--) = (char)0;
 		*spot = 'i';
 		goto bottom;
 	}
 
 	/* vortex/vortices */
-	if (len >= 6 && !strcmp(spot-3, "rtex")) {
+	if (len >= 6 && !BSTRCMP(str, spot-3, "rtex")) {
 		Strcpy(spot-1, "ices");
 		goto bottom;
 	}
 
 	/* djinni/djinn (note: also efreeti/efreet) */
-	if (len >= 6 && !strcmp(spot-5, "djinni")) {
+	if (len >= 6 && !BSTRCMP(str, spot-5, "djinni")) {
 		*spot = (char)0;
 		goto bottom;
 	}
 
 	/* mumak/mumakil */
-	if (len >= 5 && !strcmp(spot-4, "mumak")) {
+	if (len >= 5 && !BSTRCMP(str, spot-4, "mumak")) {
 		Strcpy(spot+1, "il");
 		goto bottom;
 	}
 
 	/* sis/ses (nemesis) */
-	if (len >= 3 && !strcmp(spot-2, "sis")) {
+	if (len >= 3 && !BSTRCMP(str, spot-2, "sis")) {
 		*(spot-1) = 'e';
 		goto bottom;
 	}
 
 	/* erinys/erinyes */
-	if (len >= 6 && !strcmp(spot-5, "erinys")) {
+	if (len >= 6 && !BSTRCMP(str, spot-5, "erinys")) {
 		Strcpy(spot, "es");
 		goto bottom;
 	}
 
 	/* mouse/mice,louse/lice (not a monster, but possible in food names) */
-	if (len >= 5 && !strcmp(spot-3, "ouse") && index("MmLl", *(spot-4))) {
+	if (len >= 5 && !BSTRCMP(str, spot-3, "ouse") && index("MmLl", *(spot-4))) {
 		Strcpy(spot-3, "ice");
 		goto bottom;
 	}
 
 	/* matzoh/matzot, possible food name */
-	if (len >= 6 && (!strcmp(spot-5, "matzoh")
-					|| !strcmp(spot-5, "matzah"))) {
+	if (len >= 6 && (!BSTRCMP(str, spot-5, "matzoh")
+					|| !BSTRCMP(str, spot-5, "matzah"))) {
 		Strcpy(spot-1, "ot");
 		goto bottom;
 	}
-	if (len >= 5 && (!strcmp(spot-4, "matzo")
-					|| !strcmp(spot-5, "matza"))) {
+	if (len >= 5 && (!BSTRCMP(str, spot-4, "matzo")
+					|| !BSTRCMP(str, spot-5, "matza"))) {
 		Strcpy(spot, "ot");
 		goto bottom;
 	}
 
 	/* child/children (for wise guys who give their food funny names) */
-	if (len >= 5 && !strcmp(spot-4, "child")) {
+	if (len >= 5 && !BSTRCMP(str, spot-4, "child")) {
 		Strcpy(spot, "dren");
 		goto bottom;
 	}
@@ -1462,7 +1467,7 @@ const char *oldstr;
 	if (index("zxs", *spot)
 			|| (len >= 2 && *spot=='h' && index("cs", *(spot-1)))
 	/* Kludge to get "tomatoes" and "potatoes" right */
-			|| (len >= 4 && !strcmp(spot-2, "ato"))) {
+			|| (len >= 4 && !BSTRCMP(str, spot-2, "ato"))) {
 		Strcpy(spot+1, "es");
 		goto bottom;
 	}
@@ -1521,11 +1526,6 @@ STATIC_OVL NEARDATA const struct o_range o_ranges[] = {
 	{ "gray stone",	GEM_CLASS,    LUCKSTONE,      FLINT },
 	{ "grey stone",	GEM_CLASS,    LUCKSTONE,      FLINT },
 };
-
-#define BSTRCMP(base,ptr,string) ((ptr) < base || strcmp((ptr),string))
-#define BSTRCMPI(base,ptr,string) ((ptr) < base || strcmpi((ptr),string))
-#define BSTRNCMP(base,ptr,string,num) ((ptr)<base || strncmp((ptr),string,num))
-#define BSTRNCMPI(base,ptr,string,num) ((ptr)<base||strncmpi((ptr),string,num))
 
 /*
  * Singularize a string the user typed in; this helps reduce the complexity
