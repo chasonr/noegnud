@@ -108,30 +108,25 @@ noegnud_textcolour_rgb_text(const char *haystack, const char *needle,
                             float br, float bg, float bb, float ar, float ag,
                             float ab)
 {
-    struct re_pattern_buffer *pbuffer;
+    struct re_pattern_buffer pbuffer;
     const char *regex_error;
     char *szReturn;
 
     re_syntax_options = RE_SYNTAX_EMACS;
 
-    pbuffer = noegnud_mem_malloc(sizeof(struct re_pattern_buffer));
+    memset(&pbuffer, 0, sizeof(pbuffer));
 
-    pbuffer->translate = 0;
-    pbuffer->fastmap = 0;
-    pbuffer->buffer = 0;
-    pbuffer->allocated = 0;
-
-    if ((regex_error = re_compile_pattern(needle, strlen(needle), pbuffer))) {
+    if ((regex_error = re_compile_pattern(needle, strlen(needle), &pbuffer))) {
         printf("[WARNING] noegnud_textcolour_rgb_text: failed regex "
                "compilation of \"%s\" : %s\n",
                needle, regex_error);
         szReturn = (char *) haystack;
     } else {
-        szReturn = noegnud_textcolour_rgb_pbuffer(haystack, pbuffer, br, bg,
+        szReturn = noegnud_textcolour_rgb_pbuffer(haystack, &pbuffer, br, bg,
                                                   bb, ar, ag, ab);
     }
 
-    noegnud_mem_free(pbuffer);
+    regfree(&pbuffer);
     return szReturn;
 }
 

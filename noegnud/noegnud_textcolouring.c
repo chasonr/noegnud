@@ -95,6 +95,7 @@ noegnud_textcolouring_load_parser(char *setting, int nparams, char *params,
 
     if ((regex_error = re_compile_pattern(
              setting, strlen(setting), textcolouring_item->pattern_buffer))) {
+        regfree(textcolouring_item->pattern_buffer);
         free(textcolouring_item->pattern_buffer);
         textcolouring_item->pattern_buffer = NULL;
         printf("[NOEGNUD_TEXTCOLOURING] regex error attempting to compile "
