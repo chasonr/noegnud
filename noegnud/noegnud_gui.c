@@ -76,31 +76,32 @@ static void noegnud_gui_event_widget(noegnud_gui_twidget *widget,
                                      SDL_Event *event);
 static void noegnud_gui_widget_addsibling(noegnud_gui_twidget *widget,
                                           noegnud_gui_twidget *sibling);
-static void noegnud_gui_kill_window(noegnud_gui_twindow *window);
-static void noegnud_gui_draw_text(noegnud_gui_ttext *text, int drawchildren);
-static void noegnud_gui_kill_text(noegnud_gui_ttext *text);
-static void noegnud_gui_draw_button(noegnud_gui_tbutton *button,
+static void noegnud_gui_kill_window(noegnud_gui_twidget *widget);
+static void noegnud_gui_draw_text(noegnud_gui_twidget *widget,
+                                  int drawchildren);
+static void noegnud_gui_kill_text(noegnud_gui_twidget *widget);
+static void noegnud_gui_draw_button(noegnud_gui_twidget *widget,
                                     int drawchildren);
-static void noegnud_gui_event_button(noegnud_gui_tbutton *button,
+static void noegnud_gui_event_button(noegnud_gui_twidget *widget,
                                      SDL_Event *event);
 static noegnud_gui_tglyph *noegnud_gui_create_glyph(noegnud_gui_twidget *parent,
                                                     int x, int y, int width,
                                                     int height, int glyph);
-static void noegnud_gui_draw_glyph(noegnud_gui_tglyph *glyph,
+static void noegnud_gui_draw_glyph(noegnud_gui_twidget *widget,
                                    int drawchildren);
-static void noegnud_gui_event_glyph(noegnud_gui_tglyph *glyph,
+static void noegnud_gui_event_glyph(noegnud_gui_twidget *widget,
                                     SDL_Event *event);
 static noegnud_gui_tvscroll *noegnud_gui_create_vscroll(noegnud_gui_twidget *parent);
-static void noegnud_gui_event_vscroll(noegnud_gui_tvscroll *vscroll,
+static void noegnud_gui_event_vscroll(noegnud_gui_twidget *widget,
                                       SDL_Event *event);
-static void noegnud_gui_autosize_vscroll(noegnud_gui_tvscroll *vscroll);
-static void noegnud_gui_draw_vslider(noegnud_gui_tvslider *vslider,
+static void noegnud_gui_autosize_vscroll(noegnud_gui_twidget *widget);
+static void noegnud_gui_draw_vslider(noegnud_gui_twidget *widget,
                                      int drawchildren);
 static noegnud_gui_tmenuitem *noegnud_gui_create_menuitem(
            noegnud_gui_twidget *parent, int x, int y, int width, int height,
            GLfloat r, GLfloat g, GLfloat b, GLfloat a, anything identifier,
            char ch, char gch, int selected);
-static void noegnud_gui_event_menuitem(noegnud_gui_tmenuitem *menuitem,
+static void noegnud_gui_event_menuitem(noegnud_gui_twidget *widget,
                                        SDL_Event *event);
 
 void
@@ -507,12 +508,9 @@ noegnud_gui_create_window(noegnud_gui_twidget *parent, int x, int y,
             + datasize);
 
     window->widget.type = NOEGNUD_GUI_WINDOW;
-    window->widget.draw =
-        (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_window;
-    window->widget.event =
-        (noegnud_gui_event_widget_proc *) noegnud_gui_event_window;
-    window->widget.kill =
-        (noegnud_gui_kill_widget_proc *) noegnud_gui_kill_window;
+    window->widget.draw = noegnud_gui_draw_window;
+    window->widget.event = noegnud_gui_event_window;
+    window->widget.kill = noegnud_gui_kill_window;
 
     window->widget.r = r;
     window->widget.g = g;
@@ -541,8 +539,9 @@ noegnud_gui_create_window(noegnud_gui_twidget *parent, int x, int y,
 }
 
 void
-noegnud_gui_draw_window(noegnud_gui_twindow *window, int drawchildren)
+noegnud_gui_draw_window(noegnud_gui_twidget *widget, int drawchildren)
 {
+    noegnud_gui_twindow *window = (noegnud_gui_twindow *) widget;
     noegnud_gui_twidget *parent;
 
     GLfloat image_delta_x, image_delta_y;
@@ -550,51 +549,48 @@ noegnud_gui_draw_window(noegnud_gui_twindow *window, int drawchildren)
     int block_x, block_y;
     float start_x, start_y, width, height;
 
-    if (!window->widget.width || !window->widget.height) {
+    if (!widget->width || !widget->height) {
         if (drawchildren)
-            noegnud_gui_draw_widget_relatives((noegnud_gui_twidget *) window);
+            noegnud_gui_draw_widget_relatives(widget);
         return;
     }
 
     glDisable(GL_TEXTURE_2D);
 
     glLoadIdentity();
-    noegnud_gui_widget_cliptome((noegnud_gui_twidget *) window);
+    noegnud_gui_widget_cliptome(widget);
 
-    if ((noegnud_gui_twidget *) window->widget.theme) {
-        noegnud_widgettheme_draw((noegnud_gui_twidget *) window,
-                                 window->widget.theme);
+    if (widget->theme) {
+        noegnud_widgettheme_draw(widget, widget->theme);
         if (!window->localimage) {
             if (drawchildren)
-                noegnud_gui_draw_widget_relatives(
-                    (noegnud_gui_twidget *) window);
+                noegnud_gui_draw_widget_relatives(widget);
             return;
         }
     }
 
-    parent = window->widget.parent;
+    parent = widget->parent;
     while (parent) {
         glTranslated(parent->x, -parent->y, 0);
         noegnud_gui_checkoffset_widget(parent);
-        if (window->widget.type != NOEGNUD_GUI_VSCROLL
-            && window->widget.type != NOEGNUD_GUI_TITLEBAR)
+        if (widget->type != NOEGNUD_GUI_VSCROLL
+            && widget->type != NOEGNUD_GUI_TITLEBAR)
             glTranslated(parent->offset_x, parent->offset_y, 0);
         parent = parent->parent;
     }
-    glTranslated(window->widget.x,
-                 noegnud_options_screenheight->value - window->widget.y, 0);
+    glTranslated(widget->x,
+                 noegnud_options_screenheight->value - widget->y, 0);
 
     glBegin(GL_QUADS);
 
-    glColor4f(window->widget.r, window->widget.g, window->widget.b,
-              window->widget.a);
+    glColor4f(widget->r, widget->g, widget->b, widget->a);
     if (window->image) {
         glEnd();
         glEnable(GL_TEXTURE_2D);
         if (window->image_tiled) {
-            image_delta_x = window->widget.offset_x
+            image_delta_x = widget->offset_x
                             / (float) window->image->block[0][0]->width;
-            image_delta_y = window->widget.offset_y
+            image_delta_y = widget->offset_y
                             / (float) window->image->block[0][0]->height;
 
             glBindTexture(GL_TEXTURE_2D, window->image->block[0][0]->image);
@@ -604,23 +600,23 @@ noegnud_gui_draw_window(noegnud_gui_twindow *window, int drawchildren)
             glTexCoord2f(
                 image_delta_x,
                 image_delta_y
-                    + (float) window->widget.height
+                    + (float) widget->height
                           / (float) window->image->block[0][0]->height);
-            glVertex2i(0, -window->widget.height);
+            glVertex2i(0, -widget->height);
             glTexCoord2f(
                 image_delta_x
-                    + (float) window->widget.width
+                    + (float) widget->width
                           / (float) window->image->block[0][0]->width,
                 image_delta_y
-                    + (float) window->widget.height
+                    + (float) widget->height
                           / (float) window->image->block[0][0]->height);
-            glVertex2i(window->widget.width, -window->widget.height);
+            glVertex2i(widget->width, -widget->height);
             glTexCoord2f(
                 image_delta_x
-                    + (float) window->widget.width
+                    + (float) widget->width
                           / (float) window->image->block[0][0]->width,
                 image_delta_y);
-            glVertex2i(window->widget.width, 0);
+            glVertex2i(widget->width, 0);
             glEnd();
         } else {
             for (block_y = 0; block_y < window->image->block_height;
@@ -630,20 +626,20 @@ noegnud_gui_draw_window(noegnud_gui_twindow *window, int drawchildren)
                     start_x =
                         ((float) (block_x
                                   * noegnud_glfuncs_maximum_texturesize))
-                        * ((float) (window->widget.width)
+                        * ((float) (widget->width)
                            / (float) (window->image->width));
                     start_y =
                         ((float) (block_y
                                   * noegnud_glfuncs_maximum_texturesize))
-                        * ((float) (window->widget.height)
+                        * ((float) (widget->height)
                            / (float) (window->image->height));
                     width = ((float) (window->image->block[block_x][block_y]
                                           ->width))
-                            * ((float) (window->widget.width)
+                            * ((float) (widget->width)
                                / (float) (window->image->width));
                     height = ((float) (window->image->block[block_x][block_y]
                                            ->height))
-                             * ((float) (window->widget.height)
+                             * ((float) (widget->height)
                                 / (float) (window->image->height));
 
                     glBindTexture(
@@ -668,9 +664,9 @@ noegnud_gui_draw_window(noegnud_gui_twindow *window, int drawchildren)
         glDisable(GL_TEXTURE_2D);
     } else {
         glVertex2i(0, 0);
-        glVertex2i(0, -window->widget.height);
-        glVertex2i(window->widget.width, -window->widget.height);
-        glVertex2i(window->widget.width, 0);
+        glVertex2i(0, -widget->height);
+        glVertex2i(widget->width, -widget->height);
+        glVertex2i(widget->width, 0);
         glEnd();
     }
 
@@ -678,51 +674,50 @@ noegnud_gui_draw_window(noegnud_gui_twindow *window, int drawchildren)
         glColor4f(1.0, 1.0, 1.0, 1.0);
         glBegin(GL_LINES);
         glVertex2i(0, 0);
-        glVertex2i(window->widget.width, 0);
-        glVertex2i(window->widget.width, 0);
-        glVertex2i(window->widget.width, -window->widget.height);
-        glVertex2i(window->widget.width, -window->widget.height);
-        glVertex2i(0, -window->widget.height);
-        glVertex2i(0, -window->widget.height);
+        glVertex2i(widget->width, 0);
+        glVertex2i(widget->width, 0);
+        glVertex2i(widget->width, -widget->height);
+        glVertex2i(widget->width, -widget->height);
+        glVertex2i(0, -widget->height);
+        glVertex2i(0, -widget->height);
         glVertex2i(0, 0);
         glEnd();
     }
 
     if (drawchildren)
-        noegnud_gui_draw_widget_relatives((noegnud_gui_twidget *) window);
+        noegnud_gui_draw_widget_relatives(widget);
 }
 
 void
-noegnud_gui_event_window(noegnud_gui_twindow *window, SDL_Event *event)
+noegnud_gui_event_window(noegnud_gui_twidget *widget, SDL_Event *event)
 {
+    noegnud_gui_twindow *window = (noegnud_gui_twindow *) widget; 
     noegnud_gui_twidget *tmp_widget;
 
-    noegnud_gui_event_widget_relatives((noegnud_gui_twidget *) window, event);
+    noegnud_gui_event_widget_relatives(widget, event);
 
-    if (window->widget.type == NOEGNUD_GUI_TITLEBAR
-        && ((noegnud_gui_twindow *) window->widget.parent)->refreshtitlebar) {
-        if (window->widget.parent == noegnud_gui_active) {
-            window->widget.theme =
-                noegnud_gui_default_title_active_widgettheme;
+    if (widget->type == NOEGNUD_GUI_TITLEBAR
+        && ((noegnud_gui_twindow *) widget->parent)->refreshtitlebar) {
+        if (widget->parent == noegnud_gui_active) {
+            widget->theme = noegnud_gui_default_title_active_widgettheme;
         } else {
-            window->widget.theme = noegnud_gui_default_title_widgettheme;
+            widget->theme = noegnud_gui_default_title_widgettheme;
         }
     }
 
-    if (window->widget.mouseover_check) {
+    if (widget->mouseover_check) {
         if (event->type == SDL_MOUSEMOTION)
-            window->widget.mouseover = noegnud_gui_widget_contained(
-                (noegnud_gui_twidget *) window, event->motion.x,
-                event->motion.y);
-        if (window->widget.mouseover) {
+            widget->mouseover = noegnud_gui_widget_contained(
+                widget, event->motion.x, event->motion.y);
+        if (widget->mouseover) {
             if (!noegnud_gui_mouseoverwidget)
-                noegnud_gui_mouseoverwidget = (noegnud_gui_twidget *) window;
+                noegnud_gui_mouseoverwidget = widget;
         }
     }
 
     if ((!noegnud_gui_grabbed)
-        || (noegnud_gui_grabbed == (noegnud_gui_twidget *) window)) {
-        if (noegnud_gui_grabbed == (noegnud_gui_twidget *) window) {
+        || (noegnud_gui_grabbed == widget)) {
+        if (noegnud_gui_grabbed == widget) {
             if (event->type == SDL_MOUSEBUTTONUP) {
                 noegnud_gui_grabbed = NULL;
             }
@@ -738,19 +733,17 @@ noegnud_gui_event_window(noegnud_gui_twindow *window, SDL_Event *event)
             }
 
         } else if (noegnud_gui_widget_contained(
-                       (noegnud_gui_twidget *) window, event->motion.x,
-                       event->motion.y)) {
+                       widget, event->motion.x, event->motion.y)) {
             if (event->type == SDL_MOUSEBUTTONDOWN
                 && ((SDL_MouseButtonEvent *) event)->button == 1
-                && noegnud_gui_overselforchildren(
-                       (noegnud_gui_twidget *) window)) {
-                if (window->widget.type == NOEGNUD_GUI_TITLEBAR
-                    || (window->widget.parent == noegnud_guiwidget_desktop
+                && noegnud_gui_overselforchildren(widget)) {
+                if (widget->type == NOEGNUD_GUI_TITLEBAR
+                    || (widget->parent == noegnud_guiwidget_desktop
                         && window != noegnud_guiwidget_console)) {
-                    if (window->widget.type == NOEGNUD_GUI_TITLEBAR) {
-                        tmp_widget = window->widget.parent;
+                    if (widget->type == NOEGNUD_GUI_TITLEBAR) {
+                        tmp_widget = widget->parent;
                     } else {
-                        tmp_widget = (noegnud_gui_twidget *) window;
+                        tmp_widget = widget;
                     }
 
                     while (tmp_widget->nextsibling) {
@@ -776,7 +769,7 @@ noegnud_gui_event_window(noegnud_gui_twindow *window, SDL_Event *event)
                     }
                 }
                 if (window->movable) {
-                    noegnud_gui_grabbed = (noegnud_gui_twidget *) window;
+                    noegnud_gui_grabbed = widget;
                     noegnud_gui_grabbed_x = event->motion.x;
                     noegnud_gui_grabbed_y = event->motion.y;
                 }
@@ -784,43 +777,44 @@ noegnud_gui_event_window(noegnud_gui_twindow *window, SDL_Event *event)
 
             if (event->type == SDL_MOUSEBUTTONDOWN
                 && ((SDL_MouseButtonEvent *) event)->button == 4
-                && window->widget.vscroll) {
-                if (window->widget.offset_y
+                && widget->vscroll) {
+                if (widget->offset_y
                     > noegnud_options_input_mouse_gui_scrollspeed->value) {
-                    window->widget.offset_y -=
+                    widget->offset_y -=
                         noegnud_options_input_mouse_gui_scrollspeed->value;
                 } else {
-                    window->widget.offset_y = 0;
+                    widget->offset_y = 0;
                 }
-                if (window->widget.offset_y > window->widget.vscroll)
-                    window->widget.offset_y = window->widget.vscroll;
+                if (widget->offset_y > widget->vscroll)
+                    widget->offset_y = widget->vscroll;
             };
 
             if (event->type == SDL_MOUSEBUTTONDOWN
                 && ((SDL_MouseButtonEvent *) event)->button == 5
-                && window->widget.vscroll) {
-                if (window->widget.offset_y
-                    < (window->widget.vscroll
+                && widget->vscroll) {
+                if (widget->offset_y
+                    < (widget->vscroll
                        + noegnud_options_input_mouse_gui_scrollspeed
                              ->value)) {
-                    window->widget.offset_y +=
+                    widget->offset_y +=
                         noegnud_options_input_mouse_gui_scrollspeed->value;
                 } else {
-                    window->widget.offset_y = window->widget.vscroll;
+                    widget->offset_y = widget->vscroll;
                 }
-                if (window->widget.offset_y > window->widget.vscroll)
-                    window->widget.offset_y = window->widget.vscroll;
+                if (widget->offset_y > widget->vscroll)
+                    widget->offset_y = widget->vscroll;
             };
         }
     }
 }
 
 static void
-noegnud_gui_kill_window(noegnud_gui_twindow *window)
+noegnud_gui_kill_window(noegnud_gui_twidget *widget)
 {
+    noegnud_gui_twindow *window = (noegnud_gui_twindow *) widget;
     if (window->localimage)
         noegnud_glfuncs_unloadimage(window->image);
-    noegnud_gui_kill_widget((noegnud_gui_twidget *) window);
+    noegnud_gui_kill_widget(widget);
 }
 
 /*BUTTON*/
@@ -848,10 +842,8 @@ noegnud_gui_create_button(noegnud_gui_twidget *parent, int x, int y,
         string);
 
     button->window.widget.type = NOEGNUD_GUI_BUTTON;
-    button->window.widget.draw =
-        (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_button;
-    button->window.widget.event =
-        (noegnud_gui_event_widget_proc *) noegnud_gui_event_button;
+    button->window.widget.draw = noegnud_gui_draw_button;
+    button->window.widget.event = noegnud_gui_event_button;
     button->window.widget.theme = noegnud_gui_default_button_widgettheme;
 
     button->text = text;
@@ -861,48 +853,44 @@ noegnud_gui_create_button(noegnud_gui_twidget *parent, int x, int y,
 }
 
 static void
-noegnud_gui_draw_button(noegnud_gui_tbutton *button, int drawchildren)
+noegnud_gui_draw_button(noegnud_gui_twidget *widget, int drawchildren)
 {
     noegnud_gui_twidget *parent;
 
     glDisable(GL_TEXTURE_2D);
 
     glLoadIdentity();
-    noegnud_gui_widget_cliptome((noegnud_gui_twidget *) button);
+    noegnud_gui_widget_cliptome(widget);
 
-    if ((noegnud_gui_twidget *) button->window.widget.theme) {
-        noegnud_widgettheme_draw((noegnud_gui_twidget *) button,
-                                 button->window.widget.theme);
+    if (widget->theme) {
+        noegnud_widgettheme_draw(widget, widget->theme);
         if (drawchildren)
-            noegnud_gui_draw_widget_relatives((noegnud_gui_twidget *) button);
+            noegnud_gui_draw_widget_relatives(widget);
         return;
     }
 
-    parent = button->window.widget.parent;
+    parent = widget->parent;
     while (parent) {
         glTranslated(parent->x, -parent->y, 0);
         noegnud_gui_checkoffset_widget(parent);
-        if (button->window.widget.type != NOEGNUD_GUI_VSCROLL)
+        if (widget->type != NOEGNUD_GUI_VSCROLL)
             glTranslated(parent->offset_x, parent->offset_y, 0);
         parent = parent->parent;
     }
-    glTranslated(
-        button->window.widget.x,
-        noegnud_options_screenheight->value - button->window.widget.y, 0);
+    glTranslated(widget->x, noegnud_options_screenheight->value - widget->y,
+                 0);
 
     glBegin(GL_QUADS);
 
-    if (button->window.widget.mouseover) {
-        glColor4f(button->window.widget.r / 2, button->window.widget.g / 2,
-                  button->window.widget.b / 2, button->window.widget.a);
+    if (widget->mouseover) {
+        glColor4f(widget->r / 2, widget->g / 2, widget->b / 2, widget->a);
     } else {
-        glColor4f(button->window.widget.r, button->window.widget.g,
-                  button->window.widget.b, button->window.widget.a);
+        glColor4f(widget->r, widget->g, widget->b, widget->a);
     }
     glVertex2i(0, 0);
-    glVertex2i(0, -button->window.widget.height);
-    glVertex2i(button->window.widget.width, -button->window.widget.height);
-    glVertex2i(button->window.widget.width, 0);
+    glVertex2i(0, -widget->height);
+    glVertex2i(widget->width, -widget->height);
+    glVertex2i(widget->width, 0);
 
     glEnd();
 
@@ -910,54 +898,50 @@ noegnud_gui_draw_button(noegnud_gui_tbutton *button, int drawchildren)
         glColor4f(1.0, 1.0, 1.0, 1.0);
         glBegin(GL_LINES);
         glVertex2i(0, 0);
-        glVertex2i(button->window.widget.width, 0);
-        glVertex2i(button->window.widget.width, 0);
-        glVertex2i(button->window.widget.width,
-                   -button->window.widget.height);
-        glVertex2i(button->window.widget.width,
-                   -button->window.widget.height);
-        glVertex2i(0, -button->window.widget.height);
-        glVertex2i(0, -button->window.widget.height);
+        glVertex2i(widget->width, 0);
+        glVertex2i(widget->width, 0);
+        glVertex2i(widget->width, -widget->height);
+        glVertex2i(widget->width, -widget->height);
+        glVertex2i(0, -widget->height);
+        glVertex2i(0, -widget->height);
         glVertex2i(0, 0);
         glEnd();
     }
 
     if (drawchildren)
-        noegnud_gui_draw_widget_relatives((noegnud_gui_twidget *) button);
+        noegnud_gui_draw_widget_relatives(widget);
 }
 
 static void
-noegnud_gui_event_button(noegnud_gui_tbutton *button, SDL_Event *event)
+noegnud_gui_event_button(noegnud_gui_twidget *widget, SDL_Event *event)
 {
-    if (button->window.widget.parent != noegnud_gui_active
-        && button->window.widget.parent->parent != noegnud_gui_active) {
-        noegnud_gui_event_null((noegnud_gui_twidget *) button, event);
+    noegnud_gui_tbutton *button = (noegnud_gui_tbutton *) widget;
+    if (widget->parent != noegnud_gui_active
+        && widget->parent->parent != noegnud_gui_active) {
+        noegnud_gui_event_null(widget, event);
         return;
     }
 
-    noegnud_gui_event_widget_relatives((noegnud_gui_twidget *) button, event);
+    noegnud_gui_event_widget_relatives(widget, event);
 
-    if (button->window.widget.mouseover_check) {
+    if (widget->mouseover_check) {
         if (event->type == SDL_MOUSEMOTION)
-            button->window.widget.mouseover = noegnud_gui_widget_contained(
-                (noegnud_gui_twidget *) button, event->motion.x,
-                event->motion.y);
-        if (button->window.widget.mouseover) {
-            button->window.widget.theme =
-                noegnud_gui_default_buttonover_widgettheme;
+            widget->mouseover = noegnud_gui_widget_contained(
+                    widget, event->motion.x, event->motion.y);
+        if (widget->mouseover) {
+            widget->theme = noegnud_gui_default_buttonover_widgettheme;
             if (!noegnud_gui_mouseoverwidget)
-                noegnud_gui_mouseoverwidget = (noegnud_gui_twidget *) button;
+                noegnud_gui_mouseoverwidget = widget;
         } else {
-            button->window.widget.theme =
-                noegnud_gui_default_button_widgettheme;
+            widget->theme = noegnud_gui_default_button_widgettheme;
         }
     }
 
     if (event->type == SDL_MOUSEMOTION)
-        button->window.widget.mouseover = noegnud_gui_widget_contained(
-            (noegnud_gui_twidget *) button, event->motion.x, event->motion.y);
+        widget->mouseover = noegnud_gui_widget_contained(
+                widget, event->motion.x, event->motion.y);
 
-    if (event->type == SDL_MOUSEBUTTONUP && button->window.widget.mouseover
+    if (event->type == SDL_MOUSEBUTTONUP && widget->mouseover
         && ((SDL_MouseButtonEvent *) event)->button == 1) {
         noegnud_common_pushevent_keypress(button->accelerator);
     }
@@ -996,9 +980,7 @@ noegnud_gui_create_glyph(noegnud_gui_twidget *parent, int x, int y, int width,
         sizeof(noegnud_gui_twindow) - sizeof(noegnud_gui_twidget));
 
     wglyph->widget.type = NOEGNUD_GUI_GLYPH;
-    wglyph->widget.draw =
-        (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_glyph;
-    //	wglyph->widget.event=noegnud_gui_event_glyph;
+    wglyph->widget.draw = noegnud_gui_draw_glyph;
     wglyph->widget.event = noegnud_gui_event_widget;
 
     wglyph->glyph = glyph;
@@ -1008,25 +990,26 @@ noegnud_gui_create_glyph(noegnud_gui_twidget *parent, int x, int y, int width,
 }
 
 static void
-noegnud_gui_draw_glyph(noegnud_gui_tglyph *glyph, int drawchildren)
+noegnud_gui_draw_glyph(noegnud_gui_twidget *widget, int drawchildren)
 {
+    noegnud_gui_tglyph *glyph = (noegnud_gui_tglyph *) widget;
     noegnud_gui_twidget *parent;
 
     glEnable(GL_TEXTURE_2D);
 
     glLoadIdentity();
 
-    noegnud_gui_widget_cliptome((noegnud_gui_twidget *) glyph);
+    noegnud_gui_widget_cliptome(widget);
 
-    parent = glyph->widget.parent;
+    parent = widget->parent;
     while (parent) {
         glTranslated(parent->x, -parent->y, 0);
         noegnud_gui_checkoffset_widget(parent);
         glTranslated(parent->offset_x, parent->offset_y, 0);
         parent = parent->parent;
     }
-    glTranslated(glyph->widget.x,
-                 noegnud_options_screenheight->value - glyph->widget.y, 0);
+    glTranslated(widget->x, noegnud_options_screenheight->value - widget->y,
+                 0);
 
     glBindTexture(GL_TEXTURE_2D,
                   noegnud_activetileset->tiles[glyph2tile[glyph->glyph]]);
@@ -1036,38 +1019,38 @@ noegnud_gui_draw_glyph(noegnud_gui_tglyph *glyph, int drawchildren)
     glTexCoord2f(noegnud_activetileset->fx1, noegnud_activetileset->fy1);
     glVertex2i(0, 0);
     glTexCoord2f(noegnud_activetileset->fx1, noegnud_activetileset->fy2);
-    glVertex2i(0, -glyph->widget.height);
+    glVertex2i(0, -widget->height);
     glTexCoord2f(noegnud_activetileset->fx2, noegnud_activetileset->fy2);
-    glVertex2i(glyph->widget.width, -glyph->widget.height);
+    glVertex2i(widget->width, -widget->height);
     glTexCoord2f(noegnud_activetileset->fx2, noegnud_activetileset->fy1);
-    glVertex2i(glyph->widget.width, 0);
+    glVertex2i(widget->width, 0);
 
     glEnd();
 
     if (drawchildren)
-        noegnud_gui_draw_widget_relatives((noegnud_gui_twidget *) glyph);
+        noegnud_gui_draw_widget_relatives(widget);
 }
 
 static void
-noegnud_gui_event_glyph(noegnud_gui_tglyph *glyph, SDL_Event *event)
+noegnud_gui_event_glyph(noegnud_gui_twidget *widget, SDL_Event *event)
 {
-    noegnud_gui_event_widget_relatives((noegnud_gui_twidget *) glyph, event);
+    noegnud_gui_tglyph *glyph = (noegnud_gui_tglyph *) widget;
+    noegnud_gui_event_widget_relatives(widget, event);
 
-    if (glyph->widget.mouseover_check) {
+    if (widget->mouseover_check) {
         if (event->type == SDL_MOUSEMOTION)
-            glyph->widget.mouseover = noegnud_gui_widget_contained(
-                (noegnud_gui_twidget *) glyph, event->motion.x,
-                event->motion.y);
-        if (glyph->widget.mouseover) {
+            widget->mouseover = noegnud_gui_widget_contained(
+                    widget, event->motion.x, event->motion.y);
+        if (widget->mouseover) {
             if (!noegnud_gui_mouseoverwidget)
-                noegnud_gui_mouseoverwidget = (noegnud_gui_twidget *) glyph;
+                noegnud_gui_mouseoverwidget = widget;
         }
     }
 
     if (glyph->activepopup) {
         if (event->type == SDL_MOUSEMOTION) {
-            if ((glyph->widget.mouseover)
-                && (glyph->widget.parent->parent->mouseover)
+            if ((widget->mouseover)
+                && (widget->parent->parent->mouseover)
                 && (((noegnud_gui_mouseoverwidget == glyph->activepopup)
                      || (glyph->activepopup->child
                          && noegnud_gui_mouseoverwidget
@@ -1078,13 +1061,13 @@ noegnud_gui_event_glyph(noegnud_gui_tglyph *glyph, SDL_Event *event)
                                 == glyph->activepopup->child->child)))) {
                 glyph->activepopup->x =
                     (event->motion.x
-                     - (glyph->widget.parent->parent->x
-                        - glyph->widget.parent->parent->offset_x))
+                     - (widget->parent->parent->x
+                        - widget->parent->parent->offset_x))
                     - (128);
                 glyph->activepopup->y =
                     (event->motion.y
-                     - (glyph->widget.parent->parent->y
-                        - glyph->widget.parent->parent->offset_y))
+                     - (widget->parent->parent->y
+                        - widget->parent->parent->offset_y))
                     - (128);
             } else {
                 glyph->activepopup->kill(glyph->activepopup);
@@ -1093,21 +1076,19 @@ noegnud_gui_event_glyph(noegnud_gui_tglyph *glyph, SDL_Event *event)
         }
 
     } else {
-        if (noegnud_gui_mouseoverwidget == (noegnud_gui_twidget *) glyph
-            && glyph->widget.parent->parent->mouseover) {
+        if (noegnud_gui_mouseoverwidget == widget
+            && widget->parent->parent->mouseover) {
             noegnud_gui_create_glyph(
                 (noegnud_gui_twidget *) noegnud_gui_create_window(
-                    glyph->activepopup =
-                        (noegnud_gui_twidget *) noegnud_gui_create_widget(
-                            (noegnud_gui_twidget *)
-                                glyph->widget.parent->parent,
+                    glyph->activepopup = noegnud_gui_create_widget(
+                            widget->parent->parent,
                             (event->motion.x
-                             - (glyph->widget.parent->parent->x
-                                - glyph->widget.parent->parent->offset_x))
+                             - (widget->parent->parent->x
+                                - widget->parent->parent->offset_x))
                                 - (128),
                             (event->motion.y
-                             - (glyph->widget.parent->parent->y
-                                - glyph->widget.parent->parent->offset_y))
+                             - (widget->parent->parent->y
+                                - widget->parent->parent->offset_y))
                                 - (128),
                             256, 256, 0),
                     64, 64, 128, 128, 0.0, 0.0, 0.0, 0.4, 0),
@@ -1130,10 +1111,8 @@ noegnud_gui_create_text(noegnud_gui_twidget *parent, int x, int y, int width,
         sizeof(noegnud_gui_ttext) - sizeof(noegnud_gui_twidget));
 
     guitext->widget.type = NOEGNUD_GUI_TEXT;
-    guitext->widget.draw =
-        (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_text;
-    guitext->widget.kill =
-        (noegnud_gui_kill_widget_proc *) noegnud_gui_kill_text;
+    guitext->widget.draw = noegnud_gui_draw_text;
+    guitext->widget.kill = noegnud_gui_kill_text;
 
     guitext->r = r;
     guitext->g = g;
@@ -1149,18 +1128,19 @@ noegnud_gui_create_text(noegnud_gui_twidget *parent, int x, int y, int width,
     return guitext;
 }
 static void
-noegnud_gui_kill_text(noegnud_gui_ttext *text)
+noegnud_gui_kill_text(noegnud_gui_twidget *widget)
 {
+    noegnud_gui_ttext *text = (noegnud_gui_ttext *) widget;
     char tmpstring[1024];
     char tmpvalue[1024];
     noegnud_gui_twindow *window;
 
-    if (text->widget.parent
-        && text->widget.parent->type == NOEGNUD_GUI_TITLEBAR) {
+    if (widget->parent
+        && widget->parent->type == NOEGNUD_GUI_TITLEBAR) {
         sprintf(tmpstring, "gui.window.implicit.%s.position.%d.%d.x",
                 text->text, noegnud_options_screenwidth->value,
                 noegnud_options_screenheight->value);
-        sprintf(tmpvalue, "%d", text->widget.parent->parent->x);
+        sprintf(tmpvalue, "%d", widget->parent->parent->x);
         noegnud_collection_add(
             noegnud_options, tmpstring,
             noegnud_options_create_string(NOEGNUD_OPTIONPERM_CONFIGCHANGE,
@@ -1168,13 +1148,13 @@ noegnud_gui_kill_text(noegnud_gui_ttext *text)
         sprintf(tmpstring, "gui.window.implicit.%s.position.%d.%d.y",
                 text->text, noegnud_options_screenwidth->value,
                 noegnud_options_screenheight->value);
-        sprintf(tmpvalue, "%d", text->widget.parent->parent->y);
+        sprintf(tmpvalue, "%d", widget->parent->parent->y);
         noegnud_collection_add(
             noegnud_options, tmpstring,
             noegnud_options_create_string(NOEGNUD_OPTIONPERM_CONFIGCHANGE,
                                           tmpvalue));
         sprintf(tmpstring, "gui.window.implicit.%s.colour", text->text);
-        window = (noegnud_gui_twindow *) text->widget.parent->parent;
+        window = (noegnud_gui_twindow *) widget->parent->parent;
         sprintf(tmpvalue, "%2.3f,%2.3f,%2.3f,%2.3f", window->widget.r,
                 window->widget.g, window->widget.b, window->widget.a);
         noegnud_collection_add(
@@ -1184,30 +1164,31 @@ noegnud_gui_kill_text(noegnud_gui_ttext *text)
     }
 
     noegnud_mem_free(text->text);
-    noegnud_gui_kill_widget((noegnud_gui_twidget *) text);
+    noegnud_gui_kill_widget(widget);
 }
 static void
-noegnud_gui_draw_text(noegnud_gui_ttext *text, int drawchildren)
+noegnud_gui_draw_text(noegnud_gui_twidget *widget, int drawchildren)
 {
+    noegnud_gui_ttext *text = (noegnud_gui_ttext *) widget;
     noegnud_gui_twidget *parent;
 
     glLoadIdentity();
-    noegnud_gui_widget_cliptome((noegnud_gui_twidget *) text);
+    noegnud_gui_widget_cliptome(widget);
 
-    parent = text->widget.parent;
+    parent = widget->parent;
 
     while (parent) {
         glTranslated(parent->x, -parent->y, 0);
         noegnud_gui_checkoffset_widget(parent);
-        if (text->widget.type != NOEGNUD_GUI_VSCROLL
-            && text->widget.parent->type != NOEGNUD_GUI_TITLEBAR)
+        if (widget->type != NOEGNUD_GUI_VSCROLL
+            && widget->parent->type != NOEGNUD_GUI_TITLEBAR)
             glTranslated(parent->offset_x, parent->offset_y, 0);
         parent = parent->parent;
     }
 
-    glTranslated(text->widget.x,
+    glTranslated(widget->x,
                  noegnud_options_screenheight->value
-                     - (text->widget.y + noegnud_gui_font->height),
+                     - (widget->y + noegnud_gui_font->height),
                  0);
     glColor3f(text->r, text->g, text->b);
     if (text->dynamiccharwidth) {
@@ -1217,7 +1198,7 @@ noegnud_gui_draw_text(noegnud_gui_ttext *text, int drawchildren)
     }
 
     if (drawchildren)
-        noegnud_gui_draw_widget_relatives((noegnud_gui_twidget *) text);
+        noegnud_gui_draw_widget_relatives(widget);
 }
 
 /*VSCROLL*/
@@ -1235,10 +1216,8 @@ noegnud_gui_create_vscroll(noegnud_gui_twidget *parent)
     container->movable = FALSE;
 
     container->widget.type = NOEGNUD_GUI_VSCROLL;
-    container->widget.autosize =
-        (noegnud_gui_autosize_widget_proc *) noegnud_gui_autosize_vscroll;
-    container->widget.event =
-        (noegnud_gui_event_widget_proc *) noegnud_gui_event_vscroll;
+    container->widget.autosize = noegnud_gui_autosize_vscroll;
+    container->widget.event = noegnud_gui_event_vscroll;
     container->widget.theme = noegnud_gui_default_scrollbararea_widgettheme;
 
     bar = noegnud_gui_create_window(
@@ -1249,10 +1228,9 @@ noegnud_gui_create_vscroll(noegnud_gui_twidget *parent)
 
     bar->widget.type = NOEGNUD_GUI_VSCROLL;
     bar->widget.theme = noegnud_gui_default_scrollbar_widgettheme;
-    bar->widget.draw =
-        (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_vslider;
+    bar->widget.draw = noegnud_gui_draw_vslider;
 
-    noegnud_gui_autosize_vscroll((noegnud_gui_tvscroll *) container);
+    noegnud_gui_autosize_vscroll(&container->widget);
 
     return (noegnud_gui_tvscroll *) container;
 }
@@ -1268,60 +1246,53 @@ noegnud_gui_widget_contained(noegnud_gui_twidget *widget, int x, int y)
 }
 
 static void
-noegnud_gui_event_vscroll(noegnud_gui_tvscroll *vscroll, SDL_Event *event)
+noegnud_gui_event_vscroll(noegnud_gui_twidget *widget, SDL_Event *event)
 {
-    noegnud_gui_event_widget_relatives((noegnud_gui_twidget *) vscroll,
-                                       event);
+    noegnud_gui_event_widget_relatives(widget, event);
 
-    vscroll->widget.x =
-        vscroll->widget.parent->width - NOEGNUD_GUI_SCROLLER_WIDTH;
-    vscroll->widget.height = vscroll->widget.parent->height;
+    widget->x = widget->parent->width - NOEGNUD_GUI_SCROLLER_WIDTH;
+    widget->height = widget->parent->height;
 
-    if (vscroll->widget.mouseover_check) {
+    if (widget->mouseover_check) {
         if (event->type == SDL_MOUSEMOTION)
-            vscroll->widget.mouseover = noegnud_gui_widget_contained(
-                (noegnud_gui_twidget *) vscroll, event->motion.x,
-                event->motion.y);
-        if (vscroll->widget.mouseover) {
+            widget->mouseover = noegnud_gui_widget_contained(
+                    widget, event->motion.x, event->motion.y);
+        if (widget->mouseover) {
             if (!noegnud_gui_mouseoverwidget)
-                noegnud_gui_mouseoverwidget = (noegnud_gui_twidget *) vscroll;
+                noegnud_gui_mouseoverwidget = widget;
         }
     }
 
     if ((!noegnud_gui_grabbed)
-        || (noegnud_gui_grabbed == (noegnud_gui_twidget *) vscroll)) {
-        if (noegnud_gui_grabbed == (noegnud_gui_twidget *) vscroll) {
+        || (noegnud_gui_grabbed == widget)) {
+        if (noegnud_gui_grabbed == widget) {
             if (event->type == SDL_MOUSEBUTTONUP)
                 noegnud_gui_grabbed = NULL;
 
             if (event->type == SDL_MOUSEMOTION) {
-                // pos=(event->motion.y-((vscroll->widget.child->height/2)+2))-vscroll->widget.parent->y;
-
-                vscroll->widget.vscroll_pos +=
-                    (event->motion.y - noegnud_gui_grabbed_y);
+                widget->vscroll_pos +=
+                        (event->motion.y - noegnud_gui_grabbed_y);
                 noegnud_gui_grabbed_y = event->motion.y;
-                if (vscroll->widget.vscroll_pos < 0)
-                    vscroll->widget.vscroll_pos = 0;
-                if (vscroll->widget.vscroll_pos
-                    > vscroll->widget.height
-                          - (vscroll->widget.child->height + 4))
-                    vscroll->widget.vscroll_pos =
-                        vscroll->widget.height
-                        - (vscroll->widget.child->height + 4);
-                vscroll->widget.child->y = vscroll->widget.vscroll_pos + 2;
+                if (widget->vscroll_pos < 0)
+                    widget->vscroll_pos = 0;
+                if (widget->vscroll_pos
+                    > widget->height - (widget->child->height + 4)) {
+                    widget->vscroll_pos =
+                            widget->height - (widget->child->height + 4);
+                }
+                widget->child->y = widget->vscroll_pos + 2;
 
-                vscroll->widget.parent->offset_y =
-                    (vscroll->widget.vscroll_pos
-                     * vscroll->widget.parent->vscroll)
-                    / (vscroll->widget.height
-                       - (vscroll->widget.child->height + 4));
+                widget->parent->offset_y =
+                    (widget->vscroll_pos
+                     * widget->parent->vscroll)
+                    / (widget->height
+                       - (widget->child->height + 4));
             }
 
         } else if (noegnud_gui_widget_contained(
-                       (noegnud_gui_twidget *) vscroll, event->motion.x,
-                       event->motion.y)) {
+                       widget, event->motion.x, event->motion.y)) {
             if (event->type == SDL_MOUSEBUTTONDOWN) {
-                noegnud_gui_grabbed = (noegnud_gui_twidget *) vscroll;
+                noegnud_gui_grabbed = widget;
                 noegnud_gui_grabbed_y = event->motion.y;
             }
         }
@@ -1329,55 +1300,52 @@ noegnud_gui_event_vscroll(noegnud_gui_tvscroll *vscroll, SDL_Event *event)
 }
 
 static void
-noegnud_gui_autosize_vscroll(noegnud_gui_tvscroll *vscroll)
+noegnud_gui_autosize_vscroll(noegnud_gui_twidget *widget)
 {
     int height;
 
-    if (vscroll->widget.parent->type != NOEGNUD_GUI_VSCROLL) {
-        vscroll->widget.x =
-            vscroll->widget.parent->width - NOEGNUD_GUI_SCROLLER_WIDTH;
-        noegnud_gui_resize_widget((noegnud_gui_twidget *) vscroll,
-                                  NOEGNUD_GUI_SCROLLER_WIDTH,
-                                  vscroll->widget.parent->height);
-        noegnud_gui_autosize_vscroll(
-            (noegnud_gui_tvscroll *) vscroll->widget.child);
+    if (widget->parent->type != NOEGNUD_GUI_VSCROLL) {
+        widget->x = widget->parent->width - NOEGNUD_GUI_SCROLLER_WIDTH;
+        noegnud_gui_resize_widget(widget, NOEGNUD_GUI_SCROLLER_WIDTH,
+                                  widget->parent->height);
+        noegnud_gui_autosize_vscroll(widget->child);
     } else {
-        height = (vscroll->widget.parent->height - 4)
-                 - vscroll->widget.parent->parent->vscroll;
+        height = (widget->parent->height - 4)
+                 - widget->parent->parent->vscroll;
         if (height < NOEGNUD_GUI_SCROLLER_WIDTH)
             height = NOEGNUD_GUI_SCROLLER_WIDTH;
-        noegnud_gui_resize_widget((noegnud_gui_twidget *) vscroll,
+        noegnud_gui_resize_widget(widget,
                                   NOEGNUD_GUI_SCROLLER_WIDTH - 4, height);
     }
 }
 
 static void
-noegnud_gui_draw_vslider(noegnud_gui_tvslider *vslider, int drawchildren)
+noegnud_gui_draw_vslider(noegnud_gui_twidget *widget, int drawchildren)
 {
-    vslider->widget.y =
-        ((vslider->widget.parent->parent->offset_y
-          * (vslider->widget.parent->height - (vslider->widget.height + 4)))
-         / vslider->widget.parent->parent->vscroll)
+    widget->y =
+        ((widget->parent->parent->offset_y
+          * (widget->parent->height - (widget->height + 4)))
+         / widget->parent->parent->vscroll)
         + 2;
-    vslider->widget.parent->vscroll_pos = vslider->widget.y - 1;
+    widget->parent->vscroll_pos = widget->y - 1;
 
-    noegnud_gui_draw_window((noegnud_gui_twindow *) vslider, 0);
+    noegnud_gui_draw_window(widget, 0);
 
     glBegin(GL_QUADS);
 
     glColor4f(1.0, 1.0, 1.0, 0.7);
     glVertex2i(0, 0);
-    glVertex2i(0, -vslider->widget.height);
+    glVertex2i(0, -widget->height);
     glColor4f(1.0, 1.0, 1.0, 0.0);
-    glVertex2i(vslider->widget.width * 2 / 3, -vslider->widget.height);
-    glVertex2i(vslider->widget.width * 2 / 3, 0);
+    glVertex2i(widget->width * 2 / 3, -widget->height);
+    glVertex2i(widget->width * 2 / 3, 0);
 
     glColor4f(0.0, 0.0, 0.0, 0.0);
-    glVertex2i(vslider->widget.width * 1 / 3, 0);
-    glVertex2i(vslider->widget.width * 1 / 3, -vslider->widget.height);
+    glVertex2i(widget->width * 1 / 3, 0);
+    glVertex2i(widget->width * 1 / 3, -widget->height);
     glColor4f(0.0, 0.0, 0.0, 0.7);
-    glVertex2i(vslider->widget.width, -vslider->widget.height);
-    glVertex2i(vslider->widget.width, 0);
+    glVertex2i(widget->width, -widget->height);
+    glVertex2i(widget->width, 0);
 
     glEnd();
 
@@ -1385,18 +1353,18 @@ noegnud_gui_draw_vslider(noegnud_gui_tvslider *vslider, int drawchildren)
         glColor4f(1.0, 1.0, 1.0, 1.0);
         glBegin(GL_LINES);
         glVertex2i(0, 0);
-        glVertex2i(vslider->widget.width, 0);
-        glVertex2i(vslider->widget.width, 0);
-        glVertex2i(vslider->widget.width, -vslider->widget.height);
-        glVertex2i(vslider->widget.width, -vslider->widget.height);
-        glVertex2i(0, -vslider->widget.height);
-        glVertex2i(0, -vslider->widget.height);
+        glVertex2i(widget->width, 0);
+        glVertex2i(widget->width, 0);
+        glVertex2i(widget->width, -widget->height);
+        glVertex2i(widget->width, -widget->height);
+        glVertex2i(0, -widget->height);
+        glVertex2i(0, -widget->height);
         glVertex2i(0, 0);
         glEnd();
     }
 
     if (drawchildren)
-        noegnud_gui_draw_widget_relatives((noegnud_gui_twidget *) vslider);
+        noegnud_gui_draw_widget_relatives(widget);
 }
 
 /*MENUITEM*/
@@ -1416,10 +1384,8 @@ noegnud_gui_create_menuitem(noegnud_gui_twidget *parent, int x, int y,
     //    *)noegnud_gui_create_widget(parent,x,y,width,height,sizeof(noegnud_gui_tmenuitem)-sizeof(noegnud_gui_twidget));
     menuitem->window.widget.type = NOEGNUD_GUI_MENUITEM;
 
-    menuitem->window.widget.draw =
-        (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_window;
-    menuitem->window.widget.event =
-        (noegnud_gui_event_widget_proc *) noegnud_gui_event_menuitem;
+    menuitem->window.widget.draw = noegnud_gui_draw_window;
+    menuitem->window.widget.event = noegnud_gui_event_menuitem;
 
     if (selected) {
         menuitem->window.widget.theme =
@@ -1445,52 +1411,45 @@ noegnud_gui_create_menuitem(noegnud_gui_twidget *parent, int x, int y,
 }
 
 static void
-noegnud_gui_event_menuitem(noegnud_gui_tmenuitem *menuitem, SDL_Event *event)
+noegnud_gui_event_menuitem(noegnud_gui_twidget *widget, SDL_Event *event)
 {
-    if (menuitem->window.widget.parent != noegnud_gui_active) {
-        noegnud_gui_event_null((noegnud_gui_twidget *) menuitem, event);
+    noegnud_gui_tmenuitem *menuitem = (noegnud_gui_tmenuitem *) widget;
+    if (widget->parent != noegnud_gui_active) {
+        noegnud_gui_event_null(widget, event);
         return;
     }
 
-    noegnud_gui_event_widget_relatives((noegnud_gui_twidget *) menuitem,
-                                       event);
+    noegnud_gui_event_widget_relatives(widget, event);
 
-    if (menuitem->window.widget.mouseover_check) {
+    if (widget->mouseover_check) {
         if (event->type == SDL_MOUSEMOTION)
-            menuitem->window.widget.mouseover = noegnud_gui_widget_contained(
-                (noegnud_gui_twidget *) menuitem, event->motion.x,
-                event->motion.y);
-        if (menuitem->window.widget.mouseover) {
+            widget->mouseover = noegnud_gui_widget_contained(
+                    widget, event->motion.x, event->motion.y);
+        if (widget->mouseover) {
             if (!noegnud_gui_mouseoverwidget)
-                noegnud_gui_mouseoverwidget = (noegnud_gui_twidget *) menuitem;
+                noegnud_gui_mouseoverwidget = widget;
         }
     }
 
-    // menuitem->highlighted=(menuitem->window.widget.mouseover);
-    menuitem->highlighted =
-        noegnud_gui_overselforchildren((noegnud_gui_twidget *) menuitem);
+    menuitem->highlighted = noegnud_gui_overselforchildren(widget);
 
     if (menuitem->selected) {
-        menuitem->window.widget.theme =
-            noegnud_gui_default_item_selected_widgettheme;
+        widget->theme = noegnud_gui_default_item_selected_widgettheme;
     } else if (menuitem->highlighted) {
-        menuitem->window.widget.theme =
-            noegnud_gui_default_item_highlighted_widgettheme;
+        widget->theme = noegnud_gui_default_item_highlighted_widgettheme;
     } else {
-        menuitem->window.widget.theme = noegnud_gui_default_item_widgettheme;
+        widget->theme = noegnud_gui_default_item_widgettheme;
     }
 
     if (event->type == SDL_MOUSEBUTTONUP && menuitem->highlighted
-        && menuitem->window.widget.mouseover
+        && widget->mouseover
         && ((SDL_MouseButtonEvent *) event)->button == 1) {
         if (menuitem->selected) {
-            menuitem->window.widget.theme =
-                noegnud_gui_default_item_highlighted_widgettheme;
+            widget->theme = noegnud_gui_default_item_highlighted_widgettheme;
             if (!noegnud_gui_menuitem_throwreturn)
                 menuitem->selected = FALSE;
         } else {
-            menuitem->window.widget.theme =
-                noegnud_gui_default_item_selected_widgettheme;
+            widget->theme = noegnud_gui_default_item_selected_widgettheme;
             if (!noegnud_gui_menuitem_throwreturn)
                 menuitem->selected = TRUE;
         }
@@ -1690,8 +1649,7 @@ noegnud_gui_nh_addmenu(noegnud_gui_twindow *window, anything identifier,
             child,
             NOEGNUD_GUI_BORDER_SIZE + (4) * noegnud_gui_font->width + 1, 1,
             32, 32, glyph);
-        wglyph->widget.event =
-            (noegnud_gui_event_widget_proc *) noegnud_gui_event_glyph;
+        wglyph->widget.event = noegnud_gui_event_glyph;
         wglyph->widget.clipto = (noegnud_gui_twidget *) window;
     }
 
@@ -1923,7 +1881,7 @@ static GLfloat noegnud_nethackcolours_minimap[16][4] = {
 };
 
 void
-noegnud_gui_draw_minimap(noegnud_gui_twindow *window, int drawchildren)
+noegnud_gui_draw_minimap(noegnud_gui_twidget *widget, int drawchildren)
 {
     noegnud_gui_twidget *parent;
     int x, y;
@@ -1934,22 +1892,22 @@ noegnud_gui_draw_minimap(noegnud_gui_twindow *window, int drawchildren)
 
     font = noegnud_font_minimap;
 
-    noegnud_gui_draw_window(window, 0);
+    noegnud_gui_draw_window(widget, 0);
 
     glDisable(GL_BLEND);
     glLoadIdentity();
-    noegnud_gui_widget_cliptome((noegnud_gui_twidget *) window);
+    noegnud_gui_widget_cliptome(widget);
 
-    parent = window->widget.parent;
+    parent = widget->parent;
     while (parent) {
         glTranslated(parent->x, -parent->y, 0);
         noegnud_gui_checkoffset_widget(parent);
-        if (window->widget.type != NOEGNUD_GUI_VSCROLL)
+        if (widget->type != NOEGNUD_GUI_VSCROLL)
             glTranslated(parent->offset_x, parent->offset_y, 0);
         parent = parent->parent;
     }
-    glTranslated(window->widget.x,
-                 noegnud_options_screenheight->value - window->widget.y, 0);
+    glTranslated(widget->x, noegnud_options_screenheight->value - widget->y,
+                 0);
 
     glPushMatrix();
     for (y = 0; y < MAX_MAP_Y; y++) {
@@ -2021,7 +1979,7 @@ noegnud_gui_draw_minimap(noegnud_gui_twindow *window, int drawchildren)
     glPopMatrix();
 
     if (drawchildren)
-        noegnud_gui_draw_widget_relatives((noegnud_gui_twidget *) window);
+        noegnud_gui_draw_widget_relatives(widget);
 }
 
 void

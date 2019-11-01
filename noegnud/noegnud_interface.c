@@ -755,8 +755,7 @@ noegnud_internal_init_graphics_system(void)
       noegnud_options_screenwidth->value, noegnud_options_screenheight->value,
       1.0,1.0,1.0,1.0,
       0,0);
-      noegnud_guiwidget_desktop_overlay_hallucinating->draw=(noegnud_gui_draw_widget_proc
-      *)noegnud_gui_draw_widget;
+      noegnud_guiwidget_desktop_overlay_hallucinating->draw=noegnud_gui_draw_widget;
       ((noegnud_gui_twindow
       *)noegnud_guiwidget_desktop_overlay_hallucinating)->image=noegnud_glfuncs_loadimage("status/hallucinating.png",TRUE,FALSE);
       ((noegnud_gui_twindow
@@ -769,8 +768,7 @@ noegnud_internal_init_graphics_system(void)
       noegnud_options_screenwidth->value, noegnud_options_screenheight->value,
       1.0,1.0,1.0,1.0,
       0,0);
-      noegnud_guiwidget_desktop_overlay_confused->draw=(noegnud_gui_draw_widget_proc
-      *)noegnud_gui_draw_widget;
+      noegnud_guiwidget_desktop_overlay_confused->draw=noegnud_gui_draw_widget;
       ((noegnud_gui_twindow
       *)noegnud_guiwidget_desktop_overlay_confused)->image=noegnud_glfuncs_loadimage("status/confused.png",TRUE,FALSE);
       ((noegnud_gui_twindow
@@ -783,8 +781,7 @@ noegnud_internal_init_graphics_system(void)
       noegnud_options_screenwidth->value, noegnud_options_screenheight->value,
       1.0,1.0,1.0,1.0,
       0,0);
-      noegnud_guiwidget_desktop_overlay_stunned->draw=(noegnud_gui_draw_widget_proc
-      *)noegnud_gui_draw_widget;
+      noegnud_guiwidget_desktop_overlay_stunned->draw=noegnud_gui_draw_widget;
       ((noegnud_gui_twindow
       *)noegnud_guiwidget_desktop_overlay_stunned)->image=noegnud_glfuncs_loadimage("status/stunned.png",TRUE,FALSE);
       ((noegnud_gui_twindow
@@ -797,8 +794,7 @@ noegnud_internal_init_graphics_system(void)
       noegnud_options_screenwidth->value, noegnud_options_screenheight->value,
       1.0,1.0,1.0,1.0,
       0,0);
-      noegnud_guiwidget_desktop_overlay_poisoned->draw=(noegnud_gui_draw_widget_proc
-      *)noegnud_gui_draw_widget;
+      noegnud_guiwidget_desktop_overlay_poisoned->draw=noegnud_gui_draw_widget;
       ((noegnud_gui_twindow
       *)noegnud_guiwidget_desktop_overlay_poisoned)->image=noegnud_glfuncs_loadimage("status/poisoned.png",TRUE,FALSE);
       ((noegnud_gui_twindow
@@ -811,8 +807,7 @@ noegnud_internal_init_graphics_system(void)
       noegnud_options_screenwidth->value, noegnud_options_screenheight->value,
       1.0,1.0,1.0,1.0,
       0,0);
-      noegnud_guiwidget_desktop_overlay_blind->draw=(noegnud_gui_draw_widget_proc
-      *)noegnud_gui_draw_widget;
+      noegnud_guiwidget_desktop_overlay_blind->draw=noegnud_gui_draw_widget;
       ((noegnud_gui_twindow
       *)noegnud_guiwidget_desktop_overlay_blind)->image=noegnud_glfuncs_loadimage("status/blind.png",TRUE,FALSE);
       ((noegnud_gui_twindow
@@ -825,8 +820,7 @@ noegnud_internal_init_graphics_system(void)
       noegnud_options_screenwidth->value, noegnud_options_screenheight->value,
       1.0,1.0,1.0,1.0,
       0,0);
-      noegnud_guiwidget_desktop_overlay_slimed->draw=(noegnud_gui_draw_widget_proc
-      *)noegnud_gui_draw_widget;
+      noegnud_guiwidget_desktop_overlay_slimed->draw=noegnud_gui_draw_widget;
       ((noegnud_gui_twindow
       *)noegnud_guiwidget_desktop_overlay_slimed)->image=noegnud_glfuncs_loadimage("status/slimed.png",TRUE,FALSE);
       ((noegnud_gui_twindow
@@ -975,8 +969,7 @@ noegnud_internal_init_graphics_system(void)
         &noegnud_guiwidget_status->widget, 0, 0, noegnud_gui_get_fontwidth() * 80,
         noegnud_gui_get_fontheight() * 2 + 4 * 3, 0);
     noegnud_end_menu(status_id, "Status Bar");
-    noegnud_guiwidget_status->widget.draw =
-        (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_null;
+    noegnud_guiwidget_status->widget.draw = noegnud_gui_draw_null;
     noegnud_guiwidget_status->widget.theme = noegnud_gui_default_widgettheme;
     noegnud_guiwidget_status->refreshtitlebar = FALSE;
 
@@ -997,10 +990,8 @@ noegnud_internal_init_graphics_system(void)
             10 + noegnud_gui_get_fontwidth() * MAX_MAP_X + 10,
             noegnud_gui_get_fontheight() * 1 + 4 * 2, 0);
     noegnud_end_menu(posbar_id, "Position Bar");
-    noegnud_guiwidget_positionbar->widget.draw =
-        (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_null;
-    noegnud_guiwidget_positionbar->widget.event =
-        (noegnud_gui_event_widget_proc *) noegnud_gui_event_null;
+    noegnud_guiwidget_positionbar->widget.draw = noegnud_gui_draw_null;
+    noegnud_guiwidget_positionbar->widget.event = noegnud_gui_event_null;
     noegnud_guiwidget_positionbar->widget.theme = noegnud_gui_default_widgettheme;
     noegnud_guiwidget_positionbar->refreshtitlebar = FALSE;
 #endif
@@ -1013,10 +1004,8 @@ noegnud_internal_init_graphics_system(void)
             MAX_MAP_X * 8 + 10, MAX_MAP_Y * 8 + 10, 1.0, 1.0, 1.0, 1.0, 0);
     minimap_id = noegnud_gui_window_to_winid(noegnud_guiwidget_minimap);
     noegnud_end_menu(minimap_id, "Mini Map");
-    noegnud_guiwidget_minimap->widget.draw =
-        (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_null;
-    noegnud_guiwidget_minimap->widget.event =
-        (noegnud_gui_event_widget_proc *) noegnud_gui_event_null;
+    noegnud_guiwidget_minimap->widget.draw = noegnud_gui_draw_null;
+    noegnud_guiwidget_minimap->widget.event = noegnud_gui_event_null;
     noegnud_guiwidget_minimap->widget.theme =
         noegnud_gui_default_minimap_widgettheme;
     noegnud_guiwidget_minimap->refreshtitlebar = FALSE;
@@ -1575,8 +1564,7 @@ noegnud_create_nhwindow(int type)
             //		    0.0,0.1,0.4,0.7,
             1.0, 1.0, 1.0, 1.0, 0);
         window->widget.theme = noegnud_gui_default_widgettheme;
-        ((noegnud_gui_twidget *) window)->draw =
-            (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_widget;
+        ((noegnud_gui_twidget *) window)->draw = noegnud_gui_draw_widget;
         break;
     case NHW_TEXT:
         window = noegnud_gui_create_window(
@@ -1633,8 +1621,7 @@ noegnud_display_nhwindow(winid window, boolean blocking)
 
     if (((noegnud_gui_twidget *) winptr)->type == NOEGNUD_GUI_WINDOW
         && window != WIN_MAP && window != WIN_STATUS) {
-        ((noegnud_gui_twidget *) winptr)->draw =
-            (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_window;
+        ((noegnud_gui_twidget *) winptr)->draw = noegnud_gui_draw_window;
     }
 
     if (window == WIN_MESSAGE) {
@@ -1787,10 +1774,8 @@ noegnud_start_menu(winid window)
     ((noegnud_gui_twidget *) winptr)->hscrollwidget = NULL;
     if (((noegnud_gui_twidget *) winptr)->type == NOEGNUD_GUI_WINDOW)
         winptr->autoresize = TRUE;
-    ((noegnud_gui_twidget *) winptr)->draw =
-        (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_null;
-    ((noegnud_gui_twidget *) winptr)->event =
-        (noegnud_gui_event_widget_proc *) noegnud_gui_event_null;
+    ((noegnud_gui_twidget *) winptr)->draw = noegnud_gui_draw_null;
+    ((noegnud_gui_twidget *) winptr)->event = noegnud_gui_event_null;
 };
 
 static void
@@ -2052,10 +2037,8 @@ noegnud_select_menu(winid window, int how, menu_item **menu_list)
 
     noegnud_gui_menuitem_throwreturn = FALSE;
 
-    ((noegnud_gui_twidget *) winptr)->draw =
-        (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_window;
-    ((noegnud_gui_twidget *) winptr)->event =
-        (noegnud_gui_event_widget_proc *) noegnud_gui_event_window;
+    ((noegnud_gui_twidget *) winptr)->draw = noegnud_gui_draw_window;
+    ((noegnud_gui_twidget *) winptr)->event = noegnud_gui_event_window;
 
     if (!(how == PICK_NONE && flags.perm_invent && window == WIN_INVEN))
         noegnud_gui_add_actionbutton(winptr, "Ok", '\n');
@@ -2358,10 +2341,8 @@ noegnud_select_menu(winid window, int how, menu_item **menu_list)
         if (how != PICK_NONE)
             display_inventory(NULL, FALSE);
     } else {
-        ((noegnud_gui_twidget *) winptr)->draw =
-            (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_null;
-        ((noegnud_gui_twidget *) winptr)->event =
-            (noegnud_gui_event_widget_proc *) noegnud_gui_event_null;
+        ((noegnud_gui_twidget *) winptr)->draw = noegnud_gui_draw_null;
+        ((noegnud_gui_twidget *) winptr)->event = noegnud_gui_event_null;
         ((noegnud_gui_twidget *) winptr)->offset_y = 0;
         ((noegnud_gui_twidget *) winptr)->offset_x = 0;
         ((noegnud_gui_twidget *) winptr)->vscroll = 0;
@@ -2445,18 +2426,15 @@ noegnud_cliparound(int x, int y)
                    == 'y')
             record_game = RECORD_GAME_TXT_HTML_COLOUR;
         if (noegnud_options_minimap_visible->value) {
-            noegnud_guiwidget_minimap->widget.draw =
-                (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_minimap;
-            noegnud_guiwidget_minimap->widget.event =
-                (noegnud_gui_event_widget_proc *) noegnud_gui_event_minimap;
+            noegnud_guiwidget_minimap->widget.draw = noegnud_gui_draw_minimap;
+            noegnud_guiwidget_minimap->widget.event = noegnud_gui_event_minimap;
         }
-        noegnud_guiwidget_status->widget.draw =
-            (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_window;
+        noegnud_guiwidget_status->widget.draw = noegnud_gui_draw_window;
         if (noegnud_options_positionbar_visible->value) {
             noegnud_guiwidget_positionbar->widget.draw =
-                (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_window;
+                    noegnud_gui_draw_window;
             noegnud_guiwidget_positionbar->widget.event =
-                (noegnud_gui_event_widget_proc *) noegnud_gui_event_window;
+                    noegnud_gui_event_window;
         }
 
         noegnud_cliparound_firstcall = 0;
@@ -3364,8 +3342,7 @@ noegnud_creditscreen(void)
         (610 * noegnud_options_screenwidth->value) / window->image->width,
         (540 * noegnud_options_screenheight->value) / window->image->height,
         1.0, 1.0, 1.0, 1.0, 0);
-    container->widget.draw =
-        (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_widget;
+    container->widget.draw = noegnud_gui_draw_widget;
     container->movable = FALSE;
     container->widget.autocentre = FALSE;
     container->autoresize = 0;
@@ -4002,15 +3979,12 @@ noegnud_noegnud_options(void)
         noegnud_options_minimap_visible->value =
             !noegnud_options_minimap_visible->value;
         if (noegnud_options_minimap_visible->value) {
-            noegnud_guiwidget_minimap->widget.draw =
-                (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_minimap;
-            noegnud_guiwidget_minimap->widget.event =
-                (noegnud_gui_event_widget_proc *) noegnud_gui_event_minimap;
+            noegnud_guiwidget_minimap->widget.draw = noegnud_gui_draw_minimap;
+            noegnud_guiwidget_minimap->widget.event = noegnud_gui_event_minimap;
         } else {
             noegnud_guiwidget_minimap->widget.draw =
-                (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_null;
-            noegnud_guiwidget_minimap->widget.event =
-                (noegnud_gui_event_widget_proc *) noegnud_gui_event_null;
+                    noegnud_gui_draw_null;
+            noegnud_guiwidget_minimap->widget.event = noegnud_gui_event_null;
         }
         break;
     case NOEGNUD_OPTIONS_MENU_VIEW_POSITIONBAR:
@@ -4018,14 +3992,11 @@ noegnud_noegnud_options(void)
             !noegnud_options_positionbar_visible->value;
         if (noegnud_options_positionbar_visible->value) {
             noegnud_guiwidget_positionbar->widget.draw =
-                (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_window;
-            noegnud_guiwidget_positionbar->widget.event =
-                (noegnud_gui_event_widget_proc *) noegnud_gui_event_window;
+                    noegnud_gui_draw_window;
+            noegnud_guiwidget_positionbar->widget.event = noegnud_gui_event_window;
         } else {
-            noegnud_guiwidget_positionbar->widget.draw =
-                (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_null;
-            noegnud_guiwidget_positionbar->widget.event =
-                (noegnud_gui_event_widget_proc *) noegnud_gui_event_null;
+            noegnud_guiwidget_positionbar->widget.draw = noegnud_gui_draw_null;
+            noegnud_guiwidget_positionbar->widget.event = noegnud_gui_event_null;
         }
         break;
     case NOEGNUD_OPTIONS_MENU_VIEW_REFRESH:
@@ -4123,8 +4094,7 @@ noegnud_nhgetch(void)
     process_checkrecord();
 
     //    if ((!noegnud_inventory_open)&&WIN_INVEN) ((noegnud_gui_twidget
-    //    *)WIN_INVEN)->draw=(noegnud_gui_draw_widget_proc
-    //    *)noegnud_gui_draw_widget;
+    //    *)WIN_INVEN)->draw=noegnud_gui_draw_widget;
 
     if (!noegnud_graphics_system_ready)
         noegnud_internal_init_graphics_system();
@@ -4133,48 +4103,36 @@ noegnud_nhgetch(void)
       overlay_reduction=0.0;
 
       if (Hallucination) {
-      noegnud_guiwidget_desktop_overlay_hallucinating->draw=(noegnud_gui_draw_widget_proc
-      *)noegnud_gui_draw_window; overlay_reduction+=0.15; } else {
-      noegnud_guiwidget_desktop_overlay_hallucinating->draw=(noegnud_gui_draw_widget_proc
-      *)noegnud_gui_draw_widget;
+      noegnud_guiwidget_desktop_overlay_hallucinating->draw=noegnud_gui_draw_window; overlay_reduction+=0.15; } else {
+      noegnud_guiwidget_desktop_overlay_hallucinating->draw=noegnud_gui_draw_widget;
       }
 
       if (Confusion) {
-      noegnud_guiwidget_desktop_overlay_confused->draw=(noegnud_gui_draw_widget_proc
-      *)noegnud_gui_draw_window; overlay_reduction+=0.15; } else {
-      noegnud_guiwidget_desktop_overlay_confused->draw=(noegnud_gui_draw_widget_proc
-      *)noegnud_gui_draw_widget;
+      noegnud_guiwidget_desktop_overlay_confused->draw=noegnud_gui_draw_window; overlay_reduction+=0.15; } else {
+      noegnud_guiwidget_desktop_overlay_confused->draw=noegnud_gui_draw_widget;
       }
 
       //  if (Stunned) {
       if (youmonst.data&&Stunned) {
-      noegnud_guiwidget_desktop_overlay_stunned->draw=(noegnud_gui_draw_widget_proc
-      *)noegnud_gui_draw_window; overlay_reduction+=0.15; } else {
-      noegnud_guiwidget_desktop_overlay_stunned->draw=(noegnud_gui_draw_widget_proc
-      *)noegnud_gui_draw_widget;
+      noegnud_guiwidget_desktop_overlay_stunned->draw=noegnud_gui_draw_window; overlay_reduction+=0.15; } else {
+      noegnud_guiwidget_desktop_overlay_stunned->draw=noegnud_gui_draw_widget;
       }
 
       if (Sick) {
-      noegnud_guiwidget_desktop_overlay_poisoned->draw=(noegnud_gui_draw_widget_proc
-      *)noegnud_gui_draw_window; overlay_reduction+=0.15; } else {
-      noegnud_guiwidget_desktop_overlay_poisoned->draw=(noegnud_gui_draw_widget_proc
-      *)noegnud_gui_draw_widget;
+      noegnud_guiwidget_desktop_overlay_poisoned->draw=noegnud_gui_draw_window; overlay_reduction+=0.15; } else {
+      noegnud_guiwidget_desktop_overlay_poisoned->draw=noegnud_gui_draw_widget;
       }
 
       if (youmonst.data&&Blind) {
-      noegnud_guiwidget_desktop_overlay_blind->draw=(noegnud_gui_draw_widget_proc
-      *)noegnud_gui_draw_window; overlay_reduction+=0.15; } else {
-      noegnud_guiwidget_desktop_overlay_blind->draw=(noegnud_gui_draw_widget_proc
-      *)noegnud_gui_draw_widget;
+      noegnud_guiwidget_desktop_overlay_blind->draw=noegnud_gui_draw_window; overlay_reduction+=0.15; } else {
+      noegnud_guiwidget_desktop_overlay_blind->draw=noegnud_gui_draw_widget;
       }
 
       if (Slimed) {
-      noegnud_guiwidget_desktop_overlay_slimed->draw=(noegnud_gui_draw_widget_proc
-      *)noegnud_gui_draw_window; overlay_reduction+=0.15;
+      noegnud_guiwidget_desktop_overlay_slimed->draw=noegnud_gui_draw_window; overlay_reduction+=0.15;
 
       } else {
-      noegnud_guiwidget_desktop_overlay_slimed->draw=(noegnud_gui_draw_widget_proc
-      *)noegnud_gui_draw_widget;
+      noegnud_guiwidget_desktop_overlay_slimed->draw=noegnud_gui_draw_widget;
       }
 
       overlay_reduction-=0.15;
@@ -4196,24 +4154,19 @@ noegnud_nhgetch(void)
                     noegnud_gui_winid_to_window(WIN_INVEN);
             if (!flags.perm_invent
                 && noegnud_gui_active != inv_ptr) {
-                inv_ptr->draw =
-                    (noegnud_gui_draw_widget_proc *) noegnud_gui_draw_null;
-                inv_ptr->event =
-                    (noegnud_gui_event_widget_proc *) noegnud_gui_event_null;
+                inv_ptr->draw = noegnud_gui_draw_null;
+                inv_ptr->event = noegnud_gui_event_null;
                 inv_ptr->offset_y = 0;
                 inv_ptr->hscroll = 0;
                 inv_ptr->vscroll = 0;
             } else {
-                if (inv_ptr->draw == (noegnud_gui_draw_widget_proc *)
-                           noegnud_gui_draw_null) {
+                if (inv_ptr->draw == noegnud_gui_draw_null) {
                     printf("*****************************\n");
                     // clive
                     noegnud_clear_nhwindow(WIN_INVEN);
                 }
-                inv_ptr->draw = (noegnud_gui_draw_widget_proc *)
-                        noegnud_gui_draw_window;
-                inv_ptr->event = (noegnud_gui_event_widget_proc *)
-                        noegnud_gui_event_window;
+                inv_ptr->draw = noegnud_gui_draw_window;
+                inv_ptr->event = noegnud_gui_event_window;
             }
         }
 
@@ -4552,17 +4505,13 @@ noegnud_nhgetch(void)
                         !noegnud_options_minimap_visible->value;
                     if (noegnud_options_minimap_visible->value) {
                         noegnud_guiwidget_minimap->widget.draw =
-                            (noegnud_gui_draw_widget_proc *)
                                 noegnud_gui_draw_minimap;
                         noegnud_guiwidget_minimap->widget.event =
-                            (noegnud_gui_event_widget_proc *)
                                 noegnud_gui_event_minimap;
                     } else {
                         noegnud_guiwidget_minimap->widget.draw =
-                            (noegnud_gui_draw_widget_proc *)
                                 noegnud_gui_draw_null;
                         noegnud_guiwidget_minimap->widget.event =
-                            (noegnud_gui_event_widget_proc *)
                                 noegnud_gui_event_null;
                     }
                 } else if (event.key.keysym.sym

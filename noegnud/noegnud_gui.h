@@ -106,8 +106,8 @@ noegnud_gui_twindow *noegnud_gui_create_window(noegnud_gui_twidget *parent,
                                                int height, GLfloat r,
                                                GLfloat g, GLfloat b,
                                                GLfloat a, int datasize);
-void noegnud_gui_draw_window(noegnud_gui_twindow *window, int drawchildren);
-void noegnud_gui_event_window(noegnud_gui_twindow *window, SDL_Event *event);
+void noegnud_gui_draw_window(noegnud_gui_twidget *widget, int drawchildren);
+void noegnud_gui_event_window(noegnud_gui_twidget *widget, SDL_Event *event);
 
 // -------------------------------------------------------- TEXT
 
@@ -198,7 +198,7 @@ void noegnud_gui_inconsole_noegnudtext(noegnud_gui_twidget *widget,
 
 void noegnud_gui_reshuffle_console_children(noegnud_gui_twidget *widget);
 
-void noegnud_gui_draw_minimap(noegnud_gui_twindow *window, int drawchildren);
+void noegnud_gui_draw_minimap(noegnud_gui_twidget *map, int drawchildren);
 void noegnud_gui_event_minimap(noegnud_gui_twidget *map, SDL_Event *event);
 
 int noegnud_gui_widget_getabsolute_x(noegnud_gui_twidget *widget);
