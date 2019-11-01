@@ -182,14 +182,7 @@ noegnud_options_init(void)
 static void
 noegnud_options_done(void)
 {
-    noegnud_tcollection *stepcoll;
-
     noegnud_options_save();
-    stepcoll = noegnud_options;
-    while (stepcoll) {
-        noegnud_mem_free(stepcoll->data);
-        stepcoll = stepcoll->next;
-    }
     noegnud_collection_destroy(&noegnud_options);
 }
 

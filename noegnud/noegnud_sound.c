@@ -22,22 +22,19 @@ static noegnud_tcollection *noegnud_sound_load(const char *filename);
 static void
 noegnud_sound_done(void)
 {
-    noegnud_tcollection *sound;
-
-    if (!noegnud_sound_initialised)
-        return;
-
-    sound = noegnud_sounds;
-    while (sound) {
-        if (((noegnud_sound_tsound *) (sound->data))->chunk)
-            Mix_FreeChunk(((noegnud_sound_tsound *) (sound->data))->chunk);
-        if (((noegnud_sound_tsound *) (sound->data))->music)
-            Mix_FreeMusic(((noegnud_sound_tsound *) (sound->data))->music);
-        noegnud_mem_free(sound->data);
-        sound = sound->next;
-    }
     noegnud_collection_destroy(&noegnud_sounds);
-    noegnud_sounds = NULL;
+}
+
+static void
+noegnud_sound_destroy(void *item_)
+{
+    noegnud_sound_tsound *item = (noegnud_sound_tsound *) item_;
+
+    if (item->chunk)
+        Mix_FreeChunk(item->chunk);
+    if (item->music)
+        Mix_FreeMusic(item->music);
+    noegnud_mem_free(item);
 }
 
 static int
@@ -110,9 +107,10 @@ noegnud_sound_load(const char *filename)
 
     if (!noegnud_sounds) {
         returnvalue = noegnud_sounds =
-            noegnud_collection_create(filename, sound, NULL);
+            noegnud_collection_create(filename, sound, noegnud_sound_destroy);
     } else {
-        returnvalue = noegnud_collection_add(noegnud_sounds, filename, sound, NULL);
+        returnvalue = noegnud_collection_add(noegnud_sounds, filename, sound,
+                                             noegnud_sound_destroy);
     }
 
     return returnvalue;

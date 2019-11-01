@@ -15,29 +15,23 @@ static void noegnud_widgettheme_done(void);
 static void
 noegnud_widgettheme_done(void)
 {
-    noegnud_tcollection *widgetthemes_run;
-    noegnud_tcollection *widgettheme_inner;
-    noegnud_tcollection *widgettheme_inner_run;
-    noegnud_widgettheme_tsegment *segment;
-
-    widgetthemes_run = noegnud_widgetthemes;
-    while (widgetthemes_run) {
-        widgettheme_inner = widgettheme_inner_run = widgetthemes_run->data;
-
-        while (widgettheme_inner_run) {
-            segment = widgettheme_inner_run->data;
-            noegnud_glfuncs_unloadimage(segment->image);
-            noegnud_mem_free(widgettheme_inner_run->data);
-            widgettheme_inner_run = widgettheme_inner_run->next;
-        }
-
-        noegnud_collection_destroy(&widgettheme_inner);
-        widgettheme_inner = NULL;
-
-        widgetthemes_run = widgetthemes_run->next;
-    }
     noegnud_collection_destroy(&noegnud_widgetthemes);
-    noegnud_widgetthemes = NULL;
+}
+
+static void
+destroy_segment(void *segment_)
+{
+    noegnud_widgettheme_tsegment *segment = (noegnud_widgettheme_tsegment *) segment_;
+
+    noegnud_glfuncs_unloadimage(segment->image);
+    noegnud_mem_free(segment);
+}
+
+static void
+destroy_inner(void *inner_)
+{
+    noegnud_tcollection *inner = (noegnud_tcollection *) inner_;
+    noegnud_collection_destroy(&inner);
 }
 
 static int
@@ -134,9 +128,11 @@ noegnud_widgettheme_load_parser(char *setting, int nparams, char *params,
                     noegnud_widgettheme_load_parser_counter);
 
             if (*widgettheme) {
-                noegnud_collection_add(*widgettheme, filename, segment, NULL);
+                noegnud_collection_add(*widgettheme, filename, segment,
+                                       destroy_segment);
             } else {
-                *widgettheme = noegnud_collection_create(filename, segment, NULL);
+                *widgettheme = noegnud_collection_create(filename, segment,
+                                                         destroy_segment);
             }
 
         } else {
@@ -187,10 +183,11 @@ noegnud_widgettheme_load(const char *filename)
     if (widgettheme) {
         if (!noegnud_widgetthemes) {
             noegnud_widgetthemes =
-                noegnud_collection_create(filename, widgettheme, NULL);
+                noegnud_collection_create(filename, widgettheme,
+                                          destroy_inner);
         } else {
             noegnud_collection_add(noegnud_widgetthemes, filename,
-                                   widgettheme, NULL);
+                                   widgettheme, destroy_inner);
         }
     } else {
         printf("[WIDGETTHEME] warning: empty theme \"%s\" (%s).\n", filename,

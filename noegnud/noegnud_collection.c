@@ -91,7 +91,7 @@ noegnud_collection_destroy(noegnud_tcollection **collectionp)
         noegnud_tcollection *q;
         q = p;
         p = q->next;
-        q->destructor(p->data);
+        q->destructor(q->data);
         noegnud_mem_free(q->name);
         noegnud_mem_free(q);
     }

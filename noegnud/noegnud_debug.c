@@ -31,7 +31,6 @@ noegnud_debug_done(void)
 {
     noegnud_tcollection *leaklist;
     tnoegnud_mem_block *memblock;
-    noegnud_tcollection *stepcoll;
     int leak_amount = 0;
     int leak_total = 0;
 
@@ -58,12 +57,6 @@ noegnud_debug_done(void)
            "-------------\n");
 
     noegnud_mem_lock = 1;
-
-    stepcoll = noegnud_debug_mem_ptrsizemap;
-    while (stepcoll) {
-        noegnud_mem_free(stepcoll->data);
-        stepcoll = stepcoll->next;
-    }
 
     noegnud_collection_destroy(&noegnud_debug_mem_ptrsizemap);
 

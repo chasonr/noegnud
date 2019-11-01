@@ -36,13 +36,6 @@ noegnud_textcolouring_init(void)
 static void
 noegnud_textcolouring_done(void)
 {
-    noegnud_tcollection *stepcoll;
-
-    stepcoll = noegnud_textcolouring;
-    while (stepcoll) {
-        noegnud_mem_free(stepcoll->data);
-        stepcoll = stepcoll->next;
-    }
     noegnud_collection_destroy(&noegnud_textcolouring);
 }
 
@@ -76,10 +69,8 @@ noegnud_textcolouring_load_parser(char *setting, int nparams, char *params,
     textcolouring_item->pattern_buffer =
         malloc(sizeof(struct re_pattern_buffer));
 
-    textcolouring_item->pattern_buffer->translate = 0;
-    textcolouring_item->pattern_buffer->fastmap = 0;
-    textcolouring_item->pattern_buffer->buffer = 0;
-    textcolouring_item->pattern_buffer->allocated = 0;
+    memset(textcolouring_item->pattern_buffer, 0,
+            sizeof(*textcolouring_item->pattern_buffer));
 
     textcolouring_item->r = atof(params);
     while (*params)

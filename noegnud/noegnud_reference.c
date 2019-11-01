@@ -26,13 +26,6 @@ noegnud_reference_init(void)
 static void
 noegnud_reference_done(void)
 {
-    noegnud_tcollection *stepcoll;
-
-    stepcoll = noegnud_reference;
-    while (stepcoll) {
-        noegnud_mem_free(stepcoll->data);
-        stepcoll = stepcoll->next;
-    }
     noegnud_collection_destroy(&noegnud_reference);
 }
 

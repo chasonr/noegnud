@@ -3230,11 +3230,6 @@ noegnud_noegnud_options_displaymethod_tile(void)
         }
     }
 
-    filelist_run = filelist;
-    while (filelist_run) {
-        noegnud_mem_free(filelist_run->data);
-        filelist_run = filelist_run->next;
-    }
     noegnud_collection_destroy(&filelist);
 }
 

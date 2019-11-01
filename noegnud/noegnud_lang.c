@@ -26,13 +26,6 @@ noegnud_lang_init(void)
 void
 noegnud_lang_done(void)
 {
-    noegnud_tcollection *stepcoll;
-
-    stepcoll = noegnud_lang;
-    while (stepcoll) {
-        noegnud_mem_free(stepcoll->data);
-        stepcoll = stepcoll->next;
-    }
     noegnud_collection_destroy(&noegnud_lang);
 }
 
