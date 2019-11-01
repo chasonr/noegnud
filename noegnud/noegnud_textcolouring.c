@@ -24,6 +24,7 @@ typedef struct {
 
 static void noegnud_textcolouring_done(void);
 static void noegnud_textcolouring_load(char *filename);
+static void noegnud_textcolouring_destroy(void *item_);
 
 void
 noegnud_textcolouring_init(void)
@@ -105,10 +106,11 @@ noegnud_textcolouring_load_parser(char *setting, int nparams, char *params,
 
     if (noegnud_textcolouring) {
         noegnud_collection_add(noegnud_textcolouring, setting,
-                               textcolouring_item, NULL);
+                               textcolouring_item,
+                               noegnud_textcolouring_destroy);
     } else {
-        noegnud_textcolouring =
-            noegnud_collection_create(setting, textcolouring_item, NULL);
+        noegnud_textcolouring = noegnud_collection_create(
+                setting, textcolouring_item, noegnud_textcolouring_destroy);
     }
 }
 
@@ -172,4 +174,13 @@ noegnud_textcolouring_colourise(const char *string)
         noegnud_mem_free(replaced);
 
     return colourisation;
+}
+
+static void
+noegnud_textcolouring_destroy(void *item_)
+{
+    noegnud_textcolouring_item *item = (noegnud_textcolouring_item *) item_;
+    regfree(item->pattern_buffer);
+    noegnud_mem_free(item->pattern_buffer);
+    noegnud_mem_free(item);
 }
