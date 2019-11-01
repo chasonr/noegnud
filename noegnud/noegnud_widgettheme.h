@@ -1,5 +1,5 @@
 #ifndef _NOEGNUD_WIDGETTHEME_H_
-#define _NOEGNUD_WIDGETTHEME_H
+#define _NOEGNUD_WIDGETTHEME_H_
 
 #include "noegnud_collection.h"
 
