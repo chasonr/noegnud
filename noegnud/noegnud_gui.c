@@ -2007,7 +2007,7 @@ noegnud_gui_event_minimap(noegnud_gui_twidget *widget, SDL_Event *event)
     if (widget == noegnud_gui_mouseoverwidget) {
         x = event->motion.x - (noegnud_gui_widget_getabsolute_x(widget) + 5);
         y = event->motion.y - (noegnud_gui_widget_getabsolute_y(widget) + 5);
-        if ((x >= 0) && (y >= 0) && (x < MAX_MAP_X * 8) && (MAX_MAP_Y * 8)) {
+        if ((x >= 0) && (y >= 0) && (x < MAX_MAP_X * 8) && (y < MAX_MAP_Y * 8)) {
             noegnud_gui_event_widget_relatives(widget, event);
             noegnud_gui_mouseoverminimap = 1;
             noegnud_render_mouse_map_x = (x / 8) + 1;
