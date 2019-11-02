@@ -1580,6 +1580,7 @@ noegnud_create_nhwindow(int type)
           window->image=noegnud_glfuncs_loadimage("gui/highscore.png");
           }
         */
+        break;
     default:
         window = NULL;
     }

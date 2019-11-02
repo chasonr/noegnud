@@ -2021,6 +2021,7 @@ noegnud_gui_event_minimap(noegnud_gui_twidget *widget, SDL_Event *event)
 void
 noegnud_gui_free_winid(winid window)
 {
+    --window;
     if (0 <= window && window < MAX_WINDOWS && window_ptrs[window] != NULL) {
         window_ptrs[window] = NULL;
     }
@@ -2030,6 +2031,7 @@ noegnud_gui_free_winid(winid window)
 noegnud_gui_twindow *
 noegnud_gui_winid_to_window(winid window)
 {
+    --window;
     if (0 <= window && window < MAX_WINDOWS && window_ptrs[window] != NULL) {
         return window_ptrs[window];
     } else {
@@ -2045,22 +2047,22 @@ noegnud_gui_window_to_winid(noegnud_gui_twindow *window)
     winid id;
 
     if (window == NULL) {
-        return WIN_ERR;
+        return 0;
     }
 
     /* If the pointer is already recorded, return its index */
     for (id = 0; id < MAX_WINDOWS; ++id) {
         if (window_ptrs[id] == window) {
-            return id;
+            return id + 1;
         }
     }
     /* No pointer recorded; look for an empty slot */
     for (id = 0; id < MAX_WINDOWS; ++id) {
         if (window_ptrs[id] == NULL) {
             window_ptrs[id] = window;
-            return id;
+            return id + 1;
         }
     }
     panic("Too many windows are open");
-    return WIN_ERR;
+    return 0;
 }
