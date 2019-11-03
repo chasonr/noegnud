@@ -43,9 +43,7 @@ noegnud_collection_create(const char *name, void *data,
     debug_coll = data;
     debug_coll_t = *debug_coll;
 #endif
-    collection->origin = NULL;
     collection->next = NULL;
-    collection->prev = NULL;
 
     return collection;
 }
@@ -74,11 +72,9 @@ noegnud_collection_add(noegnud_tcollection *collection, const char *name,
             add->data = data;
             return add;
         }
-        add = (noegnud_tcollection *) add->next;
+        add = add->next;
     }
-    made =
-        (noegnud_tcollection *) (add->next = (struct noegnud_tcollection *)
-                                     noegnud_collection_create(name, data, destructor));
+    made = add->next = noegnud_collection_create(name, data, destructor);
     return made;
 }
 void
@@ -108,7 +104,7 @@ noegnud_collection_structure(noegnud_tcollection *collection,
         if (!strcmp(name, get->name)) {
             return get;
         }
-        get = (noegnud_tcollection *) get->next;
+        get = get->next;
     }
     return NULL;
 }

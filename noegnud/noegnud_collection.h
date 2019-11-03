@@ -1,13 +1,11 @@
 #ifndef _NOEGNUD_COLLECTION_H_
 #define _NOEGNUD_COLLECTION_H_
 
-typedef struct {
+typedef struct noegnud_tcollection {
     char *name;
     void *data;
     void (*destructor)(void *);
-    void *origin;
-    void *next;
-    void *prev;
+    struct noegnud_tcollection *next;
 } noegnud_tcollection;
 
 noegnud_tcollection *noegnud_collection_create(const char *name, void *data,
